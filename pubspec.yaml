@@ -30,22 +30,54 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-
+  # Dart 常用工具类库 https://github.com/Sky24n/common_utils
+  common_utils: 2.1.0
+  sp_util: ^2.0.3
+  # 路由框架 https://github.com/theyakka/fluro
+  fluro: ^2.0.5
+  # 状态管理 https://github.com/rrousselGit/provider
+  provider: ^6.1.2
+  # Toast插件 https://github.com/OpenFlutter/flutter_oktoast
+  oktoast: ^3.4.0
+  # 屏幕适配插件
+  flutter_screenutil: ^5.9.1
+  # https://github.com/ReactiveX/rxdart
+  rxdart: ^0.27.7
+  # 刷新控件
+  easy_refresh: ^3.4.0
+  flutter_smart_dialog: ^4.9.7+4
+  permission_handler: ^11.3.1
+  # dio
+  dio: ^5.4.3+1
+  package_info_plus: ^5.0.1
+  json_annotation: ^4.9.0
+  extended_image: ^8.2.0
+  flutter_localizations:
+    sdk: flutter
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
-  cupertino_icons: ^1.0.6
+  cupertino_icons: ^1.0.8
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  build_runner: ^2.4.10
+  json_serializable: ^6.8.0
 
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is
   # activated in the `analysis_options.yaml` file located at the root of your
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
-  flutter_lints: ^3.0.0
+  flutter_lints: ^4.0.0
+  flutter_launcher_icons: ^0.13.1
+
+flutter_launcher_icons:
+  android: "launcher_icon"
+  ios: true
+  remove_alpha_ios: true
+  image_path: "assets/images/launcher_icon.png"
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
@@ -57,6 +89,9 @@ flutter:
   # included with your application, so that you can use the icons in
   # the material Icons class.
   uses-material-design: true
+
+  assets:
+    - assets/images/
 
   # To add assets to your application, add an assets section, like this:
   # assets:
