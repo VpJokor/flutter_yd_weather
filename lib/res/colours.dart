@@ -1,9 +1,13 @@
 import 'dart:ui';
 
 class Colours {
-  static const Color appMain = colorFE2C3C;
-  static const Color darkAppMain = colorFE2C3C;
+  static const Color appMain = color02C96F;
+  static const Color darkAppMain = color00AC5E;
+  static const Color bgColor = white;
   static const Color darkBgColor = Color(0xFF18191A);
+  static const Color darkMaterialBg = Color(0xFF303233);
+  static const Color line = colorEEEEEE;
+  static const Color darkLine = color1D2129;
 
   static const Color black = Color(0xff000000);
   static const Color black_2 = Color(0x22000000);
@@ -17,6 +21,7 @@ class Colours {
   static const Color white_6 = Color(0x66ffffff);
   static const Color white_9 = Color(0x99ffffff);
 
+  static const Color color1C1C28 = Color(0xff1C1C28);
   static const Color color999999 = Color(0xff999999);
   static const Color color666666 = Color(0xff666666);
   static const Color color333333 = Color(0xff333333);
@@ -43,6 +48,7 @@ class Colours {
   static const Color color808080 = Color(0xFF808080);
   static const Color colorE5E5E5 = Color(0xFFE5E5E5);
   static const Color colorEEEEEE = Color(0xFFEEEEEE);
+  static const Color color1D2129 = Color(0xFF1D2129);
   static const Color colorC5C5C5 = Color(0xFFC5C5C5);
   static const Color color8AFFFFFF = Color(0x8AFFFFFF);
   static const Color colorFFD178 = Color(0xFFFFD178);

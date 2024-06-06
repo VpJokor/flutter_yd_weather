@@ -40,12 +40,12 @@ dependencies:
   # Toast插件 https://github.com/OpenFlutter/flutter_oktoast
   oktoast: ^3.4.0
   # 屏幕适配插件
-  flutter_screenutil: ^5.9.1
+  flutter_screenutil: ^5.9.3
   # https://github.com/ReactiveX/rxdart
   rxdart: ^0.27.7
   # 刷新控件
   easy_refresh: ^3.4.0
-  flutter_smart_dialog: ^4.9.7+4
+  flutter_smart_dialog: ^4.9.7+7
   permission_handler: ^11.3.1
   # dio
   dio: ^5.4.3+1
@@ -54,6 +54,8 @@ dependencies:
   extended_image: ^8.2.0
   flutter_localizations:
     sdk: flutter
+  hive: ^2.2.3
+  hive_flutter: ^1.1.0
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
@@ -63,6 +65,7 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   build_runner: ^2.4.10
+  hive_generator: ^2.0.1
   json_serializable: ^6.8.0
 
   # The "flutter_lints" package below contains a set of recommended lints to
@@ -92,6 +95,7 @@ flutter:
 
   assets:
     - assets/images/
+    - assets/images/dark/
 
   # To add assets to your application, add an assets section, like this:
   # assets:

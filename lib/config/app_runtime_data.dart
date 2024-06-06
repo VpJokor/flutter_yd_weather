@@ -24,7 +24,7 @@ class AppRuntimeData {
 
   void updatePackageInfo(PackageInfo? packageInfo) {
     if (packageInfo == null) return;
-    L.e("packageInfo = $packageInfo");
+    Log.e("packageInfo = $packageInfo");
     _packageInfo = packageInfo;
   }
 }

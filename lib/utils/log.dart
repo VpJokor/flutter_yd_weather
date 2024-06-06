@@ -3,7 +3,7 @@ import 'package:common_utils/common_utils.dart';
 
 import '../config/constants.dart';
 
-class L {
+class Log {
   static const String tag = 'hhy';
 
   static void init() {

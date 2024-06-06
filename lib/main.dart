@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
+import 'package:flutter_yd_weather/config/constants.dart';
+import 'package:flutter_yd_weather/model/city_data.dart';
 import 'package:flutter_yd_weather/pages/splash_page.dart';
 import 'package:flutter_yd_weather/provider/locale_provider.dart';
 import 'package:flutter_yd_weather/provider/theme_provider.dart';
@@ -10,6 +12,7 @@ import 'package:flutter_yd_weather/utils/device.dart';
 import 'package:flutter_yd_weather/utils/handle_error_utils.dart';
 import 'package:flutter_yd_weather/utils/log.dart';
 import 'package:flutter_yd_weather/utils/theme_utils.dart';
+import 'package:hive_flutter/adapters.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';
 import 'package:oktoast/oktoast.dart';
@@ -25,13 +28,18 @@ Future<void> main() async {
     final info = await PackageInfo.fromPlatform();
     AppRuntimeData.instance.updatePackageInfo(info);
     await SpUtil.getInstance();
+
+    /// Hive
+    await Hive.initFlutter();
+    Hive.registerAdapter(CityDataAdapter());
+    await Hive.openBox<CityData>(Constants.cityDataBox);
     runApp(MyApp());
   });
 }
 
 class MyApp extends StatelessWidget {
   MyApp({super.key, this.theme, this.home}) {
-    L.init();
+    Log.init();
     _initDio();
     Routes.initRoutes();
   }
