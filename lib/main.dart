@@ -1,3 +1,6 @@
+import 'package:cookie_jar/cookie_jar.dart';
+import 'package:dio/dio.dart';
+import 'package:dio_cookie_manager/dio_cookie_manager.dart' as dioCookieManager;
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -19,6 +22,8 @@ import 'package:oktoast/oktoast.dart';
 import 'package:sp_util/sp_util.dart';
 
 import 'config/app_runtime_data.dart';
+import 'net/intercept.dart';
+import 'net/net_utils.dart';
 
 Future<void> main() async {
   /// 异常处理
@@ -48,7 +53,17 @@ class MyApp extends StatelessWidget {
   final ThemeData? theme;
 
   void _initDio() {
+    final List<Interceptor> interceptors = <Interceptor>[];
+    /// 打印Log(生产模式去除)
+    if (!Constants.inProduction) {
+      interceptors.add(LoggingInterceptor());
+    }
+    final cookieJar = CookieJar();
+    interceptors.add(dioCookieManager.CookieManager(cookieJar));
 
+    configDio(
+      interceptors: interceptors,
+    );
   }
 
   @override

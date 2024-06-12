@@ -15,11 +15,16 @@ class ResultData<T> {
     }
     if (jsonMap.containsKey("desc")) {
       msg = jsonMap["desc"];
+    } else if (jsonMap.containsKey("message")) {
+      msg = jsonMap["message"];
     } else {
       msg = "error msg";
     }
     if (jsonMap.containsKey("data")) {
       final dataJsonMap = jsonMap["data"];
+      data = _generateOBJ<T>(dataJsonMap);
+    } else if (jsonMap.containsKey("result")) {
+      final dataJsonMap = jsonMap["result"];
       data = _generateOBJ<T>(dataJsonMap);
     } else {
       data = _generateOBJ(jsonMap);

@@ -1,5 +1,8 @@
 import 'dart:ui';
 
+import 'package:flutter/material.dart';
+import 'package:flutter_yd_weather/utils/theme_utils.dart';
+
 class Colours {
   static const Color appMain = color02C96F;
   static const Color darkAppMain = color00AC5E;
@@ -80,4 +83,13 @@ class Colours {
   static const Color colorFFF1F2 = Color(0xFFFFF1F2);
   static const Color colorFFACB2 = Color(0xFFFFACB2);
   static const Color colorE3E3E3 = Color(0xFFE3E3E3);
+  static const Color color0E1014 = Color(0xFF0E1014);
+  static const Color color9696A6 = Color(0xFF9696A6);
+}
+
+extension ColoursExtension on BuildContext {
+  Color get textColor01 => isDark ? Colours.color9696A6 : Colours.color333333;
+
+  Color get cardColor01 => isDark ? Colours.color0E1014 : Colours.colorF6F6F6;
+  Color get cardColor02 => isDark ? Colours.color1D2129 : Colours.colorF6F6F6;
 }

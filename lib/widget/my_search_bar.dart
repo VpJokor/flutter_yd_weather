@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_yd_weather/utils/commons_ext.dart';
+import 'package:flutter_yd_weather/utils/theme_utils.dart';
 
 import '../res/colours.dart';
 import '../res/gaps.dart';
@@ -93,8 +94,8 @@ class _MySearchBarState extends State<MySearchBar> {
       child: Container(
         height: 32.w,
         decoration: BoxDecoration(
-          color: Colours.colorF6F6F6,
-          borderRadius: BorderRadius.circular(2.w),
+          color: context.cardColor02,
+          borderRadius: BorderRadius.circular(20.w),
         ),
         child: TextField(
           key: const Key('search_text_field'),
@@ -120,7 +121,7 @@ class _MySearchBarState extends State<MySearchBar> {
             setState(() {});
           },
           onTap: widget.onTap,
-          style: TextStyle(fontSize: 14.sp, color: Colours.color333333),
+          style: TextStyle(fontSize: 14.sp, color: context.textColor01),
           decoration: InputDecoration(
             contentPadding: const EdgeInsets.all(0),
             border: const OutlineInputBorder(borderSide: BorderSide.none),
@@ -193,12 +194,12 @@ class _MySearchBarState extends State<MySearchBar> {
       children: [
         content,
         if (widget.showDivider)
-          Gaps.generateDivider(height: 0.5.w, color: Colours.colorEEEEEE),
+          Gaps.generateDivider(height: 0.5.w, color: context.dividerThemeData.color),
       ],
     );
 
     return AnnotatedRegion<SystemUiOverlayStyle>(
-      value: SystemUiOverlayStyle.dark,
+      value: context.systemUiOverlayStyle,
       child: Material(
         color: widget.backgroundColor,
         child: widget.isSafeArea

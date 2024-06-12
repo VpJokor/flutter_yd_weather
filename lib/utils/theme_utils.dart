@@ -58,4 +58,6 @@ extension ThemeExtension on BuildContext {
   Color get backgroundColor => Theme.of(this).scaffoldBackgroundColor;
 
   Color get dialogBackgroundColor => Theme.of(this).canvasColor;
+
+  DividerThemeData get dividerThemeData => Theme.of(this).dividerTheme;
 }

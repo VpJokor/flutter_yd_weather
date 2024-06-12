@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_yd_weather/utils/log.dart';
 import '../res/colours.dart';
 
 class MultipleStatusLayout extends StatelessWidget {
@@ -18,6 +19,7 @@ class MultipleStatusLayout extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    Log.e("MultipleStatusLayout status = $status");
     switch (status) {
       case LoadStatus.loading:
         return Container(
