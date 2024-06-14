@@ -85,6 +85,11 @@ class Colours {
   static const Color colorE3E3E3 = Color(0xFFE3E3E3);
   static const Color color0E1014 = Color(0xFF0E1014);
   static const Color color9696A6 = Color(0xFF9696A6);
+  static const Color color14171F = Color(0xFF14171F);
+  static const Color colorE6E6E6 = Color(0xFFE6E6E6);
+  static const Color color2C2C42 = Color(0xFF2C2C42);
+  static const Color colorF3F4F9 = Color(0xFFF3F4F9);
+  static const Color color2A2A3D = Color(0xFF2A2A3D);
 }
 
 extension ColoursExtension on BuildContext {
@@ -92,4 +97,8 @@ extension ColoursExtension on BuildContext {
 
   Color get cardColor01 => isDark ? Colours.color0E1014 : Colours.colorF6F6F6;
   Color get cardColor02 => isDark ? Colours.color1D2129 : Colours.colorF6F6F6;
+  Color get cardColor03 => isDark ? Colours.color14171F : Colours.white;
+  Color get cardColor04 => isDark ? Colours.color333333 : Colours.colorF8F8F8;
+  Color get cardColor05 => isDark ? Colours.color2C2C42 : Colours.colorE6E6E6;
+  Color get cardColor06 => isDark ? Colours.color2A2A3D : Colours.colorF3F4F9;
 }

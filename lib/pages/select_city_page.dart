@@ -1,18 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_yd_weather/base/base_list_view.dart';
 import 'package:flutter_yd_weather/model/city_data.dart';
 import 'package:flutter_yd_weather/mvp/power_presenter.dart';
 import 'package:flutter_yd_weather/pages/presenter/select_city_presenter.dart';
 import 'package:flutter_yd_weather/pages/provider/select_city_provider.dart';
-import 'package:flutter_yd_weather/utils/log.dart';
 import 'package:flutter_yd_weather/utils/theme_utils.dart';
-import 'package:flutter_yd_weather/utils/toast_utils.dart';
-import 'package:geolocator/geolocator.dart';
-import 'package:permission_handler/permission_handler.dart';
+import 'package:flutter_yd_weather/widget/select_city_header.dart';
+import 'package:flutter_yd_weather/widget/select_city_item.dart';
 import '../base/base_list_page.dart';
 import '../base/base_list_provider.dart';
-import '../utils/permission_utils.dart';
 import '../widget/my_search_bar.dart';
 
 class SelectCityPage extends StatefulWidget {
@@ -30,7 +28,8 @@ class _SelectCityPageState
   @override
   void initState() {
     super.initState();
-    _obtainLocationPermission();
+    setEnableRefresh(false);
+    setEnableLoad(false);
   }
 
   @override
@@ -52,46 +51,47 @@ class _SelectCityPageState
     );
   }
 
-  void _obtainLocationPermission() {
-    PermissionUtils.checkPermission(
-      permissionList: [
-        Permission.location,
-      ],
-      onSuccess: () {
-        _startLocation();
-      },
-      onFailed: () {},
+  @override
+  Widget? getHeader(SelectCityProvider provider) {
+    return SliverToBoxAdapter(
+      child: SelectCityHeader(
+        locationData: provider.locationData,
+        locationStatus: provider.locationStatus,
+      ),
     );
   }
 
-  void _startLocation() async {
-    final serviceEnabled = await Geolocator.isLocationServiceEnabled();
-    final permission = await Geolocator.checkPermission();
-    Log.e("serviceEnabled = $serviceEnabled permission = $permission");
-    if (!serviceEnabled ||
-        permission == LocationPermission.denied ||
-        permission == LocationPermission.deniedForever) {
-      Toast.show("定位失败！");
-      return;
-    }
-    final lastPosition = await Geolocator.getLastKnownPosition();
-    if (lastPosition != null) {
-      _selectCityPresenter.obtainLocationInfoByCurrentPosition(lastPosition);
-    } else {
-      try {
-        final position = await Geolocator.getCurrentPosition(
-            timeLimit: const Duration(milliseconds: 4000));
-        _selectCityPresenter.obtainLocationInfoByCurrentPosition(position);
-      } catch (error) {
-        Log.e("_startLocation error ${error.toString()}");
-      }
-    }
+  @override
+  Widget getRefreshContent(SelectCityProvider provider) {
+    return SliverPadding(
+      padding: EdgeInsets.symmetric(horizontal: 20.w),
+      sliver: SliverGrid.builder(
+        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+          /// 每行 widget 数量
+          crossAxisCount: 4,
+
+          /// widget 水平之间的距离
+          crossAxisSpacing: 16.w,
+
+          /// widget 垂直之间的距离
+          mainAxisSpacing: 16.w,
+
+          childAspectRatio: 2 / 1,
+        ),
+        itemBuilder: (context, index) {
+          return buildItem(context, index, provider);
+        },
+        itemCount: provider.selectCityData?.hotNational?.length ?? 0,
+      ),
+    );
   }
 
   @override
   Widget buildItem(
-      BuildContext context, int index, BaseListProvider<CityData> provider) {
-    return Container();
+      BuildContext context, int index, SelectCityProvider provider) {
+    return SelectCityItem(
+      cityData: provider.selectCityData?.hotNational?[index],
+    );
   }
 
   @override
