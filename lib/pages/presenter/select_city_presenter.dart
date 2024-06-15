@@ -26,13 +26,13 @@ class SelectCityPresenter extends BasePagePresenter<BaseListView<CityData>> {
       delayMilliseconds: delayMilliseconds,
       onSuccess: (data) {
         (view.baseProvider as SelectCityProvider).selectCityData = data;
-        _obtainLocationPermission();
+        obtainLocationPermission();
       },
       onError: (_) {},
     );
   }
 
-  Future<dynamic> obtainLocationInfoByCurrentPosition(
+  Future<dynamic> _obtainLocationInfoByCurrentPosition(
       Position currentPosition) {
     final newPosition = LocationUtils.transform(
         currentPosition.latitude, currentPosition.longitude);
@@ -52,7 +52,8 @@ class SelectCityPresenter extends BasePagePresenter<BaseListView<CityData>> {
     );
   }
 
-  void _obtainLocationPermission() {
+  void obtainLocationPermission() {
+    (view.baseProvider as SelectCityProvider).setLocationData(null, 0);
     PermissionUtils.checkPermission(
       permissionList: [
         Permission.location,
@@ -76,16 +77,19 @@ class SelectCityPresenter extends BasePagePresenter<BaseListView<CityData>> {
       (view.baseProvider as SelectCityProvider).setLocationData(null, 1);
       return;
     }
-    final lastPosition = await Geolocator.getLastKnownPosition();
-    if (lastPosition != null) {
-      obtainLocationInfoByCurrentPosition(lastPosition);
-    } else {
-      try {
-        final position = await Geolocator.getCurrentPosition(
-            timeLimit: const Duration(milliseconds: 4000));
-        obtainLocationInfoByCurrentPosition(position);
-      } catch (error) {
-        Log.e("_startLocation error ${error.toString()}");
+
+    try {
+      final position = await Geolocator.getCurrentPosition(
+          forceAndroidLocationManager: true,
+          timeLimit: const Duration(milliseconds: 8000));
+      _obtainLocationInfoByCurrentPosition(position);
+    } catch (error) {
+      Log.e("_startLocation error ${error.toString()}");
+      final lastPosition = await Geolocator.getLastKnownPosition();
+      Log.e("lastPosition = $lastPosition");
+      if (lastPosition != null) {
+        _obtainLocationInfoByCurrentPosition(lastPosition);
+      } else {
         (view.baseProvider as SelectCityProvider).setLocationData(null, 1);
       }
     }

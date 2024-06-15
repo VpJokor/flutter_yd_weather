@@ -1,19 +1,17 @@
 import 'package:fluro/fluro.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_yd_weather/config/constants.dart';
-import 'package:flutter_yd_weather/model/city_data.dart';
+import 'package:flutter_yd_weather/provider/main_provider.dart';
 import 'package:flutter_yd_weather/routers/app_router.dart';
 import 'package:flutter_yd_weather/routers/fluro_navigator.dart';
+import 'package:flutter_yd_weather/routers/routers.dart';
 import 'package:flutter_yd_weather/utils/commons.dart';
 import 'package:flutter_yd_weather/utils/commons_ext.dart';
 import 'package:flutter_yd_weather/utils/image_utils.dart';
 import 'package:flutter_yd_weather/utils/log.dart';
 import 'package:flutter_yd_weather/utils/theme_utils.dart';
 import 'package:flutter_yd_weather/widget/load_asset_image.dart';
-import 'package:hive/hive.dart';
-
-import '../res/colours.dart';
+import 'package:provider/provider.dart';
 
 class SplashPage extends StatefulWidget {
   const SplashPage({super.key});
@@ -23,15 +21,20 @@ class SplashPage extends StatefulWidget {
 }
 
 class _SplashPageState extends State<SplashPage> {
-  final _cityDataBox = Hive.box<CityData>(Constants.cityDataBox);
-
   @override
   void initState() {
     super.initState();
-    final cityListSize = _cityDataBox.length;
+    final cityDataBox = context.read<MainProvider>().cityDataBox;
+    final cityListSize = cityDataBox.length;
     Log.e("cityListSize = $cityListSize");
     Commons.postDelayed(delayMilliseconds: 800, () {
       if (cityListSize > 0) {
+        NavigatorUtils.push(
+          context,
+          Routes.main,
+          transition: TransitionType.fadeIn,
+          replace: true,
+        );
       } else {
         NavigatorUtils.push(
           context,

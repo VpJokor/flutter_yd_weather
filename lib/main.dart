@@ -9,6 +9,7 @@ import 'package:flutter_yd_weather/config/constants.dart';
 import 'package:flutter_yd_weather/model/city_data.dart';
 import 'package:flutter_yd_weather/pages/splash_page.dart';
 import 'package:flutter_yd_weather/provider/locale_provider.dart';
+import 'package:flutter_yd_weather/provider/main_provider.dart';
 import 'package:flutter_yd_weather/provider/theme_provider.dart';
 import 'package:flutter_yd_weather/routers/routers.dart';
 import 'package:flutter_yd_weather/utils/device.dart';
@@ -71,12 +72,13 @@ class MyApp extends StatelessWidget {
     final Widget app = MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => ThemeProvider()),
-        ChangeNotifierProvider(create: (_) => LocaleProvider())
+        ChangeNotifierProvider(create: (_) => LocaleProvider()),
+        ChangeNotifierProvider(create: (_) => MainProvider()),
       ],
-      child: Consumer2<ThemeProvider, LocaleProvider>(
+      child: Consumer3<ThemeProvider, LocaleProvider, MainProvider>(
         builder:
-            (_, ThemeProvider provider, LocaleProvider localeProvider, __) {
-          return _buildMaterialApp(provider, localeProvider);
+            (_, ThemeProvider provider, LocaleProvider localeProvider, MainProvider mainProvider, __) {
+          return _buildMaterialApp(provider, localeProvider, mainProvider);
         },
       ),
     );
@@ -92,7 +94,7 @@ class MyApp extends StatelessWidget {
   }
 
   Widget _buildMaterialApp(
-      ThemeProvider themeProvider, LocaleProvider localeProvider) {
+      ThemeProvider themeProvider, LocaleProvider localeProvider, MainProvider mainProvider) {
     return ScreenUtilInit(
       designSize: const Size(375, 667),
       builder: (context, child) => MaterialApp(

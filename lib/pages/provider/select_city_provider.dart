@@ -29,4 +29,13 @@ class SelectCityProvider extends BaseListProvider<CityData> {
     _locationStatus = locationStatus;
     notifyListeners();
   }
+
+  List<CityData>? _searchResult;
+
+  List<CityData>? get searchResult => _searchResult;
+
+  set searchResult(List<CityData>? result) {
+    _searchResult = result;
+    notifyListeners();
+  }
 }

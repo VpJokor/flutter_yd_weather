@@ -6,6 +6,7 @@ class Constants {
 
   static const String theme = 'AppTheme';
   static const String locale = 'locale';
+  static const String appLoadingDialog = 'appLoadingDialog';
 
   static const String cityDataBox = 'cityDataBox';
 

@@ -93,6 +93,7 @@ class Colours {
 }
 
 extension ColoursExtension on BuildContext {
+  Color get appMain => isDark ? Colours.darkAppMain : Colours.appMain;
   Color get textColor01 => isDark ? Colours.color9696A6 : Colours.color333333;
 
   Color get cardColor01 => isDark ? Colours.color0E1014 : Colours.colorF6F6F6;

@@ -46,4 +46,10 @@ class CityData {
       _$CityDataFromJson(json);
 
   Map<String, dynamic> toJson() => _$CityDataToJson(this);
+
+  @override
+  bool operator ==(Object other) => other is CityData && cityId == other.cityId;
+
+  @override
+  int get hashCode => cityId.hashCode;
 }

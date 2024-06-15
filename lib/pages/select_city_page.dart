@@ -6,11 +6,21 @@ import 'package:flutter_yd_weather/model/city_data.dart';
 import 'package:flutter_yd_weather/mvp/power_presenter.dart';
 import 'package:flutter_yd_weather/pages/presenter/select_city_presenter.dart';
 import 'package:flutter_yd_weather/pages/provider/select_city_provider.dart';
+import 'package:flutter_yd_weather/res/colours.dart';
+import 'package:flutter_yd_weather/utils/commons.dart';
+import 'package:flutter_yd_weather/utils/commons_ext.dart';
+import 'package:flutter_yd_weather/utils/log.dart';
 import 'package:flutter_yd_weather/utils/theme_utils.dart';
+import 'package:flutter_yd_weather/utils/toast_utils.dart';
+import 'package:flutter_yd_weather/widget/opacity_layout.dart';
+import 'package:flutter_yd_weather/widget/scale_layout.dart';
+import 'package:flutter_yd_weather/widget/select_city_footer.dart';
 import 'package:flutter_yd_weather/widget/select_city_header.dart';
 import 'package:flutter_yd_weather/widget/select_city_item.dart';
+import 'package:provider/provider.dart';
 import '../base/base_list_page.dart';
 import '../base/base_list_provider.dart';
+import '../provider/main_provider.dart';
 import '../widget/my_search_bar.dart';
 
 class SelectCityPage extends StatefulWidget {
@@ -42,11 +52,86 @@ class _SelectCityPageState
           backgroundColor: context.backgroundColor,
           showDivider: true,
           autofocus: false,
-          onChanged: (searchKey) {},
+          debounced: true,
+          debouncedMill: 333,
+          onChanged: (searchKey) {
+            Log.e("searchKey = $searchKey");
+            if (searchKey.isNullOrEmpty()) {
+              provider.searchResult = null;
+            } else {
+              searchCity(searchKey, (result) {
+                if (result.isNullOrEmpty()) {
+                  Toast.show("无匹配城市");
+                }
+                provider.searchResult = result;
+              });
+            }
+          },
           submittedHintText: "请输入搜索关键字",
-          onSubmitted: (searchKey) {},
         ),
-        body: super.build(context),
+        body: Stack(
+          children: [
+            super.build(context),
+            ChangeNotifierProvider<SelectCityProvider>(
+              create: (_) => provider,
+              child: Consumer<SelectCityProvider>(builder: (_, p, __) {
+                return AnimatedOpacity(
+                  opacity: p.searchResult.isNotNullOrEmpty() ? 1 : 0,
+                  duration: const Duration(milliseconds: 222),
+                  child: Visibility(
+                    visible: p.searchResult.isNotNullOrEmpty(),
+                    child: Container(
+                      color: context.backgroundColor,
+                      child: NotificationListener<ScrollUpdateNotification>(
+                        onNotification: (notification) {
+                          if (notification.dragDetails != null) {
+                            context.hideKeyboard();
+                          }
+                          return true;
+                        },
+                        child: ListView.builder(
+                          physics: const BouncingScrollPhysics(),
+                          padding: EdgeInsets.symmetric(vertical: 12.w),
+                          itemBuilder: (context, index) {
+                            final data = p.searchResult?[index];
+                            final mainP = context.read<MainProvider>();
+                            final cityDataBox = mainP.cityDataBox;
+                            final hasAdded =
+                            cityDataBox.containsKey(data?.cityId);
+                            final content = (data?.prov.isNullOrEmpty() ?? true)
+                                ? "${data?.name} - ${data?.country}"
+                                : "${data?.name} - ${data?.prov} - ${data
+                                ?.country}";
+                            return OpacityLayout(
+                              child: Padding(
+                                padding: EdgeInsets.symmetric(
+                                    horizontal: 16.w, vertical: 12.w),
+                                child: Text(
+                                  content,
+                                  style: TextStyle(
+                                    fontSize: 15.sp,
+                                    color: hasAdded
+                                        ? context.appMain
+                                        : context.textColor01,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ),
+                              onPressed: () {
+                                mainP.addCity(context, hasAdded, data);
+                              },
+                            );
+                          },
+                          itemCount: p.searchResult?.length ?? 0,
+                        ),
+                      ),
+                    ),
+                  ),
+                );
+              }),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -57,6 +142,14 @@ class _SelectCityPageState
       child: SelectCityHeader(
         locationData: provider.locationData,
         locationStatus: provider.locationStatus,
+        onTap: () {
+          final locationData = provider.locationData;
+          if (locationData != null) {} else {
+            if (provider.locationStatus == 1) {
+              _selectCityPresenter.obtainLocationPermission();
+            }
+          }
+        },
       ),
     );
   }
@@ -67,6 +160,7 @@ class _SelectCityPageState
       padding: EdgeInsets.symmetric(horizontal: 20.w),
       sliver: SliverGrid.builder(
         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+
           /// 每行 widget 数量
           crossAxisCount: 4,
 
@@ -87,10 +181,19 @@ class _SelectCityPageState
   }
 
   @override
-  Widget buildItem(
-      BuildContext context, int index, SelectCityProvider provider) {
+  Widget buildItem(BuildContext context, int index,
+      SelectCityProvider provider) {
     return SelectCityItem(
       cityData: provider.selectCityData?.hotNational?[index],
+    );
+  }
+
+  @override
+  Widget? getFooter(SelectCityProvider provider) {
+    return SliverToBoxAdapter(
+      child: SelectCityFooter(
+        selectCityData: provider.selectCityData,
+      ),
     );
   }
 
@@ -100,7 +203,7 @@ class _SelectCityPageState
   @override
   PowerPresenter createPresenter() {
     final PowerPresenter<dynamic> powerPresenter =
-        PowerPresenter<dynamic>(this);
+    PowerPresenter<dynamic>(this);
     _selectCityPresenter = SelectCityPresenter();
     powerPresenter.requestPresenter([_selectCityPresenter]);
     return powerPresenter;

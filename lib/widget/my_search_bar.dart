@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -10,23 +12,26 @@ import '../utils/toast_utils.dart';
 import 'load_asset_image.dart';
 
 class MySearchBar extends StatefulWidget implements PreferredSizeWidget {
-  const MySearchBar(
-      {super.key,
-      this.backgroundColor,
-      this.text = "",
-      this.hintText = "",
-      this.searchHintText = "",
-      this.submittedHintText = "",
-      this.showDivider = false,
-      this.isSafeArea = true,
-      this.autofocus = true,
-      this.readOnly = false,
-      this.enabled = true,
-      this.enableInteractiveSelection,
-      this.backImg,
-      this.onSubmitted,
-      this.onChanged,
-      this.onTap});
+  const MySearchBar({
+    super.key,
+    this.backgroundColor,
+    this.text = "",
+    this.hintText = "",
+    this.searchHintText = "",
+    this.submittedHintText = "",
+    this.showDivider = false,
+    this.isSafeArea = true,
+    this.autofocus = true,
+    this.readOnly = false,
+    this.enabled = true,
+    this.enableInteractiveSelection,
+    this.backImg,
+    this.onSubmitted,
+    this.onChanged,
+    this.debounced = false,
+    this.debouncedMill = 400,
+    this.onTap,
+  });
 
   final Color? backgroundColor;
   final String text;
@@ -44,6 +49,8 @@ class MySearchBar extends StatefulWidget implements PreferredSizeWidget {
   final bool? enableInteractiveSelection;
   final void Function(String)? onSubmitted;
   final void Function(String)? onChanged;
+  final bool debounced;
+  final int debouncedMill;
   final VoidCallback? onTap;
 
   @override
@@ -57,38 +64,42 @@ class _MySearchBarState extends State<MySearchBar> {
   final TextEditingController _controller = TextEditingController();
   final FocusNode _focus = FocusNode();
 
+  late _DebouncedChange _debouncedChange;
+
   @override
   void initState() {
     super.initState();
     _controller.text = widget.text;
+    _debouncedChange = _DebouncedChange(duration: Duration(milliseconds: widget.debouncedMill));
   }
 
   @override
   Widget build(BuildContext context) {
-    final Widget backWidget = widget.backImg == null || !Navigator.canPop(context)
-        ? SizedBox(
-            width: 16.w,
-            height: 48.w,
-          )
-        : Semantics(
-            label: '返回',
-            child: SizedBox(
-              width: 48.w,
-              height: 48.w,
-              child: InkWell(
-                onTap: () {
-                  _focus.unfocus();
-                  Navigator.maybePop(context);
-                },
-                borderRadius: BorderRadius.circular(24.w),
-                child: Padding(
-                  key: const Key('search_back'),
-                  padding: const EdgeInsets.all(18.0),
-                  child: widget.backImg,
+    final Widget backWidget =
+        widget.backImg == null || !Navigator.canPop(context)
+            ? SizedBox(
+                width: 16.w,
+                height: 48.w,
+              )
+            : Semantics(
+                label: '返回',
+                child: SizedBox(
+                  width: 48.w,
+                  height: 48.w,
+                  child: InkWell(
+                    onTap: () {
+                      _focus.unfocus();
+                      Navigator.maybePop(context);
+                    },
+                    borderRadius: BorderRadius.circular(24.w),
+                    child: Padding(
+                      key: const Key('search_back'),
+                      padding: const EdgeInsets.all(18.0),
+                      child: widget.backImg,
+                    ),
+                  ),
                 ),
-              ),
-            ),
-          );
+              );
 
     final Widget textField = Expanded(
       child: Container(
@@ -117,7 +128,13 @@ class _MySearchBarState extends State<MySearchBar> {
             }
           },
           onChanged: (val) {
-            widget.onChanged?.call(val);
+            if (widget.debounced) {
+              _debouncedChange.run(() {
+                widget.onChanged?.call(val);
+              });
+            } else {
+              widget.onChanged?.call(val);
+            }
             setState(() {});
           },
           onTap: widget.onTap,
@@ -133,8 +150,7 @@ class _MySearchBarState extends State<MySearchBar> {
               ),
             ),
             hintText: widget.hintText,
-            hintStyle:
-                TextStyle(fontSize: 14.sp, color: Colours.color999999),
+            hintStyle: TextStyle(fontSize: 14.sp, color: Colours.color999999),
             suffixIcon: widget.readOnly || _controller.text.isEmpty
                 ? null
                 : GestureDetector(
@@ -179,14 +195,15 @@ class _MySearchBarState extends State<MySearchBar> {
                 child: Center(
                   child: Text(
                     "取消",
-                    style: TextStyle(
-                        fontSize: 14.sp, color: Colours.color333333),
+                    style:
+                        TextStyle(fontSize: 14.sp, color: Colours.color333333),
                   ),
                 ),
               ),
             ),
           ),
-        if (widget.backImg != null || !Navigator.canPop(context)) Gaps.generateGap(width: 16.w),
+        if (widget.backImg != null || !Navigator.canPop(context))
+          Gaps.generateGap(width: 16.w),
       ],
     );
 
@@ -194,7 +211,8 @@ class _MySearchBarState extends State<MySearchBar> {
       children: [
         content,
         if (widget.showDivider)
-          Gaps.generateDivider(height: 0.5.w, color: context.dividerThemeData.color),
+          Gaps.generateDivider(
+              height: 0.5.w, color: context.dividerThemeData.color),
       ],
     );
 
@@ -209,5 +227,17 @@ class _MySearchBarState extends State<MySearchBar> {
             : contentWidget,
       ),
     );
+  }
+}
+
+class _DebouncedChange {
+  final Duration duration;
+  Timer? _timer;
+
+  _DebouncedChange({required this.duration});
+
+  void run(void Function() action) {
+    _timer?.cancel();
+    _timer = Timer(duration, action);
   }
 }

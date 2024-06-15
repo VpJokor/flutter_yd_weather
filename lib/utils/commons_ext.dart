@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_yd_weather/model/city_data.dart';
+import 'package:flutter_yd_weather/utils/commons.dart';
 import 'package:flutter_yd_weather/utils/theme_utils.dart';
+
+import '../net/api.dart';
+import '../net/net_utils.dart';
 
 extension StringExt on String? {
   bool isNullOrEmpty() => this == null || this!.isEmpty;
@@ -9,7 +14,15 @@ extension StringExt on String? {
 }
 
 extension ContextExtension on BuildContext {
-  SystemUiOverlayStyle get systemUiOverlayStyle => isDark ? SystemUiOverlayStyle.light : SystemUiOverlayStyle.dark;
+  SystemUiOverlayStyle get systemUiOverlayStyle =>
+      isDark ? SystemUiOverlayStyle.light : SystemUiOverlayStyle.dark;
+
+  void hideKeyboard() {
+    final currentFocus = FocusScope.of(this);
+    if (!currentFocus.hasPrimaryFocus && currentFocus.hasFocus) {
+      FocusManager.instance.primaryFocus?.unfocus();
+    }
+  }
 }
 
 extension ListExt<E> on List<E>? {
@@ -35,5 +48,25 @@ extension ListExt<E> on List<E>? {
   E? getOrNull(int index) {
     if (this == null) return null;
     return index >= 0 && index <= this!.length - 1 ? this![index] : null;
+  }
+}
+
+extension NetExt<E> on void {
+  void searchCity(
+    String searchKey,
+    void Function(List<CityData>? result) block,
+  ) {
+    Commons.showLoading();
+    final Map<String, String> params = <String, String>{};
+    params["keyword"] = searchKey;
+    NetUtils.instance.requestNetwork<List<CityData>>(
+        Method.post, Api.searchCityApi, queryParameters: params,
+        onSuccess: (data) {
+      Commons.hideLoading();
+      block.call(data);
+    }, onError: (msg) {
+      Commons.hideLoading();
+      block.call(null);
+    });
   }
 }

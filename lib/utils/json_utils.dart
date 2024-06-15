@@ -1,3 +1,4 @@
+import 'package:flutter_yd_weather/model/city_data.dart';
 import 'package:flutter_yd_weather/model/location_data.dart';
 import 'package:flutter_yd_weather/model/select_city_data.dart';
 
@@ -25,6 +26,11 @@ class JsonUtils {
   }
 
   static M? _getListChildType<M>(List<dynamic> data) {
+    if (<CityData>[] is M) {
+      return data
+          .map<CityData>((e) => CityData.fromJson(e))
+          .toList() as M;
+    }
     return null;
   }
 }

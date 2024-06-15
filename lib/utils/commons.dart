@@ -2,6 +2,11 @@ import 'dart:ui';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
+
+import '../config/constants.dart';
+import '../res/colours.dart';
 
 class Commons {
   static Future<bool> exitApp() async {
@@ -24,5 +29,22 @@ class Commons {
 
   static void showKeyboard() {
     SystemChannels.textInput.invokeMethod<void>('TextInput.show');
+  }
+
+  static void showLoading({String tag = Constants.appLoadingDialog}) {
+    SmartDialog.show(
+      tag: tag,
+      maskColor: Colours.transparent,
+      builder: (_) {
+        return CupertinoActivityIndicator(
+          animating: true,
+          radius: 12.w,
+        );
+      },
+    );
+  }
+
+  static void hideLoading({String tag = Constants.appLoadingDialog}) {
+    SmartDialog.dismiss(tag: tag);
   }
 }

@@ -4,23 +4,21 @@ import 'package:flutter_yd_weather/model/location_data.dart';
 import 'package:flutter_yd_weather/res/colours.dart';
 import 'package:flutter_yd_weather/res/gaps.dart';
 import 'package:flutter_yd_weather/widget/load_asset_image.dart';
+import 'package:flutter_yd_weather/widget/scale_layout.dart';
 import 'package:flutter_yd_weather/widget/shadow_card_widget.dart';
 
-class SelectCityHeader extends StatefulWidget {
+class SelectCityHeader extends StatelessWidget {
   const SelectCityHeader({
     super.key,
     required this.locationData,
     required this.locationStatus,
+    required this.onTap,
   });
 
   final LocationData? locationData;
   final int locationStatus;
+  final void Function() onTap;
 
-  @override
-  State<StatefulWidget> createState() => _SelectCityHeaderState();
-}
-
-class _SelectCityHeaderState extends State<SelectCityHeader> {
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -29,35 +27,39 @@ class _SelectCityHeaderState extends State<SelectCityHeader> {
         Gaps.generateGap(height: 8.w),
         Row(
           children: [
-            ShadowCardWidget(
-              borderRadius: BorderRadius.circular(100.w),
-              blurRadius: 0,
-              bgColor: context.cardColor06,
-              pressBgColor: context.cardColor05,
-              alignment: Alignment.center,
-              padding: EdgeInsets.symmetric(vertical: 8.w, horizontal: 12.w),
-              margin: EdgeInsets.only(left: 20.w),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  LoadAssetImage(
-                    "writing_icon_location1",
-                    width: 18.w,
-                    height: 18.w,
-                  ),
-                  Gaps.generateGap(width: 4.w),
-                  Text(
-                    widget.locationStatus == 0
-                        ? "定位中..."
-                        : widget.locationData?.addressComponent?.city ?? "定位失败",
-                    style: TextStyle(
-                      fontSize: 13.sp,
-                      color: context.textColor01,
+            ScaleLayout(
+              onPressed: onTap,
+              child: ShadowCardWidget(
+                borderRadius: BorderRadius.circular(100.w),
+                blurRadius: 0,
+                bgColor: context.cardColor06,
+                pressBgColor: context.cardColor05,
+                alignment: Alignment.center,
+                padding: EdgeInsets.symmetric(vertical: 8.w, horizontal: 12.w),
+                margin: EdgeInsets.only(left: 20.w),
+                enable: false,
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    LoadAssetImage(
+                      "writing_icon_location1",
+                      width: 18.w,
+                      height: 18.w,
                     ),
-                  ),
-                ],
+                    Gaps.generateGap(width: 4.w),
+                    Text(
+                      locationStatus == 0
+                          ? "定位中..."
+                          : locationData?.addressComponent?.city ?? "定位失败",
+                      style: TextStyle(
+                        fontSize: 13.sp,
+                        color: context.textColor01,
+                      ),
+                    ),
+                  ],
+                ),
               ),
-            )
+            ),
           ],
         ),
         Gaps.generateGap(height: 16.w),
