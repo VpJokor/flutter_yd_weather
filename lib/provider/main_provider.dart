@@ -1,6 +1,7 @@
 import 'package:fluro/fluro.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
+import 'package:sp_util/sp_util.dart';
 
 import '../config/constants.dart';
 import '../model/city_data.dart';
@@ -19,14 +20,25 @@ class MainProvider extends ChangeNotifier {
 
   set currentCityData(CityData? cityData) {
     _currentCityData = cityData;
+    if (cityData != null) {
+      SpUtil.putString(Constants.currentCityId, cityData.cityId ?? "");
+    }
     notifyListeners();
   }
 
   void addCity(BuildContext context, bool hasAdded, CityData? cityData) {
+    if (cityData == null) {
+      Toast.show("数据异常，请稍后再试");
+      return;
+    }
     if (hasAdded) {
       Toast.show("该城市已经添加过了哦");
     } else {
-      cityDataBox.put(cityData?.cityId, cityData!).then((_) {
+      final isLocationCity = cityData.isLocationCity ?? false;
+      cityDataBox
+          .put(isLocationCity ? Constants.locationCityId : cityData.cityId,
+              cityData)
+          .then((_) {
         currentCityData = cityData;
         if (Navigator.canPop(context)) {
           NavigatorUtils.goBackUntil(context, Routes.main);

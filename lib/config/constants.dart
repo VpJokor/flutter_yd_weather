@@ -10,5 +10,9 @@ class Constants {
 
   static const String cityDataBox = 'cityDataBox';
 
+  static const String locationCityId = '-66208439';
+
+  static const String currentCityId = 'currentCityId';
+
   static const int cityDataTypeId = 1;
 }

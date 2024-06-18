@@ -29,6 +29,8 @@ class CityData {
   @HiveField(8)
   @JsonKey(name: "city_level_id")
   String? cityLevelId;
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  bool? isLocationCity;
 
   CityData(
     this.cityLevelName,
@@ -41,6 +43,10 @@ class CityData {
     this.cityId,
     this.cityLevelId,
   );
+
+  CityData.locationCity() {
+    isLocationCity = true;
+  }
 
   factory CityData.fromJson(Map<String, dynamic> json) =>
       _$CityDataFromJson(json);

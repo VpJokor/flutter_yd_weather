@@ -52,20 +52,24 @@ extension ListExt<E> on List<E>? {
 }
 
 extension NetExt<E> on void {
-  void searchCity(
-    String searchKey,
-    void Function(List<CityData>? result) block,
-  ) {
-    Commons.showLoading();
+  void searchCity(String searchKey, void Function(List<CityData>? result) block,
+      {bool showLoading = true}) {
+    if (showLoading) {
+      Commons.showLoading();
+    }
     final Map<String, String> params = <String, String>{};
     params["keyword"] = searchKey;
     NetUtils.instance.requestNetwork<List<CityData>>(
         Method.post, Api.searchCityApi, queryParameters: params,
         onSuccess: (data) {
-      Commons.hideLoading();
+      if (showLoading) {
+        Commons.hideLoading();
+      }
       block.call(data);
     }, onError: (msg) {
-      Commons.hideLoading();
+      if (showLoading) {
+        Commons.hideLoading();
+      }
       block.call(null);
     });
   }

@@ -3,17 +3,16 @@ import 'package:flutter_yd_weather/model/location_data.dart';
 import 'package:flutter_yd_weather/model/select_city_data.dart';
 import 'package:flutter_yd_weather/net/api.dart';
 import 'package:flutter_yd_weather/pages/provider/select_city_provider.dart';
+import 'package:flutter_yd_weather/pages/view/select_city_view.dart';
 import 'package:flutter_yd_weather/utils/location_utils.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:permission_handler/permission_handler.dart';
-
-import '../../base/base_list_view.dart';
 import '../../mvp/base_page_presenter.dart';
 import '../../net/net_utils.dart';
 import '../../utils/log.dart';
 import '../../utils/permission_utils.dart';
 
-class SelectCityPresenter extends BasePagePresenter<BaseListView<CityData>> {
+class SelectCityPresenter extends BasePagePresenter<SelectCityView> {
   @override
   void initState() {
     obtainCityList(delayMilliseconds: 400);
@@ -44,6 +43,7 @@ class SelectCityPresenter extends BasePagePresenter<BaseListView<CityData>> {
       isShow: false,
       queryParameters: params,
       onSuccess: (data) {
+        view.locationSuccess(data);
         (view.baseProvider as SelectCityProvider).setLocationData(data, 1);
       },
       onError: (_) {

@@ -1,6 +1,8 @@
 import 'package:fluro/fluro.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_yd_weather/config/constants.dart';
+import 'package:flutter_yd_weather/model/city_data.dart';
 import 'package:flutter_yd_weather/provider/main_provider.dart';
 import 'package:flutter_yd_weather/routers/app_router.dart';
 import 'package:flutter_yd_weather/routers/fluro_navigator.dart';
@@ -25,10 +27,13 @@ class _SplashPageState extends State<SplashPage> {
   void initState() {
     super.initState();
     final cityDataBox = context.read<MainProvider>().cityDataBox;
-    final cityListSize = cityDataBox.length;
-    Log.e("cityListSize = $cityListSize");
+    var locationCity = cityDataBox.get(Constants.locationCityId);
+    if (locationCity == null) {
+      locationCity = CityData.locationCity();
+      cityDataBox.put(Constants.locationCityId, locationCity);
+    }
     Commons.postDelayed(delayMilliseconds: 800, () {
-      if (cityListSize > 0) {
+      if ((locationCity?.cityId).isNotNullOrEmpty()) {
         NavigatorUtils.push(
           context,
           Routes.main,
