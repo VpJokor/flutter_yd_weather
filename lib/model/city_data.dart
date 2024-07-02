@@ -29,6 +29,7 @@ class CityData {
   @HiveField(8)
   @JsonKey(name: "city_level_id")
   String? cityLevelId;
+  @HiveField(9)
   @JsonKey(includeFromJson: false, includeToJson: false)
   bool? isLocationCity;
 
@@ -58,4 +59,9 @@ class CityData {
 
   @override
   int get hashCode => cityId.hashCode;
+
+  @override
+  String toString() {
+    return "${toJson()} isLocationCity = $isLocationCity";
+  }
 }

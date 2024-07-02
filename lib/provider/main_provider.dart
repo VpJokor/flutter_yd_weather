@@ -21,7 +21,8 @@ class MainProvider extends ChangeNotifier {
   set currentCityData(CityData? cityData) {
     _currentCityData = cityData;
     if (cityData != null) {
-      SpUtil.putString(Constants.currentCityId, cityData.cityId ?? "");
+      final isLocationCity = cityData.isLocationCity ?? false;
+      SpUtil.putString(Constants.currentCityId, isLocationCity ? Constants.locationCityId : cityData.cityId ?? "");
     }
     notifyListeners();
   }

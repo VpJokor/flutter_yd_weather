@@ -1,6 +1,7 @@
 import 'package:flutter_yd_weather/model/city_data.dart';
 import 'package:flutter_yd_weather/model/location_data.dart';
 import 'package:flutter_yd_weather/model/select_city_data.dart';
+import 'package:flutter_yd_weather/model/weather_data.dart';
 
 class JsonUtils {
   static M? fromJsonAsT<M>(dynamic json) {
@@ -21,6 +22,9 @@ class JsonUtils {
     }
     if (type == (LocationData).toString()) {
       return LocationData.fromJson(json) as M;
+    }
+    if (type == (WeatherData).toString()) {
+      return WeatherData.fromJson(json) as M;
     }
     return null;
   }

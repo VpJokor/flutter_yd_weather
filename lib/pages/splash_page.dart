@@ -14,6 +14,7 @@ import 'package:flutter_yd_weather/utils/log.dart';
 import 'package:flutter_yd_weather/utils/theme_utils.dart';
 import 'package:flutter_yd_weather/widget/load_asset_image.dart';
 import 'package:provider/provider.dart';
+import 'package:sp_util/sp_util.dart';
 
 class SplashPage extends StatefulWidget {
   const SplashPage({super.key});
@@ -26,14 +27,20 @@ class _SplashPageState extends State<SplashPage> {
   @override
   void initState() {
     super.initState();
-    final cityDataBox = context.read<MainProvider>().cityDataBox;
+    final mainP = context.read<MainProvider>();
+    final cityDataBox = mainP.cityDataBox;
     var locationCity = cityDataBox.get(Constants.locationCityId);
+    Log.e("locationCity = $locationCity");
     if (locationCity == null) {
       locationCity = CityData.locationCity();
       cityDataBox.put(Constants.locationCityId, locationCity);
     }
     Commons.postDelayed(delayMilliseconds: 800, () {
       if ((locationCity?.cityId).isNotNullOrEmpty()) {
+        final currentCityId = SpUtil.getString(Constants.currentCityId);
+        final currentCity = cityDataBox.get(currentCityId);
+        Log.e("currentCityId = $currentCityId currentCity = $currentCity");
+        mainP.currentCityData = currentCity;
         NavigatorUtils.push(
           context,
           Routes.main,
