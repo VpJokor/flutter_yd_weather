@@ -13,6 +13,14 @@ class Constants {
   static const String locationCityId = '-66208439';
 
   static const String currentCityId = 'currentCityId';
+  static const String currentWeatherData = 'currentWeatherData';
 
   static const int cityDataTypeId = 1;
+
+  static const int itemTypeWeatherHeader = 0;
+  static const int itemTypeHourWeather = 1;
+  static const int itemTypeDailyWeather = 2;
+  static const int itemTypeAirQuality = 3;
+  static const int itemTypeLifeIndex = 4;
+  static const int itemTypeSunriseAndSunset = 5;
 }

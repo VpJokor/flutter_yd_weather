@@ -12,6 +12,8 @@ abstract class BaseListPageState<T extends StatefulWidget, ITEM,
   late EasyRefreshController _controller;
   ScrollController? _scrollController;
 
+  ScrollController? get scrollController => _scrollController;
+
   // 是否开启刷新
   bool _enableRefresh = true;
 
@@ -49,35 +51,43 @@ abstract class BaseListPageState<T extends StatefulWidget, ITEM,
   @override
   Widget getContent(PROVIDER provider) {
     Widget? header = getHeader(provider);
+    final refreshContent = getRefreshContent(provider);
+    final refreshGroup = getRefreshGroup(provider);
     Widget? footer = getFooter(provider);
-    return SafeArea(
-      child: Container(
-        color: _bgColor,
-        child: EasyRefresh.builder(
-            controller: _controller,
-            scrollController: _scrollController,
-            onRefresh: _enableRefresh
-                ? () async {
-                    onRefresh();
-                  }
-                : null,
-            onLoad: _enableLoad
-                ? () async {
-                    onLoad();
-                  }
-                : null,
-            childBuilder: (context, physics) {
-              return CustomScrollView(
-                controller: _scrollController,
-                physics: physics,
-                slivers: <Widget>[
-                  if (header != null) header,
-                  getRefreshContent(provider),
-                  if (footer != null) footer,
-                ],
-              );
-            }),
-      ),
+    final slivers = <Widget>[];
+    if (header != null) {
+      slivers.add(header);
+    }
+    if (refreshGroup.isNotEmpty) {
+      slivers.addAll(refreshGroup);
+    } else {
+      slivers.add(refreshContent);
+    }
+    if (footer != null) {
+      slivers.add(footer);
+    }
+    return Container(
+      color: _bgColor,
+      child: EasyRefresh.builder(
+          controller: _controller,
+          scrollController: _scrollController,
+          onRefresh: _enableRefresh
+              ? () async {
+            onRefresh();
+          }
+              : null,
+          onLoad: _enableLoad
+              ? () async {
+            onLoad();
+          }
+              : null,
+          childBuilder: (context, physics) {
+            return CustomScrollView(
+              controller: _scrollController,
+              physics: physics,
+              slivers: slivers,
+            );
+          }),
     );
   }
 
@@ -137,6 +147,8 @@ abstract class BaseListPageState<T extends StatefulWidget, ITEM,
         },
         itemCount: provider.list.length);
   }
+
+  List<Widget> getRefreshGroup(PROVIDER provider) => <Widget>[];
 
   Widget? getHeader(PROVIDER provider) => null;
 

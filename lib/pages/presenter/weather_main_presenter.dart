@@ -1,7 +1,10 @@
+import 'package:flutter_yd_weather/config/constants.dart';
 import 'package:flutter_yd_weather/model/weather_data.dart';
 import 'package:flutter_yd_weather/net/api.dart';
+import 'package:flutter_yd_weather/pages/provider/weather_provider.dart';
 import 'package:flutter_yd_weather/provider/main_provider.dart';
 import 'package:provider/provider.dart';
+import 'package:sp_util/sp_util.dart';
 
 import '../../base/base_list_view.dart';
 import '../../mvp/base_page_presenter.dart';
@@ -21,6 +24,10 @@ class WeatherMainPresenter extends BasePagePresenter<BaseListView<Object>> {
         url: Api.weatherApi,
         queryParameters: params,
         delayMilliseconds: delayMilliseconds, onSuccess: (data) {
-        }, onError: (_) {});
+      if (data != null) {
+        SpUtil.putObject(Constants.currentWeatherData, data);
+      }
+      (view.baseProvider as WeatherProvider).setWeatherData(data);
+    }, onError: (_) {});
   }
 }
