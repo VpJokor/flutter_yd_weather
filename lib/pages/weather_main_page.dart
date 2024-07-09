@@ -1,4 +1,3 @@
-import 'package:extended_sliver/extended_sliver.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_yd_weather/mvp/power_presenter.dart';
@@ -6,11 +5,14 @@ import 'package:flutter_yd_weather/pages/presenter/weather_main_presenter.dart';
 import 'package:flutter_yd_weather/pages/provider/weather_provider.dart';
 import 'package:flutter_yd_weather/res/gaps.dart';
 import 'package:flutter_yd_weather/utils/weather_persistent_header_delegate.dart';
+import 'package:flutter_yd_weather/widget/weather_header_widget.dart';
+import 'package:provider/provider.dart';
 import '../base/base_list_page.dart';
 import '../base/base_list_view.dart';
 import '../config/constants.dart';
 import '../model/weather_item_data.dart';
 import '../res/colours.dart';
+import 'package:flutter_yd_weather/utils/commons_ext.dart';
 
 class WeatherMainPage extends StatefulWidget {
   const WeatherMainPage({super.key});
@@ -27,6 +29,7 @@ class _WeatherMainPageState
   @override
   void initState() {
     super.initState();
+    // setScrollController(null);
     setEnableRefresh(false);
     setEnableLoad(false);
   }
@@ -45,16 +48,28 @@ class _WeatherMainPageState
           end: Alignment.bottomCenter,
         ),
       ),
-      child: NestedScrollView(
-        headerSliverBuilder: (context, innerBoxIsScrolled) => [
-          SliverPersistentHeader(
-            pinned: true,
-            delegate: WeatherPersistentHeaderDelegate(
-              provider.list.last,
-            ),
-          ),
-        ],
-        body: super.build(context),
+      child: ChangeNotifierProvider<WeatherProvider>(
+        create: (_) => provider,
+        child: Consumer<WeatherProvider>(builder: (_, p, __) {
+          final weatherHeaderItemData = p.list.singleOrNull(
+              (element) => element.itemType == Constants.itemTypeWeatherHeader);
+          return Stack(
+            children: [
+              Column(
+                children: [
+                  Gaps.generateGap(height: ScreenUtil().statusBarHeight),
+                  Gaps.generateGap(height: weatherHeaderItemData?.minHeight),
+                  Expanded(
+                    child: super.build(context),
+                  ),
+                ],
+              ),
+              WeatherHeaderWidget(
+                weatherItemData: weatherHeaderItemData,
+              ),
+            ],
+          );
+        }),
       ),
     );
   }
@@ -66,6 +81,7 @@ class _WeatherMainPageState
   List<Widget> getRefreshGroup(WeatherProvider provider) {
     final refreshGroup = <Widget>[];
     for (var weatherItemData in provider.list) {
+      if (weatherItemData.itemType == Constants.itemTypeWeatherHeader) continue;
       refreshGroup.add(SliverMainAxisGroup(
         slivers: [
           SliverPersistentHeader(
@@ -74,21 +90,6 @@ class _WeatherMainPageState
               weatherItemData,
             ),
           ),
-          SliverToBoxAdapter(
-            child: Container(
-              color: Colours.white,
-              margin: EdgeInsets.symmetric(
-                horizontal: 16.w,
-              ),
-              child: Text(
-                weatherItemData.weatherData?.toJson().toString() ?? "",
-                style: TextStyle(
-                  fontSize: 12.sp,
-                  color: Colours.color333333,
-                ),
-              ),
-            ),
-          )
         ],
       ));
     }
@@ -110,5 +111,5 @@ class _WeatherMainPageState
   }
 
   @override
-  WeatherProvider generateProvider() => WeatherProvider();
+  WeatherProvider generateProvider() => WeatherProvider()..setWeatherData(null);
 }

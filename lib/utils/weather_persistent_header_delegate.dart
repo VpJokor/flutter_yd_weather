@@ -26,7 +26,7 @@ class WeatherPersistentHeaderDelegate extends SliverPersistentHeaderDelegate {
     return Opacity(
       opacity: percent,
       child: Container(
-        height: 48.w,
+        height: double.infinity,
         color: weatherItemData.itemType == Constants.itemTypeWeatherHeader
             ? Colours.white
             : Colours.black,
@@ -34,7 +34,7 @@ class WeatherPersistentHeaderDelegate extends SliverPersistentHeaderDelegate {
           horizontal: 16.w,
         ),
         child: Text(
-          "${weatherItemData.itemType}",
+          weatherItemData.weatherData?.toJson().toString() ?? "",
           style: TextStyle(
             fontSize: 12.sp,
             color: weatherItemData.itemType == Constants.itemTypeWeatherHeader
@@ -47,10 +47,10 @@ class WeatherPersistentHeaderDelegate extends SliverPersistentHeaderDelegate {
   }
 
   @override
-  double get maxExtent => 48.w;
+  double get maxExtent => weatherItemData.maxHeight;
 
   @override
-  double get minExtent => 48.w;
+  double get minExtent => weatherItemData.minHeight;
 
   @override
   bool shouldRebuild(covariant WeatherPersistentHeaderDelegate oldDelegate) {

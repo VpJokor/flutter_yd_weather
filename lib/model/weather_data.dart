@@ -1,9 +1,11 @@
+import 'package:flutter_yd_weather/model/weather_alarms_data.dart';
 import 'package:flutter_yd_weather/model/weather_detail_data.dart';
 import 'package:flutter_yd_weather/model/weather_env_data.dart';
 import 'package:flutter_yd_weather/model/weather_forecast40_data.dart';
 import 'package:flutter_yd_weather/model/weather_hour_data.dart';
 import 'package:flutter_yd_weather/model/weather_index_data.dart';
 import 'package:flutter_yd_weather/model/weather_meta_data.dart';
+import 'package:flutter_yd_weather/model/weather_observe_data.dart';
 import 'package:flutter_yd_weather/model/weather_source_data.dart';
 import 'package:json_annotation/json_annotation.dart';
 
@@ -23,6 +25,8 @@ class WeatherData {
   List<WeatherDetailData>? forecast40;
   WeatherEnvData? evn;
   List<WeatherIndexData>? indexes;
+  List<WeatherAlarmsData>? alarms;
+  WeatherObserveData? observe;
 
   WeatherData(
     this.futureRemind,
@@ -34,6 +38,8 @@ class WeatherData {
     this.forecast40,
     this.evn,
     this.indexes,
+    this.alarms,
+    this.observe,
   );
 
   factory WeatherData.fromJson(Map<String, dynamic> json) =>

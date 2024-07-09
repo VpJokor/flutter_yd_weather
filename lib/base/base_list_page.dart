@@ -84,6 +84,7 @@ abstract class BaseListPageState<T extends StatefulWidget, ITEM,
           childBuilder: (context, physics) {
             return CustomScrollView(
               controller: _scrollController,
+              anchor: 0.8,
               physics: physics,
               slivers: slivers,
             );

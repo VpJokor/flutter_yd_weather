@@ -13,6 +13,12 @@ extension StringExt on String? {
   bool isNotNullOrEmpty() => !isNullOrEmpty();
 }
 
+extension IntExt on int? {
+  String getTemp() {
+    return this == null ? "" : "$this°";
+  }
+}
+
 extension ContextExtension on BuildContext {
   SystemUiOverlayStyle get systemUiOverlayStyle =>
       isDark ? SystemUiOverlayStyle.light : SystemUiOverlayStyle.dark;

@@ -33,17 +33,17 @@ class WeatherProvider extends BaseListProvider<WeatherItemData> {
   List<double> _getPersistentHeaderExtentInfo(int itemType) {
     switch (itemType) {
       case Constants.itemTypeHourWeather:
-        return [200.w, 100.w];
+        return [201.w, 0];
       case Constants.itemTypeDailyWeather:
-        return [200.w, 100.w];
+        return [202.w, 0];
       case Constants.itemTypeAirQuality:
-        return [200.w, 100.w];
+        return [203.w, 0];
       case Constants.itemTypeLifeIndex:
-        return [200.w, 100.w];
+        return [204.w, 0];
       case Constants.itemTypeSunriseAndSunset:
-        return [200.w, 100.w];
+        return [205.w, 0];
       default:
-        return [200.w, 100.w];
+        return [248.w, 88.w];
     }
   }
 }
