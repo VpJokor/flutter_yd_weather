@@ -43,7 +43,7 @@ class WeatherProvider extends BaseListProvider<WeatherItemData> {
       case Constants.itemTypeSunriseAndSunset:
         return [205.w, 0];
       default:
-        return [248.w, 88.w];
+        return [294.w, 88.w];
     }
   }
 }

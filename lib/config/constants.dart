@@ -23,4 +23,13 @@ class Constants {
   static const int itemTypeAirQuality = 3;
   static const int itemTypeLifeIndex = 4;
   static const int itemTypeSunriseAndSunset = 5;
+
+  static const String yyyymmdd = "yyyyMMdd";
+  static const String yyyy_mm_dd = "yyyy-MM-dd";
+  static const String yyyy_mm = "yyyy-MM";
+  static const String yyyy_mm_ch = "yyyy年MM月";
+  static const String yyyy_ch = "yyyy年";
+  static const String yy_mm_dd_hh_mm_ss = "yyMMddHHmmss";
+  static const String yyyy_mm_dd_hh_mm = "yyyy-MM-dd HH:mm";
+  static const String yyyy_mm_dd_hh_mm_chinese = "yyyy年MM月dd日HH:mm";
 }

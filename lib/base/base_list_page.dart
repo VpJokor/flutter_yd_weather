@@ -66,30 +66,32 @@ abstract class BaseListPageState<T extends StatefulWidget, ITEM,
     if (footer != null) {
       slivers.add(footer);
     }
-    return Container(
-      color: _bgColor,
-      child: EasyRefresh.builder(
-          controller: _controller,
-          scrollController: _scrollController,
-          onRefresh: _enableRefresh
-              ? () async {
-            onRefresh();
-          }
-              : null,
-          onLoad: _enableLoad
-              ? () async {
-            onLoad();
-          }
-              : null,
-          childBuilder: (context, physics) {
-            return CustomScrollView(
-              controller: _scrollController,
-              anchor: 0.8,
-              physics: physics,
-              slivers: slivers,
-            );
-          }),
-    );
+    return LayoutBuilder(builder: (_, constraints) {
+      return Container(
+        color: _bgColor,
+        child: EasyRefresh.builder(
+            controller: _controller,
+            scrollController: _scrollController,
+            onRefresh: _enableRefresh
+                ? () async {
+                    onRefresh();
+                  }
+                : null,
+            onLoad: _enableLoad
+                ? () async {
+                    onLoad();
+                  }
+                : null,
+            childBuilder: (context, physics) {
+              return CustomScrollView(
+                controller: _scrollController,
+                anchor: getAnchor(provider, constraints.maxHeight),
+                physics: physics,
+                slivers: slivers,
+              );
+            }),
+      );
+    });
   }
 
   void finishRefresh() {
@@ -154,6 +156,8 @@ abstract class BaseListPageState<T extends StatefulWidget, ITEM,
   Widget? getHeader(PROVIDER provider) => null;
 
   Widget? getFooter(PROVIDER provider) => null;
+
+  double getAnchor(PROVIDER provider, double contentHeight) => 0.0;
 
   Widget buildItem(BuildContext context, int index, PROVIDER provider);
 

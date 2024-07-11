@@ -4,6 +4,7 @@ import 'package:flutter_yd_weather/mvp/power_presenter.dart';
 import 'package:flutter_yd_weather/pages/presenter/weather_main_presenter.dart';
 import 'package:flutter_yd_weather/pages/provider/weather_provider.dart';
 import 'package:flutter_yd_weather/res/gaps.dart';
+import 'package:flutter_yd_weather/utils/log.dart';
 import 'package:flutter_yd_weather/utils/weather_persistent_header_delegate.dart';
 import 'package:flutter_yd_weather/widget/weather_header_widget.dart';
 import 'package:provider/provider.dart';
@@ -25,11 +26,11 @@ class _WeatherMainPageState
     extends BaseListPageState<WeatherMainPage, WeatherItemData, WeatherProvider>
     implements BaseListView<WeatherItemData> {
   late WeatherMainPresenter _weatherMainPresenter;
+  final _weatherHeaderKey = GlobalKey<WeatherHeaderWidgetState>();
 
   @override
   void initState() {
     super.initState();
-    // setScrollController(null);
     setEnableRefresh(false);
     setEnableLoad(false);
   }
@@ -55,6 +56,10 @@ class _WeatherMainPageState
               (element) => element.itemType == Constants.itemTypeWeatherHeader);
           return Stack(
             children: [
+              WeatherHeaderWidget(
+                key: _weatherHeaderKey,
+                weatherItemData: weatherHeaderItemData,
+              ),
               Column(
                 children: [
                   Gaps.generateGap(height: ScreenUtil().statusBarHeight),
@@ -63,9 +68,6 @@ class _WeatherMainPageState
                     child: super.build(context),
                   ),
                 ],
-              ),
-              WeatherHeaderWidget(
-                weatherItemData: weatherHeaderItemData,
               ),
             ],
           );
@@ -76,6 +78,17 @@ class _WeatherMainPageState
 
   @override
   WeatherProvider get baseProvider => provider;
+
+  @override
+  void setScrollController(ScrollController? scrollController) {
+    super.setScrollController(scrollController);
+    scrollController?.addListener(() {
+      final offset = scrollController.offset;
+      final weatherHeaderItemData = provider.list.singleOrNull((element) => element.itemType == Constants.itemTypeWeatherHeader);
+      final percent = offset / ((weatherHeaderItemData?.maxHeight ?? 0) - (weatherHeaderItemData?.minHeight ?? 0));
+      _weatherHeaderKey.currentState?.change(offset, percent);
+    });
+  }
 
   @override
   List<Widget> getRefreshGroup(WeatherProvider provider) {
@@ -94,6 +107,15 @@ class _WeatherMainPageState
       ));
     }
     return refreshGroup;
+  }
+
+  @override
+  double getAnchor(WeatherProvider provider, double contentHeight) {
+    if (!mounted) return 0.0;
+    final weatherHeaderItemData = provider.list.singleOrNull((element) => element.itemType == Constants.itemTypeWeatherHeader);
+    final anchor = ((weatherHeaderItemData?.maxHeight ?? 0) - (weatherHeaderItemData?.minHeight ?? 0))  / contentHeight;
+    Log.e("anchor = $anchor");
+    return anchor;
   }
 
   @override
