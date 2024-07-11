@@ -226,7 +226,7 @@ class WeatherHeaderWidgetState extends State<WeatherHeaderWidget> {
                         Opacity(
                           opacity: _opacity1,
                           child: Text(
-                            weatherData?.observe?.wthr ?? "",
+                            currentWeatherDetailData?.wthr ?? "",
                             style: TextStyle(
                               fontSize: 20.sp,
                               color: Colours.white,
@@ -250,7 +250,7 @@ class WeatherHeaderWidgetState extends State<WeatherHeaderWidget> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Text(
-                            "${currentWeatherDetailData?.low.getTemp()} | ${weatherData?.observe?.wthr}",
+                            "${weatherData?.observe?.temp.getTemp()} | ${currentWeatherDetailData?.wthr}",
                             style: TextStyle(
                               fontSize: 20.sp,
                               color: Colours.white,
