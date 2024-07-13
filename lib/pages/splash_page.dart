@@ -36,8 +36,8 @@ class _SplashPageState extends State<SplashPage> {
       cityDataBox.put(Constants.locationCityId, locationCity);
     }
     Commons.postDelayed(delayMilliseconds: 800, () {
-      if ((locationCity?.cityId).isNotNullOrEmpty()) {
-        final currentCityId = SpUtil.getString(Constants.currentCityId);
+      final currentCityId = SpUtil.getString(Constants.currentCityId);
+      if ((locationCity?.cityId).isNotNullOrEmpty() || currentCityId.isNotNullOrEmpty()) {
         final currentCity = cityDataBox.get(currentCityId);
         Log.e("currentCityId = $currentCityId currentCity = $currentCity");
         mainP.currentCityData = currentCity;

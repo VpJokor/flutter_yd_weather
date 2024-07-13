@@ -12,6 +12,8 @@ class WeatherHourData {
   String? typeDesc;
   String? wd;
   String? wp;
+  @JsonKey(name: "wthr")
+  int? temp;
 
   WeatherHourData(
     this.time,
@@ -20,6 +22,7 @@ class WeatherHourData {
     this.typeDesc,
     this.wd,
     this.wp,
+    this.temp,
   );
 
   factory WeatherHourData.fromJson(Map<String, dynamic> json) =>

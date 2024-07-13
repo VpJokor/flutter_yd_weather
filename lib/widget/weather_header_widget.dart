@@ -35,11 +35,22 @@ class WeatherHeaderWidgetState extends State<WeatherHeaderWidget> {
   void initState() {
     super.initState();
     _currentHeight = widget.weatherItemData?.maxHeight ?? 0;
+    Log.e("_currentHeight = $_currentHeight");
     _marginTop = _currentMarginTop;
   }
 
+  @override
+  void didUpdateWidget(covariant WeatherHeaderWidget oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (_currentHeight <= 0) {
+      setState(() {
+        _currentHeight = widget.weatherItemData?.maxHeight ?? 0;
+      });
+    }
+  }
+
   void change(double offset, double percent) {
-    Log.e("offset = $offset percent = $percent");
+    // Log.e("offset = $offset percent = $percent");
     double newPercent = percent;
     if (newPercent > 1) newPercent = 1;
     if (newPercent < 0) newPercent = 0;

@@ -14,6 +14,7 @@ WeatherHourData _$WeatherHourDataFromJson(Map<String, dynamic> json) =>
       json['type_desc'] as String?,
       json['wd'] as String?,
       json['wp'] as String?,
+      (json['wthr'] as num?)?.toInt(),
     );
 
 Map<String, dynamic> _$WeatherHourDataToJson(WeatherHourData instance) =>
@@ -24,4 +25,5 @@ Map<String, dynamic> _$WeatherHourDataToJson(WeatherHourData instance) =>
       'type_desc': instance.typeDesc,
       'wd': instance.wd,
       'wp': instance.wp,
+      'wthr': instance.temp,
     };

@@ -1,5 +1,6 @@
 import 'dart:ui';
 
+import 'package:extended_image/extended_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -46,5 +47,29 @@ class Commons {
 
   static void hideLoading({String tag = Constants.appLoadingDialog}) {
     SmartDialog.dismiss(tag: tag);
+  }
+
+  static LoadStateChanged loadStateChanged(
+      {Color? placeholder = Colours.colorC5C5C5,
+        void Function(ExtendedImageState state)? completed}) {
+    return (ExtendedImageState state) {
+      switch (state.extendedImageLoadState) {
+        case LoadState.loading:
+          return Container(
+            color: placeholder,
+            width: state.imageWidget.width,
+            height: state.imageWidget.height,
+          );
+        case LoadState.completed:
+          completed?.call(state);
+          return state.completedWidget;
+        case LoadState.failed:
+          return Container(
+            color: placeholder,
+            width: state.imageWidget.width,
+            height: state.imageWidget.height,
+          );
+      }
+    };
   }
 }

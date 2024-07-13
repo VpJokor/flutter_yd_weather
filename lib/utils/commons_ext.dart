@@ -19,6 +19,15 @@ extension IntExt on int? {
   }
 }
 
+extension DoubleExt on double? {
+  double fixPercent({double defValue = 0}) {
+    if (this == null) return defValue;
+    if (this! > 1) return 1;
+    if (this! < 0) return 0;
+    return this!;
+  }
+}
+
 extension ContextExtension on BuildContext {
   SystemUiOverlayStyle get systemUiOverlayStyle =>
       isDark ? SystemUiOverlayStyle.light : SystemUiOverlayStyle.dark;

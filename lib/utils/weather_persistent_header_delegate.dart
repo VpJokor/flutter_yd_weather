@@ -4,6 +4,12 @@ import 'package:flutter_yd_weather/config/constants.dart';
 import 'package:flutter_yd_weather/model/weather_item_data.dart';
 import 'package:flutter_yd_weather/res/colours.dart';
 import 'package:flutter_yd_weather/utils/log.dart';
+import 'package:flutter_yd_weather/widget/weather_air_quality_panel.dart';
+import 'package:flutter_yd_weather/widget/weather_alarms_panel.dart';
+import 'package:flutter_yd_weather/widget/weather_daily_panel.dart';
+import 'package:flutter_yd_weather/widget/weather_hour_panel.dart';
+
+import '../widget/blurry_container.dart';
 
 class WeatherPersistentHeaderDelegate extends SliverPersistentHeaderDelegate {
   WeatherPersistentHeaderDelegate(
@@ -18,23 +24,43 @@ class WeatherPersistentHeaderDelegate extends SliverPersistentHeaderDelegate {
     final maxHeight = weatherItemData.maxHeight;
     final minHeight = weatherItemData.minHeight;
     final percent = 1 - shrinkOffset / maxHeight;
-    final height = maxHeight - shrinkOffset < minHeight
-        ? minHeight
-        : maxHeight - shrinkOffset;
-    Log.e(
-        "shrinkOffset = $shrinkOffset overlapsContent = $overlapsContent percent = $percent height = $height");
+    /*Log.e(
+        "shrinkOffset = $shrinkOffset overlapsContent = $overlapsContent percent = $percent height = $height");*/
+    if (weatherItemData.itemType == Constants.itemTypeAlarms) {
+      return WeatherAlarmsPanel(
+        data: weatherItemData,
+        shrinkOffset: shrinkOffset,
+      );
+    } else if (weatherItemData.itemType == Constants.itemTypeAirQuality) {
+      return WeatherAirQualityPanel(
+        data: weatherItemData,
+        shrinkOffset: shrinkOffset,
+      );
+    } else if (weatherItemData.itemType == Constants.itemTypeHourWeather) {
+      return WeatherHourPanel(
+        data: weatherItemData,
+        shrinkOffset: shrinkOffset,
+      );
+    } else if (weatherItemData.itemType == Constants.itemTypeDailyWeather) {
+      return WeatherDailyPanel(
+        data: weatherItemData,
+        shrinkOffset: shrinkOffset,
+      );
+    }
     return Opacity(
       opacity: percent,
-      child: Container(
+      child: BlurryContainer(
+        width: double.infinity,
         height: double.infinity,
-        color: weatherItemData.itemType == Constants.itemTypeWeatherHeader
-            ? Colours.white
-            : Colours.black,
-        margin: EdgeInsets.symmetric(
-          horizontal: 16.w,
+        color: Colours.white.withOpacity(0.1),
+        blur: 5,
+        margin: EdgeInsets.only(
+          left: 16.w,
+          right: 16.w,
         ),
+        borderRadius: BorderRadius.circular(12.w),
         child: Text(
-          weatherItemData.weatherData?.toJson().toString() ?? "",
+          "",
           style: TextStyle(
             fontSize: 12.sp,
             color: weatherItemData.itemType == Constants.itemTypeWeatherHeader

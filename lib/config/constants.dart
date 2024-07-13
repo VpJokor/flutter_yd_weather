@@ -23,6 +23,9 @@ class Constants {
   static const int itemTypeAirQuality = 3;
   static const int itemTypeLifeIndex = 4;
   static const int itemTypeSunriseAndSunset = 5;
+  static const int itemTypeAlarms = 6;
+
+  static const int itemStickyHeight = 32;
 
   static const String yyyymmdd = "yyyyMMdd";
   static const String yyyy_mm_dd = "yyyy-MM-dd";

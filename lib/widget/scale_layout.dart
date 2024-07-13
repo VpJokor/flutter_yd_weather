@@ -4,15 +4,17 @@ class ScaleLayout extends StatefulWidget {
   final Widget child;
   final double? scale;
   final VoidCallback? onPressed;
+  final bool canTap;
 
   const ScaleLayout({
     super.key,
     required this.child,
     this.scale = 1.1,
-    required this.onPressed,
+    this.onPressed,
+    this.canTap = true,
   });
 
-  bool get enabled => onPressed != null;
+  bool get enabled => canTap || onPressed != null;
 
   @override
   State<StatefulWidget> createState() => _ScaleLayoutState();

@@ -17,6 +17,7 @@ WeatherDetailData _$WeatherDetailDataFromJson(Map<String, dynamic> json) =>
       json['wthr'] as String?,
       json['wd'] as String?,
       json['wp'] as String?,
+      json['aqi_level_name'] as String?,
       json['day'] == null
           ? null
           : WeatherInfoData.fromJson(json['day'] as Map<String, dynamic>),
@@ -36,6 +37,7 @@ Map<String, dynamic> _$WeatherDetailDataToJson(WeatherDetailData instance) =>
       'wthr': instance.wthr,
       'wd': instance.wd,
       'wp': instance.wp,
+      'aqi_level_name': instance.aqiLevelName,
       'day': instance.day,
       'night': instance.night,
     };
