@@ -1,9 +1,13 @@
+import 'package:common_utils/common_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_yd_weather/model/city_data.dart';
+import 'package:flutter_yd_weather/res/colours.dart';
 import 'package:flutter_yd_weather/utils/commons.dart';
+import 'package:flutter_yd_weather/utils/log.dart';
 import 'package:flutter_yd_weather/utils/theme_utils.dart';
 
+import '../config/constants.dart';
 import '../net/api.dart';
 import '../net/net_utils.dart';
 
@@ -11,11 +15,90 @@ extension StringExt on String? {
   bool isNullOrEmpty() => this == null || this!.isEmpty;
 
   bool isNotNullOrEmpty() => !isNullOrEmpty();
+
+  /// 202407111400 => 20240711T140000
+  String getDartDateTimeFormattedString() {
+    if (isNullOrEmpty()) return "";
+    if (this!.length != 12) return "";
+    return "${this!.substring(0, 8)}T${this!.substring(8)}00";
+  }
+
+  String getWeatherHourTime() {
+    final isHourNow = this.isHourNow();
+    if (isHourNow) {
+      return "现在";
+    }
+    return DateUtil.formatDateStr(this!.getDartDateTimeFormattedString(),
+        format: Constants.hhmm);
+  }
+
+  String getWeatherDateTime() {
+    if (isNullOrEmpty()) return "";
+    final dateTime = DateTime.tryParse(this!);
+    if (dateTime == null) return "";
+    final isYesterday = DateUtil.isYesterday(dateTime, DateTime.now());
+    if (isYesterday) return "昨天";
+    final isToday = DateUtil.isToday(dateTime.millisecondsSinceEpoch);
+    if (isToday) return "今天";
+    final isTomorrow = Commons.isTomorrow(dateTime, DateTime.now());
+    if (isTomorrow) return "明天";
+    return DateUtil.getWeekday(dateTime, languageCode: "zh", short: true);
+  }
+
+  bool isToday() {
+    if (isNullOrEmpty()) return false;
+    final dateTime = DateTime.tryParse(this!);
+    if (dateTime == null) return false;
+    return DateUtil.isToday(dateTime.millisecondsSinceEpoch);
+  }
+
+  bool isYesterday() {
+    if (isNullOrEmpty()) return false;
+    final dateTime = DateTime.tryParse(this!);
+    if (dateTime == null) return false;
+    return DateUtil.isYesterday(dateTime, DateTime.now());
+  }
+
+  /// 年月日小时相同
+  bool isHourNow() {
+    if (isNullOrEmpty()) return false;
+    final nowTimeStr =
+        DateUtil.formatDate(DateTime.now(), format: Constants.yyyymmddhh);
+    final dateTimeStr = DateUtil.formatDateStr(
+        this!.getDartDateTimeFormattedString(),
+        format: Constants.yyyymmddhh);
+    Log.e("isHourNow $nowTimeStr $dateTimeStr");
+    return nowTimeStr == dateTimeStr;
+  }
+
+  bool isNight() {
+    if (isNullOrEmpty()) return false;
+    final dateTime = DateTime.tryParse(this!.getDartDateTimeFormattedString());
+    if (dateTime == null) return false;
+    return dateTime.hour > 18 || (dateTime.hour >= 0 && dateTime.hour < 6);
+  }
 }
 
 extension IntExt on int? {
   String getTemp() {
     return this == null ? "" : "$this°";
+  }
+
+  Color getAqiColor() {
+    final aqi = this ?? 0;
+    if (aqi <= 50) {
+      return Colours.color00E301;
+    } else if (aqi > 50 && aqi <= 100) {
+      return Colours.colorFDFD01;
+    } else if (aqi > 100 && aqi <= 150) {
+      return Colours.colorFD7E01;
+    } else if (aqi > 150 && aqi <= 200) {
+      return Colours.colorF70001;
+    } else if (aqi > 200 && aqi <= 300) {
+      return Colours.color98004C;
+    } else {
+      return Colours.color7D0023;
+    }
   }
 }
 

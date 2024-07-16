@@ -41,7 +41,7 @@ class _WeatherAlarmsPanelState extends State<WeatherAlarmsPanel> {
     Log.e(
         "titlePercent = $titlePercent timePercent = $timePercent percent = $percent");
     return ScaleLayout(
-      scale: 1.025,
+      scale: 1.02,
       child: Opacity(
         opacity: percent,
         child: Stack(

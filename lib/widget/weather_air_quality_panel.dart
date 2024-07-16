@@ -30,7 +30,7 @@ class WeatherAirQualityPanel extends StatelessWidget {
             Constants.itemStickyHeight.w)
         .fixPercent();
     return ScaleLayout(
-      scale: 1.025,
+      scale: 1.02,
       child: Opacity(
         opacity: percent,
         child: Stack(

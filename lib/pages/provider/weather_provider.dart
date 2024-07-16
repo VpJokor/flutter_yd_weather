@@ -18,34 +18,41 @@ class WeatherProvider extends BaseListProvider<WeatherItemData> {
   ];
 
   void setWeatherData(WeatherData? weatherData) {
-    final weatherItems = <WeatherItemData>[];
-    WeatherItemData buildWeatherItemData(int itemType,
-        WeatherData? vWeatherData, List<double> extentInfo) {
-      return WeatherItemData(
-        itemType: itemType,
-        weatherData: vWeatherData,
-        maxHeight: extentInfo[0],
-        minHeight: extentInfo[1],
-      );
-    }
-    for (var itemType in _weatherItemTypes) {
-      final extentInfo = _getPersistentHeaderExtentInfo(itemType);
-      if (itemType == Constants.itemTypeAlarms &&
-          (weatherData?.alarms.isNotNullOrEmpty() ?? false)) {
-        weatherItems.add(buildWeatherItemData(itemType, weatherData, extentInfo));
-      } else {
-        weatherItems.add(buildWeatherItemData(itemType, weatherData, extentInfo));
-      }
-    }
+    final weatherItems = _weatherItemTypes.map(
+      (itemType) {
+        final extentInfo = _getPersistentHeaderExtentInfo(itemType);
+        return WeatherItemData(
+          itemType: itemType,
+          weatherData: weatherData,
+          maxHeight: extentInfo[0],
+          minHeight: extentInfo[1],
+        );
+      },
+    ).toList();
+    weatherItems.removeWhere((element) {
+      final itemType = element.itemType;
+      final removeAlarmsPanel = itemType == Constants.itemTypeAlarms &&
+          (weatherData?.alarms.isNullOrEmpty() ?? true);
+      final removeAirQualityPanel =
+          itemType == Constants.itemTypeAirQuality && weatherData?.evn == null;
+      final removeHourPanel = itemType == Constants.itemTypeHourWeather &&
+          (weatherData?.hourFc.isNullOrEmpty() ?? true);
+      final removeDailyPanel = itemType == Constants.itemTypeDailyWeather &&
+          (weatherData?.forecast15.isNullOrEmpty() ?? true);
+      return removeAlarmsPanel ||
+          removeAirQualityPanel ||
+          removeHourPanel ||
+          removeDailyPanel;
+    });
     replace(weatherItems);
   }
 
   List<double> _getPersistentHeaderExtentInfo(int itemType) {
     switch (itemType) {
       case Constants.itemTypeHourWeather:
-        return [132.w, 0];
+        return [124.w, 0];
       case Constants.itemTypeDailyWeather:
-        return [364.w, 0];
+        return [394.w, 0];
       case Constants.itemTypeAirQuality:
         return [88.w, 0];
       case Constants.itemTypeLifeIndex:

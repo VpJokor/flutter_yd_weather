@@ -16,6 +16,7 @@ class WeatherDetailData {
   String? wp;
   @JsonKey(name: "aqi_level_name")
   String? aqiLevelName;
+  int? aqi;
   WeatherInfoData? day;
   WeatherInfoData? night;
 
@@ -30,6 +31,7 @@ class WeatherDetailData {
     this.wd,
     this.wp,
     this.aqiLevelName,
+    this.aqi,
     this.day,
     this.night,
   );

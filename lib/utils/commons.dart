@@ -1,5 +1,6 @@
 import 'dart:ui';
 
+import 'package:common_utils/common_utils.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
@@ -51,7 +52,7 @@ class Commons {
 
   static LoadStateChanged loadStateChanged(
       {Color? placeholder = Colours.colorC5C5C5,
-        void Function(ExtendedImageState state)? completed}) {
+      void Function(ExtendedImageState state)? completed}) {
     return (ExtendedImageState state) {
       switch (state.extendedImageLoadState) {
         case LoadState.loading:
@@ -71,5 +72,19 @@ class Commons {
           );
       }
     };
+  }
+
+  static bool isTomorrow(DateTime dateTime, DateTime locDateTime) {
+    if (DateUtil.yearIsEqual(dateTime, locDateTime)) {
+      int spDay =
+          DateUtil.getDayOfYear(dateTime) - DateUtil.getDayOfYear(locDateTime);
+      return spDay == 1;
+    } else {
+      return ((locDateTime.year - dateTime.year == 1) &&
+          locDateTime.month == 12 &&
+          dateTime.month == 1 &&
+          locDateTime.day == 31 &&
+          dateTime.day == 1);
+    }
   }
 }

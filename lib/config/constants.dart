@@ -28,6 +28,9 @@ class Constants {
   static const int itemStickyHeight = 32;
 
   static const String yyyymmdd = "yyyyMMdd";
+  static const String yyyymmddhh = "yyyyMMddHH";
+  static const String hhmm = "HH:mm";
+  static const String mmdd = "MM/dd";
   static const String yyyy_mm_dd = "yyyy-MM-dd";
   static const String yyyy_mm = "yyyy-MM";
   static const String yyyy_mm_ch = "yyyy年MM月";

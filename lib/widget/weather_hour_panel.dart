@@ -1,5 +1,4 @@
-import 'dart:math';
-
+import 'package:common_utils/common_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_yd_weather/res/gaps.dart';
@@ -29,8 +28,14 @@ class WeatherHourPanel extends StatelessWidget {
     final percent = ((weatherItemData.maxHeight - 12.w - shrinkOffset) /
             Constants.itemStickyHeight.w)
         .fixPercent();
+    final currentWeatherDetailData =
+        weatherItemData.weatherData?.forecast15?.singleOrNull(
+      (element) =>
+          element.date ==
+          DateUtil.formatDate(DateTime.now(), format: Constants.yyyymmdd),
+    );
     return ScaleLayout(
-      scale: 1.025,
+      scale: 1.02,
       child: Opacity(
         opacity: percent,
         child: Stack(
@@ -63,20 +68,24 @@ class WeatherHourPanel extends StatelessWidget {
                       itemBuilder: (_, index) {
                         final item = weatherItemData.weatherData?.hourFc
                             .getOrNull(index);
+                        final time = item?.time ?? "";
+                        final weatherHourTime = time.getWeatherHourTime();
                         return Column(
                           children: [
+                            Gaps.generateGap(height: 4.w),
                             Text(
-                              "10时",
+                              weatherHourTime,
                               style: TextStyle(
                                 fontSize: 14.sp,
                                 color: Colours.white,
+                                height: 1,
                               ),
                             ),
                             Gaps.generateGap(height: 12.w),
                             LoadAssetImage(
                               WeatherIconUtils.getWeatherIconByType(
                                 item?.type ?? -1,
-                                false,
+                                time.isNight(),
                               ),
                               width: 24.w,
                               height: 24.w,
@@ -87,6 +96,7 @@ class WeatherHourPanel extends StatelessWidget {
                               style: TextStyle(
                                 fontSize: 17.sp,
                                 color: Colours.white,
+                                height: 1,
                               ),
                             ),
                           ],
