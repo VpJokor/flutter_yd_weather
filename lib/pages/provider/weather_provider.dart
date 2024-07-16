@@ -13,6 +13,7 @@ class WeatherProvider extends BaseListProvider<WeatherItemData> {
     Constants.itemTypeAirQuality,
     Constants.itemTypeHourWeather,
     Constants.itemTypeDailyWeather,
+    Constants.itemTypeForecast40,
     Constants.itemTypeLifeIndex,
     Constants.itemTypeSunriseAndSunset,
   ];
@@ -39,10 +40,13 @@ class WeatherProvider extends BaseListProvider<WeatherItemData> {
           (weatherData?.hourFc.isNullOrEmpty() ?? true);
       final removeDailyPanel = itemType == Constants.itemTypeDailyWeather &&
           (weatherData?.forecast15.isNullOrEmpty() ?? true);
+      final removeForecast40Panel = itemType == Constants.itemTypeForecast40 &&
+          weatherData?.forecast40Data == null;
       return removeAlarmsPanel ||
           removeAirQualityPanel ||
           removeHourPanel ||
-          removeDailyPanel;
+          removeDailyPanel ||
+          removeForecast40Panel;
     });
     replace(weatherItems);
   }
@@ -61,6 +65,8 @@ class WeatherProvider extends BaseListProvider<WeatherItemData> {
         return [205.w, 0];
       case Constants.itemTypeAlarms:
         return [132.w, 0];
+      case Constants.itemTypeForecast40:
+        return [158.w, 0];
       default:
         return [294.w, 88.w];
     }

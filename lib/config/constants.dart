@@ -24,6 +24,7 @@ class Constants {
   static const int itemTypeLifeIndex = 4;
   static const int itemTypeSunriseAndSunset = 5;
   static const int itemTypeAlarms = 6;
+  static const int itemTypeForecast40 = 7;
 
   static const int itemStickyHeight = 32;
 

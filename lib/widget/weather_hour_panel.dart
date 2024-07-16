@@ -28,12 +28,6 @@ class WeatherHourPanel extends StatelessWidget {
     final percent = ((weatherItemData.maxHeight - 12.w - shrinkOffset) /
             Constants.itemStickyHeight.w)
         .fixPercent();
-    final currentWeatherDetailData =
-        weatherItemData.weatherData?.forecast15?.singleOrNull(
-      (element) =>
-          element.date ==
-          DateUtil.formatDate(DateTime.now(), format: Constants.yyyymmdd),
-    );
     return ScaleLayout(
       scale: 1.02,
       child: Opacity(
