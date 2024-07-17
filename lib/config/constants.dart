@@ -22,11 +22,22 @@ class Constants {
   static const int itemTypeDailyWeather = 2;
   static const int itemTypeAirQuality = 3;
   static const int itemTypeLifeIndex = 4;
-  static const int itemTypeSunriseAndSunset = 5;
-  static const int itemTypeAlarms = 6;
-  static const int itemTypeForecast40 = 7;
+  static const int itemTypeAlarms = 5;
+  static const int itemTypeForecast40 = 6;
+  /// 紫外线、湿度、体感、风向、日出日落、气压、可见度、未来40日天气
+  static const int itemTypeObserve = 7;
+
+  static const int itemTypeObserveUv = 0;
+  static const int itemTypeObserveShiDu = 1;
+  static const int itemTypeObserveTiGan = 2;
+  static const int itemTypeObserveWd = 3;
+  static const int itemTypeObserveSunriseSunset = 4;
+  static const int itemTypeObservePressure = 5;
+  static const int itemTypeObserveVisibility = 6;
+  static const int itemTypeObserveForecast40 = 7;
 
   static const int itemStickyHeight = 32;
+  static const int itemObservePanelHeight = 128;
 
   static const String yyyymmdd = "yyyyMMdd";
   static const String yyyymmddhh = "yyyyMMddHH";

@@ -101,7 +101,7 @@ class WeatherForecast40Panel extends StatelessWidget {
                                       "温度趋势",
                                       style: TextStyle(
                                         fontSize: 12.sp,
-                                        color: Colours.white.withOpacity(0.6),
+                                        color: Colours.white.withOpacity(0.8),
                                         height: 1,
                                       ),
                                     ),
@@ -110,7 +110,7 @@ class WeatherForecast40Panel extends StatelessWidget {
                                       upDaysDesc,
                                       style: TextStyle(
                                         fontSize: 14.sp,
-                                        color: Colours.white,
+                                        color: Colours.white.withOpacity(0.8),
                                         fontWeight: FontWeight.bold,
                                         height: 1,
                                       ),
@@ -137,7 +137,7 @@ class WeatherForecast40Panel extends StatelessWidget {
                                       "降水趋势",
                                       style: TextStyle(
                                         fontSize: 12.sp,
-                                        color: Colours.white.withOpacity(0.6),
+                                        color: Colours.white.withOpacity(0.8),
                                         height: 1,
                                       ),
                                     ),
@@ -146,7 +146,7 @@ class WeatherForecast40Panel extends StatelessWidget {
                                       rainDaysDesc,
                                       style: TextStyle(
                                         fontSize: 14.sp,
-                                        color: Colours.white,
+                                        color: Colours.white.withOpacity(0.8),
                                         fontWeight: FontWeight.bold,
                                         height: 1,
                                       ),

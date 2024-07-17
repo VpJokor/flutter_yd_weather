@@ -18,6 +18,14 @@ class WeatherObserveData {
   String? wp;
   @JsonKey(name: "shidu")
   String? shiDu;
+  @JsonKey(name: "uv_index")
+  int? uvIndex;
+  @JsonKey(name: "uv_index_max")
+  int? uvIndexMax;
+  @JsonKey(name: "uv_level")
+  String? uvLevel;
+  String? pressure;
+  String? visibility;
 
   WeatherObserveData(
     this.day,
@@ -30,6 +38,11 @@ class WeatherObserveData {
     this.wd,
     this.wp,
     this.shiDu,
+    this.uvIndex,
+    this.uvIndexMax,
+    this.uvLevel,
+    this.pressure,
+    this.visibility,
   );
 
   factory WeatherObserveData.fromJson(Map<String, dynamic> json) =>

@@ -4,6 +4,7 @@ import 'package:flutter_yd_weather/model/weather_data.dart';
 class WeatherItemData {
   int itemType = Constants.itemTypeWeatherHeader;
   WeatherData? weatherData;
+  List<int>? itemTypeObserves;
   double maxHeight;
   double minHeight;
 
@@ -12,6 +13,7 @@ class WeatherItemData {
     this.weatherData,
     this.maxHeight = 0,
     this.minHeight = 0,
+    this.itemTypeObserves,
   });
 
   @override

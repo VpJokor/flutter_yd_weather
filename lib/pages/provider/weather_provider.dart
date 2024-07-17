@@ -1,3 +1,4 @@
+import 'package:common_utils/common_utils.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_yd_weather/config/constants.dart';
 import 'package:flutter_yd_weather/model/weather_data.dart';
@@ -13,9 +14,8 @@ class WeatherProvider extends BaseListProvider<WeatherItemData> {
     Constants.itemTypeAirQuality,
     Constants.itemTypeHourWeather,
     Constants.itemTypeDailyWeather,
-    Constants.itemTypeForecast40,
+    Constants.itemTypeObserve,
     Constants.itemTypeLifeIndex,
-    Constants.itemTypeSunriseAndSunset,
   ];
 
   void setWeatherData(WeatherData? weatherData) {
@@ -40,13 +40,10 @@ class WeatherProvider extends BaseListProvider<WeatherItemData> {
           (weatherData?.hourFc.isNullOrEmpty() ?? true);
       final removeDailyPanel = itemType == Constants.itemTypeDailyWeather &&
           (weatherData?.forecast15.isNullOrEmpty() ?? true);
-      final removeForecast40Panel = itemType == Constants.itemTypeForecast40 &&
-          weatherData?.forecast40Data == null;
       return removeAlarmsPanel ||
           removeAirQualityPanel ||
           removeHourPanel ||
-          removeDailyPanel ||
-          removeForecast40Panel;
+          removeDailyPanel;
     });
     replace(weatherItems);
   }
@@ -61,14 +58,71 @@ class WeatherProvider extends BaseListProvider<WeatherItemData> {
         return [88.w, 0];
       case Constants.itemTypeLifeIndex:
         return [204.w, 0];
-      case Constants.itemTypeSunriseAndSunset:
-        return [205.w, 0];
       case Constants.itemTypeAlarms:
         return [132.w, 0];
       case Constants.itemTypeForecast40:
         return [158.w, 0];
+      case Constants.itemTypeObserve:
+        return [158.w, 0];
       default:
         return [294.w, 88.w];
     }
+  }
+
+  List<int> _getItemTypeObserves(int itemType, WeatherData? weatherData) {
+    if (weatherData != null && itemType == Constants.itemTypeObserve) {
+      final itemTypeObserves = [
+        Constants.itemTypeObserveUv,
+        Constants.itemTypeObserveShiDu,
+        Constants.itemTypeObserveTiGan,
+        Constants.itemTypeObserveWd,
+        Constants.itemTypeObserveSunriseSunset,
+        Constants.itemTypeObservePressure,
+        Constants.itemTypeObserveVisibility,
+        Constants.itemTypeObserveForecast40,
+      ];
+      itemTypeObserves.removeWhere((element) {
+        final currentWeatherDetailData = weatherData.forecast15?.singleOrNull(
+          (element) =>
+              element.date ==
+              DateUtil.formatDate(DateTime.now(), format: Constants.yyyymmdd),
+        );
+        int uvIndex = weatherData.observe?.uvIndex ?? 0;
+        int uvIndexMax = weatherData.observe?.uvIndexMax ?? 0;
+        String uvLevel = weatherData.observe?.uvLevel ?? "";
+        if (uvIndex <= 0 || uvIndexMax <= 0 || uvLevel.isEmpty) {
+          uvIndex = currentWeatherDetailData?.uvIndex ?? 0;
+          uvIndexMax = currentWeatherDetailData?.uvIndexMax ?? 0;
+          uvLevel = currentWeatherDetailData?.uvLevel ?? "0";
+        }
+        final removeUvPanel =
+            uvIndex <= 0 || uvIndexMax <= 0 || uvLevel.isEmpty;
+        final removeShiDuPanel =
+            weatherData.observe?.shiDu.isNullOrEmpty() ?? true;
+        final removeTiGanPanel =
+            weatherData.observe?.tiGan.isNullOrEmpty() ?? true;
+        final removeWdPanel =
+            (weatherData.observe?.wd.isNullOrEmpty() ?? true) ||
+                (weatherData.observe?.wp.isNullOrEmpty() ?? true);
+        final removeSunriseSunsetPanel =
+            (currentWeatherDetailData?.sunrise.isNullOrEmpty() ?? true) ||
+                (currentWeatherDetailData?.sunset.isNullOrEmpty() ?? true);
+        final removePressurePanel =
+            weatherData.observe?.pressure.isNullOrEmpty() ?? true;
+        final removeVisibilityPanel =
+            (weatherData.observe?.visibility.isNullOrEmpty() ?? true) ||
+                (currentWeatherDetailData?.visibility.isNullOrEmpty() ?? true);
+        final removeForecast40Panel = weatherData.forecast40Data == null;
+        return removeUvPanel ||
+            removeShiDuPanel ||
+            removeTiGanPanel ||
+            removeWdPanel ||
+            removeSunriseSunsetPanel ||
+            removePressurePanel ||
+            removeVisibilityPanel ||
+            removeForecast40Panel;
+      });
+    }
+    return [];
   }
 }

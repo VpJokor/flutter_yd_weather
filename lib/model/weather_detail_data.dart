@@ -17,6 +17,13 @@ class WeatherDetailData {
   @JsonKey(name: "aqi_level_name")
   String? aqiLevelName;
   int? aqi;
+  @JsonKey(name: "uv_index")
+  int? uvIndex;
+  @JsonKey(name: "uv_index_max")
+  int? uvIndexMax;
+  @JsonKey(name: "uv_level")
+  String? uvLevel;
+  String? visibility;
   WeatherInfoData? day;
   WeatherInfoData? night;
 
@@ -32,6 +39,10 @@ class WeatherDetailData {
     this.wp,
     this.aqiLevelName,
     this.aqi,
+    this.uvIndex,
+    this.uvIndexMax,
+    this.uvLevel,
+    this.visibility,
     this.day,
     this.night,
   );

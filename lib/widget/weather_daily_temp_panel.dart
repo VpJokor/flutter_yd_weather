@@ -5,7 +5,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_yd_weather/model/weather_detail_data.dart';
 import 'package:flutter_yd_weather/res/colours.dart';
 import 'package:flutter_yd_weather/utils/commons_ext.dart';
-import 'package:flutter_yd_weather/utils/log.dart';
 
 class WeatherDailyTempPanel extends StatelessWidget {
   const WeatherDailyTempPanel({
@@ -164,7 +163,7 @@ class _WeatherDailyTempPanelPainter extends BoxPainter {
         rect,
         (isHigh ? data.high : data.low).getTemp(),
         Colours.white,
-        tempYAxis,
+        (p2.y - p1.y) / 2 + p1.y,
         isHigh: isHigh,
       );
     }

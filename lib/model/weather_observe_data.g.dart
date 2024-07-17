@@ -22,6 +22,11 @@ WeatherObserveData _$WeatherObserveDataFromJson(Map<String, dynamic> json) =>
       json['wd'] as String?,
       json['wp'] as String?,
       json['shidu'] as String?,
+      (json['uv_index'] as num?)?.toInt(),
+      (json['uv_index_max'] as num?)?.toInt(),
+      json['uv_level'] as String?,
+      json['pressure'] as String?,
+      json['visibility'] as String?,
     );
 
 Map<String, dynamic> _$WeatherObserveDataToJson(WeatherObserveData instance) =>
@@ -36,4 +41,9 @@ Map<String, dynamic> _$WeatherObserveDataToJson(WeatherObserveData instance) =>
       'wd': instance.wd,
       'wp': instance.wp,
       'shidu': instance.shiDu,
+      'uv_index': instance.uvIndex,
+      'uv_index_max': instance.uvIndexMax,
+      'uv_level': instance.uvLevel,
+      'pressure': instance.pressure,
+      'visibility': instance.visibility,
     };
