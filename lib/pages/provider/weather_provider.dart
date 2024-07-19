@@ -4,6 +4,7 @@ import 'package:flutter_yd_weather/config/constants.dart';
 import 'package:flutter_yd_weather/model/weather_data.dart';
 import 'package:flutter_yd_weather/model/weather_item_data.dart';
 import 'package:flutter_yd_weather/utils/commons_ext.dart';
+import 'package:flutter_yd_weather/utils/log.dart';
 
 import '../../base/base_list_provider.dart';
 
@@ -21,10 +22,13 @@ class WeatherProvider extends BaseListProvider<WeatherItemData> {
   void setWeatherData(WeatherData? weatherData) {
     final weatherItems = _weatherItemTypes.map(
       (itemType) {
-        final extentInfo = _getPersistentHeaderExtentInfo(itemType);
+        final itemTypeObserves = _getItemTypeObserves(itemType, weatherData);
+        final extentInfo =
+            _getPersistentHeaderExtentInfo(itemType, itemTypeObserves);
         return WeatherItemData(
           itemType: itemType,
           weatherData: weatherData,
+          itemTypeObserves: itemTypeObserves,
           maxHeight: extentInfo[0],
           minHeight: extentInfo[1],
         );
@@ -40,15 +44,19 @@ class WeatherProvider extends BaseListProvider<WeatherItemData> {
           (weatherData?.hourFc.isNullOrEmpty() ?? true);
       final removeDailyPanel = itemType == Constants.itemTypeDailyWeather &&
           (weatherData?.forecast15.isNullOrEmpty() ?? true);
+      final removeObservePanel = itemType == Constants.itemTypeObserve &&
+          element.itemTypeObserves.isNullOrEmpty();
       return removeAlarmsPanel ||
           removeAirQualityPanel ||
           removeHourPanel ||
-          removeDailyPanel;
+          removeDailyPanel ||
+          removeObservePanel;
     });
     replace(weatherItems);
   }
 
-  List<double> _getPersistentHeaderExtentInfo(int itemType) {
+  List<double> _getPersistentHeaderExtentInfo(
+      int itemType, List<int>? itemTypeObserves) {
     switch (itemType) {
       case Constants.itemTypeHourWeather:
         return [124.w, 0];
@@ -57,19 +65,22 @@ class WeatherProvider extends BaseListProvider<WeatherItemData> {
       case Constants.itemTypeAirQuality:
         return [88.w, 0];
       case Constants.itemTypeLifeIndex:
-        return [204.w, 0];
+        return [248.w, 0];
       case Constants.itemTypeAlarms:
         return [132.w, 0];
       case Constants.itemTypeForecast40:
         return [158.w, 0];
       case Constants.itemTypeObserve:
-        return [158.w, 0];
+        final length = itemTypeObserves?.length ?? 0;
+        final count = (length / 2).ceil();
+    final height = count * Constants.itemObservePanelHeight.w + count * 12.w;
+        return [height, 0];
       default:
         return [294.w, 88.w];
     }
   }
 
-  List<int> _getItemTypeObserves(int itemType, WeatherData? weatherData) {
+  List<int>? _getItemTypeObserves(int itemType, WeatherData? weatherData) {
     if (weatherData != null && itemType == Constants.itemTypeObserve) {
       final itemTypeObserves = [
         Constants.itemTypeObserveUv,
@@ -122,7 +133,8 @@ class WeatherProvider extends BaseListProvider<WeatherItemData> {
             removeVisibilityPanel ||
             removeForecast40Panel;
       });
+      return itemTypeObserves;
     }
-    return [];
+    return null;
   }
 }

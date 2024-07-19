@@ -15,6 +15,45 @@ extension StringExt on String? {
   bool isNullOrEmpty() => this == null || this!.isEmpty;
 
   bool isNotNullOrEmpty() => !isNullOrEmpty();
+  
+  double getVisibilityValue() {
+    if (isNullOrEmpty()) return 0;
+    if (this!.toUpperCase().contains("KM")) {
+      return double.tryParse(this!.replaceAll("KM", "")) ?? 0;
+    }
+    if (this!.toUpperCase().contains("M")) {
+      return double.tryParse(this!.replaceAll("M", "")) ?? 0;
+    }
+    return 0;
+  }
+
+  String getVisibilityUnit() {
+    if (isNullOrEmpty()) return "";
+    if (this!.toUpperCase().contains("KM")) {
+      return "公里";
+    }
+    if (this!.toUpperCase().contains("M")) {
+      return "米";
+    }
+    return "";
+  }
+
+  String getVisibilityDesc(double visibilityValue) {
+    if (isNullOrEmpty()) return "";
+    if (this!.toUpperCase().contains("KM")) {
+      if (visibilityValue <= 1) {
+        return "视野较差";
+      }
+      return "视野非常好";
+    }
+    if (this!.toUpperCase().contains("M")) {
+      if (visibilityValue <= 1000) {
+        return "视野较差";
+      }
+      return "视野非常好";
+    }
+    return "";
+  }
 
   /// 202407111400 => 20240711T140000
   String getDartDateTimeFormattedString() {
@@ -67,7 +106,6 @@ extension StringExt on String? {
     final dateTimeStr = DateUtil.formatDateStr(
         this!.getDartDateTimeFormattedString(),
         format: Constants.yyyymmddhh);
-    Log.e("isHourNow $nowTimeStr $dateTimeStr");
     return nowTimeStr == dateTimeStr;
   }
 
@@ -146,6 +184,15 @@ extension ListExt<E> on List<E>? {
   E? getOrNull(int index) {
     if (this == null) return null;
     return index >= 0 && index <= this!.length - 1 ? this![index] : null;
+  }
+
+  void forEachIndexed(void Function(E element, int index) action) {
+    if (this == null) return;
+    int index = 0;
+    for (E element in this!) {
+      action(element, index);
+      index++;
+    }
   }
 }
 

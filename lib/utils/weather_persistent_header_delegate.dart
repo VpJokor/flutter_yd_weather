@@ -9,6 +9,7 @@ import 'package:flutter_yd_weather/widget/weather_alarms_panel.dart';
 import 'package:flutter_yd_weather/widget/weather_daily_panel.dart';
 import 'package:flutter_yd_weather/widget/weather_forecast40_panel.dart';
 import 'package:flutter_yd_weather/widget/weather_hour_panel.dart';
+import 'package:flutter_yd_weather/widget/weather_observe_panel.dart';
 
 import '../widget/blurry_container.dart';
 
@@ -48,6 +49,11 @@ class WeatherPersistentHeaderDelegate extends SliverPersistentHeaderDelegate {
       );
     } else if (weatherItemData.itemType == Constants.itemTypeForecast40) {
       return WeatherForecast40Panel(
+        data: weatherItemData,
+        shrinkOffset: shrinkOffset,
+      );
+    } else if (weatherItemData.itemType == Constants.itemTypeObserve) {
+      return WeatherObservePanel(
         data: weatherItemData,
         shrinkOffset: shrinkOffset,
       );

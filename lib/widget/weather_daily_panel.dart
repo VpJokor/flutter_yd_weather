@@ -4,7 +4,6 @@ import 'package:common_utils/common_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_yd_weather/utils/commons_ext.dart';
-import 'package:flutter_yd_weather/utils/log.dart';
 import 'package:flutter_yd_weather/widget/scale_layout.dart';
 import 'package:flutter_yd_weather/widget/weather_daily_temp_panel.dart';
 
@@ -36,8 +35,6 @@ class WeatherDailyPanel extends StatelessWidget {
         ?.reduce((e1, e2) => (e1.high ?? 0) > (e2.high ?? 0) ? e1 : e2);
     final minTempData = weatherItemData.weatherData?.forecast15
         ?.reduce((e1, e2) => (e1.low ?? 0) < (e2.low ?? 0) ? e1 : e2);
-    Log.e(
-        "maxTempData = ${maxTempData?.high} minTempData = ${minTempData?.low}");
     return ScaleLayout(
       scale: 1.02,
       child: Opacity(
