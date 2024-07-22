@@ -62,7 +62,7 @@ class WeatherObservePressurePanel extends StatelessWidget {
                             Text(
                               weatherItemData.weatherData?.observe?.pressure?.replaceAll("hPa", "") ?? "",
                               style: TextStyle(
-                                fontSize: 20.sp,
+                                fontSize: 18.sp,
                                 color: Colours.white,
                                 height: 1,
                                 fontWeight: FontWeight.bold,

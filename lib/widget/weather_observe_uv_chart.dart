@@ -2,6 +2,7 @@ import 'dart:math';
 import 'dart:ui' as ui;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/painting.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_yd_weather/utils/commons_ext.dart';
@@ -36,9 +37,10 @@ class WeatherObserveUvChart extends StatelessWidget {
             child: Text(
               "$uvIndex",
               style: TextStyle(
-                fontSize: 20.sp,
+                fontSize: 18.sp,
                 color: Colours.white,
                 height: 1,
+                fontWeight: FontWeight.bold,
               ),
             ),
           ),

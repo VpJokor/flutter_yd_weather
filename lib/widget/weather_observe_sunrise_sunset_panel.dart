@@ -36,6 +36,19 @@ class WeatherObserveSunriseSunsetPanel extends StatelessWidget {
           element.date ==
           DateUtil.formatDate(DateTime.now(), format: Constants.yyyymmdd),
     );
+    final currentMill = DateTime.now().millisecondsSinceEpoch;
+    final sunriseDateTime = "${currentWeatherDetailData?.date}${currentWeatherDetailData?.sunrise}".replaceAll(":", "").getDartDateTimeFormattedString();
+    final sunsetDateTime = "${currentWeatherDetailData?.date}${currentWeatherDetailData?.sunset}".replaceAll(":", "").getDartDateTimeFormattedString();
+    final sunriseMill = DateTime.tryParse(sunriseDateTime)?.millisecondsSinceEpoch ?? 0;
+    final sunsetMill = DateTime.tryParse(sunsetDateTime)?.millisecondsSinceEpoch ?? 0;
+    String sunriseSunsetDesc, sunriseSunset;
+    if (currentMill < sunriseMill || currentMill > sunsetMill) {
+      sunriseSunsetDesc = "日出";
+      sunriseSunset = currentWeatherDetailData?.sunrise ?? "";
+    } else {
+      sunriseSunsetDesc = "日落";
+      sunriseSunset = currentWeatherDetailData?.sunset ?? "";
+    }
     return ScaleLayout(
       scale: 1.02,
       child: Opacity(
@@ -72,7 +85,7 @@ class WeatherObserveSunriseSunsetPanel extends StatelessWidget {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  "日落",
+                                  sunriseSunsetDesc,
                                   style: TextStyle(
                                     fontSize: 14.sp,
                                     color: Colours.white,
@@ -81,9 +94,9 @@ class WeatherObserveSunriseSunsetPanel extends StatelessWidget {
                                 ),
                                 Gaps.generateGap(height: 8.w),
                                 Text(
-                                  currentWeatherDetailData?.sunset ?? "",
+                                  sunriseSunset,
                                   style: TextStyle(
-                                    fontSize: 20.sp,
+                                    fontSize: 18.sp,
                                     color: Colours.white,
                                     height: 1,
                                     fontWeight: FontWeight.bold,
