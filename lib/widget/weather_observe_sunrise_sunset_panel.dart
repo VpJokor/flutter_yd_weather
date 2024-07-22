@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_yd_weather/utils/commons_ext.dart';
 import 'package:flutter_yd_weather/widget/scale_layout.dart';
+import 'package:flutter_yd_weather/widget/weather_observe_sunrise_sunset_chart.dart';
 
 import '../config/constants.dart';
 import '../model/weather_item_data.dart';
@@ -90,9 +91,48 @@ class WeatherObserveSunriseSunsetPanel extends StatelessWidget {
                                 ),
                               ],
                             ),
-                            SizedBox(
-                              width: 80.w,
-                              height: 80.w,
+                            Container(
+                              height: 72.w,
+                              alignment: Alignment.center,
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  WeatherObserveSunriseSunsetChart(
+                                    width: 72.w,
+                                    height: 42.w,
+                                    date: currentWeatherDetailData?.date ?? "",
+                                    sunrise:
+                                    currentWeatherDetailData?.sunrise ?? "",
+                                    sunset:
+                                    currentWeatherDetailData?.sunset ?? "",
+                                  ),
+                                  Gaps.generateGap(height: 4.w),
+                                  SizedBox(
+                                    width: 72.w,
+                                    child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Text(
+                                          currentWeatherDetailData?.sunrise ?? "",
+                                          style: TextStyle(
+                                            fontSize: 10.sp,
+                                            color: Colours.white,
+                                            height: 1,
+                                          ),
+                                        ),
+                                        Text(
+                                          currentWeatherDetailData?.sunset ?? "",
+                                          style: TextStyle(
+                                            fontSize: 10.sp,
+                                            color: Colours.white,
+                                            height: 1,
+                                          ),
+                                        )
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ),
                           ],
                         ),

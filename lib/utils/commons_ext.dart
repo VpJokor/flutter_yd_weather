@@ -4,7 +4,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_yd_weather/model/city_data.dart';
 import 'package:flutter_yd_weather/res/colours.dart';
 import 'package:flutter_yd_weather/utils/commons.dart';
-import 'package:flutter_yd_weather/utils/log.dart';
 import 'package:flutter_yd_weather/utils/theme_utils.dart';
 
 import '../config/constants.dart';
@@ -15,6 +14,14 @@ extension StringExt on String? {
   bool isNullOrEmpty() => this == null || this!.isEmpty;
 
   bool isNotNullOrEmpty() => !isNullOrEmpty();
+
+  int getShiDuValue() {
+    if (isNullOrEmpty()) return 0;
+    if (this!.contains("%")) {
+      return int.tryParse(this!.replaceAll("%", "")) ?? 0;
+    }
+    return 0;
+  }
   
   double getVisibilityValue() {
     if (isNullOrEmpty()) return 0;
@@ -137,6 +144,13 @@ extension IntExt on int? {
     } else {
       return Colours.color7D0023;
     }
+  }
+
+  String getShiDuDesc() {
+    if (this == null) return "";
+    if (this! < 40) return "干燥";
+    if (this! < 70) return "舒适";
+    return "潮湿";
   }
 }
 

@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_yd_weather/utils/commons_ext.dart';
 import 'package:flutter_yd_weather/widget/scale_layout.dart';
+import 'package:flutter_yd_weather/widget/weather_observe_uv_chart.dart';
 
 import '../config/constants.dart';
 import '../model/weather_item_data.dart';
@@ -83,9 +84,11 @@ class WeatherObserveUvPanel extends StatelessWidget {
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
-                            SizedBox(
-                              width: 80.w,
-                              height: 80.w,
+                            WeatherObserveUvChart(
+                              width: 72.w,
+                              height: 72.w,
+                              uvIndex: uvIndex,
+                              uvIndexMax: uvIndexMax,
                             ),
                           ],
                         ),

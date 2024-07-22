@@ -3,7 +3,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_yd_weather/config/constants.dart';
 import 'package:flutter_yd_weather/res/colours.dart';
 import 'package:flutter_yd_weather/utils/commons_ext.dart';
-import 'package:flutter_yd_weather/widget/scale_layout.dart';
 import 'package:flutter_yd_weather/widget/weather_observe_forecast40_panel.dart';
 import 'package:flutter_yd_weather/widget/weather_observe_pressure_panel.dart';
 import 'package:flutter_yd_weather/widget/weather_observe_shi_du_panel.dart';
