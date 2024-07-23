@@ -93,6 +93,7 @@ class _WeatherObservePressurePainter extends BoxPainter {
     final rect = offset & size;
     final newRect = Rect.fromLTRB(
         rect.left + 2.w, rect.top + 2.w, rect.right - 2.w, rect.bottom - 2.w);
+    _path.reset();
     _path.arcTo(
       newRect,
       -pi * 1.25,
