@@ -43,80 +43,77 @@ class WeatherObserveVisibilityPanel extends StatelessWidget {
     final visibilityValue = visibility.getVisibilityValue();
     final visibilityUnit = visibility.getVisibilityUnit();
     final visibilityDesc = visibility.getVisibilityDesc(visibilityValue);
-    return ScaleLayout(
-      scale: 1.02,
-      child: Opacity(
-        opacity: percent,
-        child: Stack(
-          children: [
-            Positioned(
-              left: 0,
-              top: shrinkOffset,
-              right: 0,
-              bottom: 0,
-              child: BlurryContainer(
-                width: double.infinity,
-                height: double.infinity,
-                blur: 5,
-                color: Colours.white.withOpacity(0.1),
-                borderRadius: BorderRadius.circular(12.w),
-                padding: EdgeInsets.only(
-                  top: Constants.itemStickyHeight.w,
-                ),
-                child: Stack(
-                  children: [
-                    Positioned(
-                      left: 0,
-                      top: -shrinkOffset,
-                      right: 0,
-                      bottom: 0,
-                      child: SingleChildScrollView(
-                        padding: EdgeInsets.symmetric(horizontal: 16.w),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              "${visibilityValue.round()}$visibilityUnit",
-                              style: TextStyle(
-                                fontSize: 32.sp,
-                                color: Colours.white,
-                                height: 1,
-                              ),
+    return Opacity(
+      opacity: percent,
+      child: Stack(
+        children: [
+          Positioned(
+            left: 0,
+            top: shrinkOffset,
+            right: 0,
+            bottom: 0,
+            child: BlurryContainer(
+              width: double.infinity,
+              height: double.infinity,
+              blur: 5,
+              color: Colours.white.withOpacity(0.1),
+              borderRadius: BorderRadius.circular(12.w),
+              padding: EdgeInsets.only(
+                top: Constants.itemStickyHeight.w,
+              ),
+              child: Stack(
+                children: [
+                  Positioned(
+                    left: 0,
+                    top: -shrinkOffset,
+                    right: 0,
+                    bottom: 0,
+                    child: SingleChildScrollView(
+                      padding: EdgeInsets.symmetric(horizontal: 16.w),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            "${visibilityValue.round()}$visibilityUnit",
+                            style: TextStyle(
+                              fontSize: 32.sp,
+                              color: Colours.white,
+                              height: 1,
                             ),
-                            Gaps.generateGap(height: 33.w),
-                            Text(
-                              visibilityDesc,
-                              style: TextStyle(
-                                fontSize: 14.sp,
-                                color: Colours.white,
-                              ),
+                          ),
+                          Gaps.generateGap(height: 33.w),
+                          Text(
+                            visibilityDesc,
+                            style: TextStyle(
+                              fontSize: 14.sp,
+                              color: Colours.white,
                             ),
-                          ],
-                        ),
+                          ),
+                        ],
                       ),
                     ),
-                  ],
-                ),
-              ),
-            ),
-            Positioned(
-              top: shrinkOffset,
-              child: Container(
-                height: min(Constants.itemStickyHeight.w,
-                    Constants.itemObservePanelHeight.w - shrinkOffset),
-                padding: EdgeInsets.only(left: 16.w),
-                alignment: Alignment.centerLeft,
-                child: Text(
-                  "可见度",
-                  style: TextStyle(
-                    fontSize: 12.sp,
-                    color: Colours.white.withOpacity(0.6),
                   ),
+                ],
+              ),
+            ),
+          ),
+          Positioned(
+            top: shrinkOffset,
+            child: Container(
+              height: min(Constants.itemStickyHeight.w,
+                  Constants.itemObservePanelHeight.w - shrinkOffset),
+              padding: EdgeInsets.only(left: 16.w),
+              alignment: Alignment.centerLeft,
+              child: Text(
+                "可见度",
+                style: TextStyle(
+                  fontSize: 12.sp,
+                  color: Colours.white.withOpacity(0.6),
                 ),
               ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

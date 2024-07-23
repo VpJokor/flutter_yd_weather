@@ -3,7 +3,6 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_yd_weather/utils/commons_ext.dart';
-import 'package:flutter_yd_weather/utils/log.dart';
 
 import '../res/colours.dart';
 
@@ -131,13 +130,13 @@ class _WeatherObserveSunriseSunsetPainter extends BoxPainter {
         7.w,
         _circlePaint
           ..color = Colours.white.withOpacity(0)
-          ..blendMode = BlendMode.clear,
+          ..blendMode = BlendMode.src,
       );
       canvas.drawCircle(
         position,
         4.w,
         _circlePaint
-          ..color = Colours.white
+          ..color = Colours.white.withOpacity(percent < 0.2 || percent > 0.8 ? 0.4 : 1)
           ..blendMode = BlendMode.src,
       );
     }

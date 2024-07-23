@@ -28,78 +28,75 @@ class WeatherObserveShiDuPanel extends StatelessWidget {
         ((Constants.itemObservePanelHeight.w - 12.w - shrinkOffset) /
                 Constants.itemStickyHeight.w)
             .fixPercent();
-    return ScaleLayout(
-      scale: 1.02,
-      child: Opacity(
-        opacity: percent,
-        child: Stack(
-          children: [
-            Positioned(
-              left: 0,
-              top: shrinkOffset,
-              right: 0,
-              bottom: 0,
-              child: BlurryContainer(
-                width: double.infinity,
-                height: double.infinity,
-                blur: 5,
-                color: Colours.white.withOpacity(0.1),
-                borderRadius: BorderRadius.circular(12.w),
-                padding: EdgeInsets.only(
-                  top: Constants.itemStickyHeight.w,
-                ),
-                child: Stack(
-                  children: [
-                    Positioned(
-                      left: 0,
-                      top: -shrinkOffset,
-                      right: 0,
-                      bottom: 0,
-                      child: SingleChildScrollView(
-                        padding: EdgeInsets.symmetric(horizontal: 16.w),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              weatherItemData.weatherData?.observe?.shiDu ?? "",
-                              style: TextStyle(
-                                fontSize: 18.sp,
-                                color: Colours.white,
-                                height: 1,
-                                fontWeight: FontWeight.bold,
-                              ),
+    return Opacity(
+      opacity: percent,
+      child: Stack(
+        children: [
+          Positioned(
+            left: 0,
+            top: shrinkOffset,
+            right: 0,
+            bottom: 0,
+            child: BlurryContainer(
+              width: double.infinity,
+              height: double.infinity,
+              blur: 5,
+              color: Colours.white.withOpacity(0.1),
+              borderRadius: BorderRadius.circular(12.w),
+              padding: EdgeInsets.only(
+                top: Constants.itemStickyHeight.w,
+              ),
+              child: Stack(
+                children: [
+                  Positioned(
+                    left: 0,
+                    top: -shrinkOffset,
+                    right: 0,
+                    bottom: 0,
+                    child: SingleChildScrollView(
+                      padding: EdgeInsets.symmetric(horizontal: 16.w),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            weatherItemData.weatherData?.observe?.shiDu ?? "",
+                            style: TextStyle(
+                              fontSize: 18.sp,
+                              color: Colours.white,
+                              height: 1,
+                              fontWeight: FontWeight.bold,
                             ),
-                            WeatherObserveShiDuChart(
-                              width: 72.w,
-                              height: 72.w,
-                              shiDu: weatherItemData.weatherData?.observe?.shiDu ?? "",
-                            ),
-                          ],
-                        ),
+                          ),
+                          WeatherObserveShiDuChart(
+                            width: 72.w,
+                            height: 72.w,
+                            shiDu: weatherItemData.weatherData?.observe?.shiDu ?? "",
+                          ),
+                        ],
                       ),
                     ),
-                  ],
-                ),
-              ),
-            ),
-            Positioned(
-              top: shrinkOffset,
-              child: Container(
-                height: min(Constants.itemStickyHeight.w,
-                    Constants.itemObservePanelHeight.w - shrinkOffset),
-                padding: EdgeInsets.only(left: 16.w),
-                alignment: Alignment.centerLeft,
-                child: Text(
-                  "湿度",
-                  style: TextStyle(
-                    fontSize: 12.sp,
-                    color: Colours.white.withOpacity(0.6),
                   ),
+                ],
+              ),
+            ),
+          ),
+          Positioned(
+            top: shrinkOffset,
+            child: Container(
+              height: min(Constants.itemStickyHeight.w,
+                  Constants.itemObservePanelHeight.w - shrinkOffset),
+              padding: EdgeInsets.only(left: 16.w),
+              alignment: Alignment.centerLeft,
+              child: Text(
+                "湿度",
+                style: TextStyle(
+                  fontSize: 12.sp,
+                  color: Colours.white.withOpacity(0.6),
                 ),
               ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

@@ -40,143 +40,139 @@ class _WeatherAlarmsPanelState extends State<WeatherAlarmsPanel> {
         .fixPercent();
     Log.e(
         "titlePercent = $titlePercent timePercent = $timePercent percent = $percent");
-    return ScaleLayout(
-      scale: 1.02,
-      child: Opacity(
-        opacity: percent,
-        child: Stack(
-          children: [
-            BlurryContainer(
-              width: double.infinity,
-              height: double.infinity,
-              blur: 5,
-              margin: EdgeInsets.only(
-                left: 16.w,
-                right: 16.w,
-              ),
-              padding: EdgeInsets.only(
-                top: min(widget.shrinkOffset, Constants.itemStickyHeight.w),
-              ),
-              color: Colours.white.withOpacity(0.1),
-              borderRadius: BorderRadius.circular(12.w),
-              child: Stack(
-                children: [
-                  Positioned(
-                    left: 0,
-                    top: -widget.shrinkOffset -
-                        min(widget.shrinkOffset, Constants.itemStickyHeight.w),
-                    right: 0,
-                    bottom: 0,
-                    child: Visibility(
-                      visible: weatherItemData.weatherData?.alarms
-                              .isNotNullOrEmpty() ??
-                          false,
-                      child: Swiper(
-                        key: const Key('alarms_swiper'),
-                        loop: false,
-                        itemCount:
-                            weatherItemData.weatherData?.alarms?.length ?? 0,
-                        onIndexChanged: (index) {
-                          setState(() {
-                            _index = index;
-                          });
-                        },
-                        itemBuilder: (_, index) {
-                          final item = weatherItemData.weatherData?.alarms
-                              ?.getOrNull(index);
-                          return SingleChildScrollView(
-                            padding: EdgeInsets.symmetric(horizontal: 16.w),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Gaps.generateGap(height: 12.w),
-                                Opacity(
-                                  opacity: titlePercent,
-                                  child: Text(
-                                    item?.title ?? "",
-                                    style: TextStyle(
-                                      fontSize: 16.sp,
-                                      color: Colours.white,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                ),
-                                Gaps.generateGap(height: 4.w),
-                                Opacity(
-                                  opacity: timePercent,
-                                  child: Text(
-                                    "17小时前更新",
-                                    style: TextStyle(
-                                      fontSize: 13.sp,
-                                      color: Colours.white,
-                                    ),
-                                  ),
-                                ),
-                                Gaps.generateGap(height: 8.w),
-                                Text(
-                                  item?.desc ?? "",
-                                  maxLines: 2,
-                                  overflow: TextOverflow.ellipsis,
+    return Opacity(
+      opacity: percent,
+      child: Stack(
+        children: [
+          BlurryContainer(
+            width: double.infinity,
+            height: double.infinity,
+            blur: 5,
+            margin: EdgeInsets.only(
+              left: 16.w,
+              right: 16.w,
+            ),
+            padding: EdgeInsets.only(
+              top: min(widget.shrinkOffset, Constants.itemStickyHeight.w),
+            ),
+            color: Colours.white.withOpacity(0.1),
+            borderRadius: BorderRadius.circular(12.w),
+            child: Stack(
+              children: [
+                Positioned(
+                  left: 0,
+                  top: -widget.shrinkOffset -
+                      min(widget.shrinkOffset, Constants.itemStickyHeight.w),
+                  right: 0,
+                  bottom: 0,
+                  child: Visibility(
+                    visible: weatherItemData.weatherData?.alarms
+                        .isNotNullOrEmpty() ??
+                        false,
+                    child: Swiper(
+                      key: const Key('alarms_swiper'),
+                      loop: false,
+                      itemCount:
+                      weatherItemData.weatherData?.alarms?.length ?? 0,
+                      onIndexChanged: (index) {
+                        setState(() {
+                          _index = index;
+                        });
+                      },
+                      itemBuilder: (_, index) {
+                        final item = weatherItemData.weatherData?.alarms
+                            ?.getOrNull(index);
+                        return SingleChildScrollView(
+                          padding: EdgeInsets.symmetric(horizontal: 16.w),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Gaps.generateGap(height: 12.w),
+                              Opacity(
+                                opacity: titlePercent,
+                                child: Text(
+                                  item?.title ?? "",
                                   style: TextStyle(
-                                    fontSize: 14.sp,
+                                    fontSize: 16.sp,
+                                    color: Colours.white,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ),
+                              Gaps.generateGap(height: 4.w),
+                              Opacity(
+                                opacity: timePercent,
+                                child: Text(
+                                  "17小时前更新",
+                                  style: TextStyle(
+                                    fontSize: 13.sp,
                                     color: Colours.white,
                                   ),
                                 ),
-                              ],
-                            ),
-                          );
-                        },
-                      ),
+                              ),
+                              Gaps.generateGap(height: 8.w),
+                              Text(
+                                item?.desc ?? "",
+                                maxLines: 2,
+                                overflow: TextOverflow.ellipsis,
+                                style: TextStyle(
+                                  fontSize: 14.sp,
+                                  color: Colours.white,
+                                ),
+                              ),
+                            ],
+                          ),
+                        );
+                      },
                     ),
                   ),
-                  Positioned(
-                    left: 0,
-                    right: 0,
-                    bottom: 0,
-                    child: Visibility(
-                      visible: (weatherItemData.weatherData?.alarms?.length ?? 0) > 1,
-                      child: Container(
-                        margin: EdgeInsets.only(bottom: 12.w),
-                        alignment: Alignment.center,
-                        child: AnimatedSmoothIndicator(
-                          activeIndex: _index,
-                          count:
-                              weatherItemData.weatherData?.alarms?.length ?? 0,
-                          effect: ExpandingDotsEffect(
-                            expansionFactor: 1.5,
-                            spacing: 3.w,
-                            dotWidth: 6.w,
-                            dotHeight: 2.w,
-                            activeDotColor: Colours.white,
-                            dotColor: Colours.white.withOpacity(0.5),
-                          ),
+                ),
+                Positioned(
+                  left: 0,
+                  right: 0,
+                  bottom: 0,
+                  child: Visibility(
+                    visible: (weatherItemData.weatherData?.alarms?.length ?? 0) > 1,
+                    child: Container(
+                      margin: EdgeInsets.only(bottom: 12.w),
+                      alignment: Alignment.center,
+                      child: AnimatedSmoothIndicator(
+                        activeIndex: _index,
+                        count:
+                        weatherItemData.weatherData?.alarms?.length ?? 0,
+                        effect: ExpandingDotsEffect(
+                          expansionFactor: 1.5,
+                          spacing: 3.w,
+                          dotWidth: 6.w,
+                          dotHeight: 2.w,
+                          activeDotColor: Colours.white,
+                          dotColor: Colours.white.withOpacity(0.5),
                         ),
                       ),
                     ),
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
-            Opacity(
-              opacity: 1 - timePercent,
-              child: Container(
-                height: Constants.itemStickyHeight.w,
-                margin: EdgeInsets.symmetric(horizontal: 16.w),
-                padding: EdgeInsets.only(left: 16.w),
-                alignment: Alignment.centerLeft,
-                child: Text(
-                  "极端天气",
-                  style: TextStyle(
-                    fontSize: 12.sp,
-                    color: Colours.white.withOpacity(0.6),
-                  ),
+          ),
+          Opacity(
+            opacity: 1 - timePercent,
+            child: Container(
+              height: Constants.itemStickyHeight.w,
+              margin: EdgeInsets.symmetric(horizontal: 16.w),
+              padding: EdgeInsets.only(left: 16.w),
+              alignment: Alignment.centerLeft,
+              child: Text(
+                "极端天气",
+                style: TextStyle(
+                  fontSize: 12.sp,
+                  color: Colours.white.withOpacity(0.6),
                 ),
               ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
-      onPressed: () {},
     );
   }
 }

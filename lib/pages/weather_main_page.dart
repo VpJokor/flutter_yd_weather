@@ -115,10 +115,9 @@ class _WeatherMainPageState
               weatherItemData,
             ),
           ),
-          if (weatherItemData.itemType != Constants.itemTypeObserve)
-            SliverToBoxAdapter(
-              child: Gaps.generateGap(height: 12.w),
-            ),
+          SliverToBoxAdapter(
+            child: Gaps.generateGap(height: 12.w),
+          ),
         ],
       ));
     }

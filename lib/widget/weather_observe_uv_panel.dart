@@ -4,7 +4,6 @@ import 'package:common_utils/common_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_yd_weather/utils/commons_ext.dart';
-import 'package:flutter_yd_weather/widget/scale_layout.dart';
 import 'package:flutter_yd_weather/widget/weather_observe_uv_chart.dart';
 
 import '../config/constants.dart';
@@ -43,79 +42,76 @@ class WeatherObserveUvPanel extends StatelessWidget {
       uvIndexMax = currentWeatherDetailData?.uvIndexMax ?? 0;
       uvLevel = currentWeatherDetailData?.uvLevel ?? "0";
     }
-    return ScaleLayout(
-      scale: 1.02,
-      child: Opacity(
-        opacity: percent,
-        child: Stack(
-          children: [
-            Positioned(
-              left: 0,
-              top: shrinkOffset,
-              right: 0,
-              bottom: 0,
-              child: BlurryContainer(
-                width: double.infinity,
-                height: double.infinity,
-                blur: 5,
-                color: Colours.white.withOpacity(0.1),
-                borderRadius: BorderRadius.circular(12.w),
-                padding: EdgeInsets.only(
-                  top: Constants.itemStickyHeight.w,
-                ),
-                child: Stack(
-                  children: [
-                    Positioned(
-                      left: 0,
-                      top: -shrinkOffset,
-                      right: 0,
-                      bottom: 0,
-                      child: SingleChildScrollView(
-                        padding: EdgeInsets.symmetric(horizontal: 16.w),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              uvLevel,
-                              style: TextStyle(
-                                fontSize: 18.sp,
-                                color: Colours.white,
-                                height: 1,
-                                fontWeight: FontWeight.bold,
-                              ),
+    return Opacity(
+      opacity: percent,
+      child: Stack(
+        children: [
+          Positioned(
+            left: 0,
+            top: shrinkOffset,
+            right: 0,
+            bottom: 0,
+            child: BlurryContainer(
+              width: double.infinity,
+              height: double.infinity,
+              blur: 5,
+              color: Colours.white.withOpacity(0.1),
+              borderRadius: BorderRadius.circular(12.w),
+              padding: EdgeInsets.only(
+                top: Constants.itemStickyHeight.w,
+              ),
+              child: Stack(
+                children: [
+                  Positioned(
+                    left: 0,
+                    top: -shrinkOffset,
+                    right: 0,
+                    bottom: 0,
+                    child: SingleChildScrollView(
+                      padding: EdgeInsets.symmetric(horizontal: 16.w),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            uvLevel,
+                            style: TextStyle(
+                              fontSize: 18.sp,
+                              color: Colours.white,
+                              height: 1,
+                              fontWeight: FontWeight.bold,
                             ),
-                            WeatherObserveUvChart(
-                              width: 72.w,
-                              height: 72.w,
-                              uvIndex: uvIndex,
-                              uvIndexMax: uvIndexMax,
-                            ),
-                          ],
-                        ),
+                          ),
+                          WeatherObserveUvChart(
+                            width: 72.w,
+                            height: 72.w,
+                            uvIndex: uvIndex,
+                            uvIndexMax: uvIndexMax,
+                          ),
+                        ],
                       ),
                     ),
-                  ],
-                ),
-              ),
-            ),
-            Positioned(
-              top: shrinkOffset,
-              child: Container(
-                height: min(Constants.itemStickyHeight.w,
-                    Constants.itemObservePanelHeight.w - shrinkOffset),
-                padding: EdgeInsets.only(left: 16.w),
-                alignment: Alignment.centerLeft,
-                child: Text(
-                  "紫外线指数",
-                  style: TextStyle(
-                    fontSize: 12.sp,
-                    color: Colours.white.withOpacity(0.6),
                   ),
+                ],
+              ),
+            ),
+          ),
+          Positioned(
+            top: shrinkOffset,
+            child: Container(
+              height: min(Constants.itemStickyHeight.w,
+                  Constants.itemObservePanelHeight.w - shrinkOffset),
+              padding: EdgeInsets.only(left: 16.w),
+              alignment: Alignment.centerLeft,
+              child: Text(
+                "紫外线指数",
+                style: TextStyle(
+                  fontSize: 12.sp,
+                  color: Colours.white.withOpacity(0.6),
                 ),
               ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

@@ -2,7 +2,6 @@ import 'dart:math';
 import 'dart:ui' as ui;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/painting.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_yd_weather/utils/commons_ext.dart';
@@ -154,7 +153,7 @@ class _WeatherObserveUvPainter extends BoxPainter {
         7.w,
         _circlePaint
           ..color = color.withOpacity(0)
-          ..blendMode = BlendMode.clear,
+          ..blendMode = BlendMode.src,
       );
       canvas.drawCircle(
         position,

@@ -73,7 +73,7 @@ class WeatherProvider extends BaseListProvider<WeatherItemData> {
       case Constants.itemTypeObserve:
         final length = itemTypeObserves?.length ?? 0;
         final count = (length / 2).ceil();
-    final height = count * Constants.itemObservePanelHeight.w + count * 12.w;
+    final height = count * Constants.itemObservePanelHeight.w + (count - 1) * 12.w;
         return [height, 0];
       default:
         return [294.w, 88.w];

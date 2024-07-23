@@ -33,99 +33,96 @@ class WeatherObserveForecase40Panel extends StatelessWidget {
     final upDaysDesc = upDays > 0 ? "$upDays天升温" : "预计近期气温平稳";
     final rainDaysDesc = rainDays > 0 ? "$rainDays天有雨" : "预计近期无降雨";
     Log.e("shrinkOffset = $shrinkOffset");
-    return ScaleLayout(
-      scale: 1.02,
-      child: Opacity(
-        opacity: percent,
-        child: Stack(
-          children: [
-            Positioned(
-              left: 0,
-              top: shrinkOffset,
-              right: 0,
-              bottom: 0,
-              child: BlurryContainer(
-                width: double.infinity,
-                height: double.infinity,
-                blur: 5,
-                color: Colours.white.withOpacity(0.1),
-                borderRadius: BorderRadius.circular(12.w),
-                padding: EdgeInsets.only(
-                  top: Constants.itemStickyHeight.w,
-                ),
-                child: Stack(
-                  children: [
-                    Positioned(
-                      left: 0,
-                      top: -shrinkOffset,
-                      right: 0,
-                      bottom: 0,
-                      child: SingleChildScrollView(
-                        padding: EdgeInsets.symmetric(horizontal: 16.w),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              "温度趋势",
-                              style: TextStyle(
-                                fontSize: 12.sp,
-                                color: Colours.white.withOpacity(0.6),
-                                height: 1,
-                              ),
+    return Opacity(
+      opacity: percent,
+      child: Stack(
+        children: [
+          Positioned(
+            left: 0,
+            top: shrinkOffset,
+            right: 0,
+            bottom: 0,
+            child: BlurryContainer(
+              width: double.infinity,
+              height: double.infinity,
+              blur: 5,
+              color: Colours.white.withOpacity(0.1),
+              borderRadius: BorderRadius.circular(12.w),
+              padding: EdgeInsets.only(
+                top: Constants.itemStickyHeight.w,
+              ),
+              child: Stack(
+                children: [
+                  Positioned(
+                    left: 0,
+                    top: -shrinkOffset,
+                    right: 0,
+                    bottom: 0,
+                    child: SingleChildScrollView(
+                      padding: EdgeInsets.symmetric(horizontal: 16.w),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            "温度趋势",
+                            style: TextStyle(
+                              fontSize: 12.sp,
+                              color: Colours.white.withOpacity(0.6),
+                              height: 1,
                             ),
-                            Gaps.generateGap(height: 8.w),
-                            Text(
-                              upDaysDesc,
-                              style: TextStyle(
-                                fontSize: 14.sp,
-                                color: Colours.white,
-                                height: 1,
-                              ),
+                          ),
+                          Gaps.generateGap(height: 8.w),
+                          Text(
+                            upDaysDesc,
+                            style: TextStyle(
+                              fontSize: 14.sp,
+                              color: Colours.white,
+                              height: 1,
                             ),
-                            Gaps.generateGap(height: 16.w),
-                            Text(
-                              "降水趋势",
-                              style: TextStyle(
-                                fontSize: 12.sp,
-                                color: Colours.white.withOpacity(0.6),
-                                height: 1,
-                              ),
+                          ),
+                          Gaps.generateGap(height: 16.w),
+                          Text(
+                            "降水趋势",
+                            style: TextStyle(
+                              fontSize: 12.sp,
+                              color: Colours.white.withOpacity(0.6),
+                              height: 1,
                             ),
-                            Gaps.generateGap(height: 8.w),
-                            Text(
-                              rainDaysDesc,
-                              style: TextStyle(
-                                fontSize: 14.sp,
-                                color: Colours.white,
-                                height: 1,
-                              ),
+                          ),
+                          Gaps.generateGap(height: 8.w),
+                          Text(
+                            rainDaysDesc,
+                            style: TextStyle(
+                              fontSize: 14.sp,
+                              color: Colours.white,
+                              height: 1,
                             ),
-                          ],
-                        ),
+                          ),
+                        ],
                       ),
                     ),
-                  ],
-                ),
-              ),
-            ),
-            Positioned(
-              top: shrinkOffset,
-              child: Container(
-                height: min(Constants.itemStickyHeight.w,
-                    Constants.itemObservePanelHeight.w - shrinkOffset),
-                padding: EdgeInsets.only(left: 16.w),
-                alignment: Alignment.centerLeft,
-                child: Text(
-                  "未来40日天气",
-                  style: TextStyle(
-                    fontSize: 12.sp,
-                    color: Colours.white.withOpacity(0.6),
                   ),
+                ],
+              ),
+            ),
+          ),
+          Positioned(
+            top: shrinkOffset,
+            child: Container(
+              height: min(Constants.itemStickyHeight.w,
+                  Constants.itemObservePanelHeight.w - shrinkOffset),
+              padding: EdgeInsets.only(left: 16.w),
+              alignment: Alignment.centerLeft,
+              child: Text(
+                "未来40日天气",
+                style: TextStyle(
+                  fontSize: 12.sp,
+                  color: Colours.white.withOpacity(0.6),
                 ),
               ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

@@ -28,97 +28,94 @@ class WeatherHourPanel extends StatelessWidget {
     final percent = ((weatherItemData.maxHeight - 12.w - shrinkOffset) /
             Constants.itemStickyHeight.w)
         .fixPercent();
-    return ScaleLayout(
-      scale: 1.02,
-      child: Opacity(
-        opacity: percent,
-        child: Stack(
-          children: [
-            BlurryContainer(
-              width: double.infinity,
-              height: double.infinity,
-              blur: 5,
-              margin: EdgeInsets.only(
-                left: 16.w,
-                right: 16.w,
-              ),
-              padding: EdgeInsets.only(
-                top: Constants.itemStickyHeight.w,
-              ),
-              color: Colours.white.withOpacity(0.1),
-              borderRadius: BorderRadius.circular(12.w),
-              child: Stack(
-                children: [
-                  Positioned(
-                    left: 0,
-                    top: -shrinkOffset,
-                    right: 0,
-                    bottom: 0,
-                    child: ListView.separated(
-                      scrollDirection: Axis.horizontal,
-                      padding: EdgeInsets.symmetric(horizontal: 16.w),
-                      itemCount:
-                          weatherItemData.weatherData?.hourFc?.length ?? 0,
-                      itemBuilder: (_, index) {
-                        final item = weatherItemData.weatherData?.hourFc
-                            .getOrNull(index);
-                        final time = item?.time ?? "";
-                        final weatherHourTime = time.getWeatherHourTime();
-                        return Column(
-                          children: [
-                            Gaps.generateGap(height: 4.w),
-                            Text(
-                              weatherHourTime,
-                              style: TextStyle(
-                                fontSize: 14.sp,
-                                color: Colours.white,
-                                height: 1,
-                              ),
+    return Opacity(
+      opacity: percent,
+      child: Stack(
+        children: [
+          BlurryContainer(
+            width: double.infinity,
+            height: double.infinity,
+            blur: 5,
+            margin: EdgeInsets.only(
+              left: 16.w,
+              right: 16.w,
+            ),
+            padding: EdgeInsets.only(
+              top: Constants.itemStickyHeight.w,
+            ),
+            color: Colours.white.withOpacity(0.1),
+            borderRadius: BorderRadius.circular(12.w),
+            child: Stack(
+              children: [
+                Positioned(
+                  left: 0,
+                  top: -shrinkOffset,
+                  right: 0,
+                  bottom: 0,
+                  child: ListView.separated(
+                    scrollDirection: Axis.horizontal,
+                    padding: EdgeInsets.symmetric(horizontal: 16.w),
+                    itemCount:
+                    weatherItemData.weatherData?.hourFc?.length ?? 0,
+                    itemBuilder: (_, index) {
+                      final item = weatherItemData.weatherData?.hourFc
+                          .getOrNull(index);
+                      final time = item?.time ?? "";
+                      final weatherHourTime = time.getWeatherHourTime();
+                      return Column(
+                        children: [
+                          Gaps.generateGap(height: 4.w),
+                          Text(
+                            weatherHourTime,
+                            style: TextStyle(
+                              fontSize: 14.sp,
+                              color: Colours.white,
+                              height: 1,
                             ),
-                            Gaps.generateGap(height: 12.w),
-                            LoadAssetImage(
-                              WeatherIconUtils.getWeatherIconByType(
-                                item?.type ?? -1,
-                                time.isNight(),
-                              ),
-                              width: 24.w,
-                              height: 24.w,
+                          ),
+                          Gaps.generateGap(height: 12.w),
+                          LoadAssetImage(
+                            WeatherIconUtils.getWeatherIconByType(
+                              item?.type ?? -1,
+                              time.isNight(),
                             ),
-                            Gaps.generateGap(height: 12.w),
-                            Text(
-                              item?.temp.getTemp() ?? "",
-                              style: TextStyle(
-                                fontSize: 17.sp,
-                                color: Colours.white,
-                                height: 1,
-                              ),
+                            width: 24.w,
+                            height: 24.w,
+                          ),
+                          Gaps.generateGap(height: 12.w),
+                          Text(
+                            item?.temp.getTemp() ?? "",
+                            style: TextStyle(
+                              fontSize: 17.sp,
+                              color: Colours.white,
+                              height: 1,
                             ),
-                          ],
-                        );
-                      },
-                      separatorBuilder: (_, index) {
-                        return Gaps.generateGap(width: 16.w);
-                      },
-                    ),
+                          ),
+                        ],
+                      );
+                    },
+                    separatorBuilder: (_, index) {
+                      return Gaps.generateGap(width: 16.w);
+                    },
                   ),
-                ],
-              ),
-            ),
-            Container(
-              height: Constants.itemStickyHeight.w,
-              margin: EdgeInsets.symmetric(horizontal: 16.w),
-              padding: EdgeInsets.only(left: 16.w),
-              alignment: Alignment.centerLeft,
-              child: Text(
-                "每小时天气预报",
-                style: TextStyle(
-                  fontSize: 12.sp,
-                  color: Colours.white.withOpacity(0.6),
                 ),
+              ],
+            ),
+          ),
+          Container(
+            height: Constants.itemStickyHeight.w,
+            margin: EdgeInsets.symmetric(horizontal: 16.w),
+            padding: EdgeInsets.only(left: 16.w),
+            alignment: Alignment.centerLeft,
+            child: Text(
+              "每小时天气预报",
+              style: TextStyle(
+                fontSize: 12.sp,
+                color: Colours.white.withOpacity(0.6),
               ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
