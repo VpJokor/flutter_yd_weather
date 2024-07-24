@@ -10,7 +10,6 @@ import 'package:flutter_yd_weather/res/gaps.dart';
 import 'package:flutter_yd_weather/utils/commons_ext.dart';
 import 'package:flutter_yd_weather/utils/log.dart';
 import 'package:flutter_yd_weather/widget/blurry_container.dart';
-import 'package:flutter_yd_weather/widget/scale_layout.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 class WeatherAlarmsPanel extends StatefulWidget {
