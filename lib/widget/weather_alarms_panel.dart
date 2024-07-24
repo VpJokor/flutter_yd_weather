@@ -84,10 +84,19 @@ class _WeatherAlarmsPanelState extends State<WeatherAlarmsPanel> {
                         final item = weatherItemData.weatherData?.alarms
                             ?.getOrNull(index);
                         final dateTime = DateTime.tryParse(item?.pubTime ?? "");
-                        int numOfHour = 0;
+                        String pubTimeDesc = "";
                         if (dateTime != null) {
                           final diff = DateTime.now().millisecondsSinceEpoch - dateTime.millisecondsSinceEpoch;
-                          numOfHour = (diff / 1000 / 60 / 60).floor();
+                          final fewHours = (diff / 1000 / 60 / 60).floor();
+                          pubTimeDesc = "$fewHours小时前更新";
+                          if (fewHours <= 0) {
+                            final fewMinutes = (diff / 1000 / 60).floor();
+                            pubTimeDesc = "$fewMinutes分钟前更新";
+                            if (fewMinutes <= 0) {
+                              final fewMills = (diff / 1000).floor();
+                              pubTimeDesc = "$fewMills秒前更新";
+                            }
+                          }
                         }
                         return SingleChildScrollView(
                           padding: EdgeInsets.symmetric(horizontal: 16.w),
@@ -112,7 +121,7 @@ class _WeatherAlarmsPanelState extends State<WeatherAlarmsPanel> {
                                 opacity: timePercent,
                                 duration: Duration.zero,
                                 child: Text(
-                                  "$numOfHour小时前更新",
+                                  pubTimeDesc,
                                   style: TextStyle(
                                     fontSize: 13.sp,
                                     color: Colours.white,
