@@ -83,7 +83,7 @@ class BlurryContainer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
+    /*return Padding(
       padding: margin ?? EdgeInsets.zero,
       child: Material(
         elevation: elevation,
@@ -102,6 +102,18 @@ class BlurryContainer extends StatelessWidget {
           ),
         ),
       ),
+    );*/
+    return Container(
+      height: height,
+      width: width,
+      padding: padding,
+      margin: margin,
+      decoration: BoxDecoration(
+        borderRadius: borderRadius,
+        color: color,
+      ),
+      clipBehavior: Clip.hardEdge,
+      child: child,
     );
   }
 }

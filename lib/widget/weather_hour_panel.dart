@@ -5,7 +5,6 @@ import 'package:flutter_yd_weather/res/gaps.dart';
 import 'package:flutter_yd_weather/utils/commons_ext.dart';
 import 'package:flutter_yd_weather/utils/weather_icon_utils.dart';
 import 'package:flutter_yd_weather/widget/load_asset_image.dart';
-import 'package:flutter_yd_weather/widget/scale_layout.dart';
 
 import '../config/constants.dart';
 import '../model/weather_item_data.dart';
@@ -28,8 +27,9 @@ class WeatherHourPanel extends StatelessWidget {
     final percent = ((weatherItemData.maxHeight - 12.w - shrinkOffset) /
             Constants.itemStickyHeight.w)
         .fixPercent();
-    return Opacity(
+    return AnimatedOpacity(
       opacity: percent,
+      duration: Duration.zero,
       child: Stack(
         children: [
           BlurryContainer(

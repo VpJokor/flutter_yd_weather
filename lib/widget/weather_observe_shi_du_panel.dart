@@ -3,7 +3,6 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_yd_weather/utils/commons_ext.dart';
-import 'package:flutter_yd_weather/widget/scale_layout.dart';
 import 'package:flutter_yd_weather/widget/weather_observe_shi_du_chart.dart';
 
 import '../config/constants.dart';
@@ -28,8 +27,9 @@ class WeatherObserveShiDuPanel extends StatelessWidget {
         ((Constants.itemObservePanelHeight.w - 12.w - shrinkOffset) /
                 Constants.itemStickyHeight.w)
             .fixPercent();
-    return Opacity(
+    return AnimatedOpacity(
       opacity: percent,
+      duration: Duration.zero,
       child: Stack(
         children: [
           Positioned(
@@ -84,7 +84,7 @@ class WeatherObserveShiDuPanel extends StatelessWidget {
             top: shrinkOffset,
             child: Container(
               height: min(Constants.itemStickyHeight.w,
-                  Constants.itemObservePanelHeight.w - shrinkOffset),
+                  Constants.itemObservePanelHeight.w - shrinkOffset).positiveNumber(),
               padding: EdgeInsets.only(left: 16.w),
               alignment: Alignment.centerLeft,
               child: Text(

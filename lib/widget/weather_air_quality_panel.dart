@@ -29,8 +29,9 @@ class WeatherAirQualityPanel extends StatelessWidget {
     final percent = ((weatherItemData.maxHeight - 12.w - shrinkOffset) /
             Constants.itemStickyHeight.w)
         .fixPercent();
-    return Opacity(
+    return AnimatedOpacity(
       opacity: percent,
+      duration: Duration.zero,
       child: Stack(
         children: [
           BlurryContainer(
@@ -60,8 +61,9 @@ class WeatherAirQualityPanel extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Gaps.generateGap(height: 12.w),
-                        Opacity(
+                        AnimatedOpacity(
                           opacity: titlePercent,
+                          duration: Duration.zero,
                           child: Text(
                             "${weatherItemData.weatherData?.evn?.aqi} - ${weatherItemData.weatherData?.evn?.aqiLevelName}",
                             style: TextStyle(
@@ -92,8 +94,9 @@ class WeatherAirQualityPanel extends StatelessWidget {
               ],
             ),
           ),
-          Opacity(
+          AnimatedOpacity(
             opacity: 1 - titlePercent,
+            duration: Duration.zero,
             child: Container(
               height: Constants.itemStickyHeight.w,
               margin: EdgeInsets.symmetric(horizontal: 16.w),

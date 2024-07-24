@@ -96,6 +96,7 @@ class _WeatherObserveUvPainter extends BoxPainter {
   void paint(Canvas canvas, Offset offset, ImageConfiguration configuration) {
     final size = configuration.size ?? Size.zero;
     final rect = offset & size;
+    canvas.saveLayer(rect, _circlePaint);
     _path.reset();
     final newRect = Rect.fromLTRB(
         rect.left + 2.w, rect.top + 2.w, rect.right - 2.w, rect.bottom - 2.w);
@@ -153,15 +154,16 @@ class _WeatherObserveUvPainter extends BoxPainter {
         7.w,
         _circlePaint
           ..color = color.withOpacity(0)
-          ..blendMode = BlendMode.src,
+          ..blendMode = BlendMode.clear,
       );
       canvas.drawCircle(
         position,
         4.w,
         _circlePaint
           ..color = color
-          ..blendMode = BlendMode.src,
+          ..blendMode = BlendMode.srcOver,
       );
+      canvas.restore();
     }
   }
 }

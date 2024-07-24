@@ -115,8 +115,9 @@ class WeatherHeaderWidgetState extends State<WeatherHeaderWidget> {
                   children: [
                     Column(
                       children: [
-                        Opacity(
+                        AnimatedOpacity(
                           opacity: _opacity3,
+                          duration: Duration.zero,
                           child: Row(
                             children: [
                               Expanded(child: Gaps.generateGap()),
@@ -158,8 +159,9 @@ class WeatherHeaderWidgetState extends State<WeatherHeaderWidget> {
                           ),
                         ),
                         Gaps.generateGap(height: 5.w),
-                        Opacity(
+                        AnimatedOpacity(
                           opacity: _opacity2,
+                          duration: Duration.zero,
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
@@ -234,8 +236,9 @@ class WeatherHeaderWidgetState extends State<WeatherHeaderWidget> {
                           ),
                         ),
                         Gaps.generateGap(height: 5.w),
-                        Opacity(
+                        AnimatedOpacity(
                           opacity: _opacity1,
+                          duration: Duration.zero,
                           child: Text(
                             currentWeatherDetailData?.wthr ?? "",
                             style: TextStyle(
@@ -255,8 +258,9 @@ class WeatherHeaderWidgetState extends State<WeatherHeaderWidget> {
                         ),
                       ],
                     ),
-                    Opacity(
+                    AnimatedOpacity(
                       opacity: _opacity4,
+                      duration: Duration.zero,
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [

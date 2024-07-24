@@ -22,7 +22,7 @@ extension StringExt on String? {
     }
     return 0;
   }
-  
+
   double getVisibilityValue() {
     if (isNullOrEmpty()) return 0;
     if (this!.toUpperCase().contains("KM")) {
@@ -161,6 +161,16 @@ extension DoubleExt on double? {
     if (this! < 0) return 0;
     return this!;
   }
+
+  double positiveNumber() {
+    if (this == null) return 0;
+    return this! < 0 ? 0 : this!;
+  }
+
+  double negativeNumber() {
+    if (this == null) return 0;
+    return this! > 0 ? 0 : this!;
+  }
 }
 
 extension ContextExtension on BuildContext {
@@ -198,6 +208,10 @@ extension ListExt<E> on List<E>? {
   E? getOrNull(int index) {
     if (this == null) return null;
     return index >= 0 && index <= this!.length - 1 ? this![index] : null;
+  }
+
+  E? firstOrNull() {
+    return getOrNull(0);
   }
 
   void forEachIndexed(void Function(E element, int index) action) {

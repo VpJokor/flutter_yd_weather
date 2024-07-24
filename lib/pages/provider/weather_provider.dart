@@ -4,9 +4,9 @@ import 'package:flutter_yd_weather/config/constants.dart';
 import 'package:flutter_yd_weather/model/weather_data.dart';
 import 'package:flutter_yd_weather/model/weather_item_data.dart';
 import 'package:flutter_yd_weather/utils/commons_ext.dart';
-import 'package:flutter_yd_weather/utils/log.dart';
 
 import '../../base/base_list_provider.dart';
+import '../../model/weather_index_data.dart';
 
 class WeatherProvider extends BaseListProvider<WeatherItemData> {
   final _weatherItemTypes = [
@@ -23,8 +23,8 @@ class WeatherProvider extends BaseListProvider<WeatherItemData> {
     final weatherItems = _weatherItemTypes.map(
       (itemType) {
         final itemTypeObserves = _getItemTypeObserves(itemType, weatherData);
-        final extentInfo =
-            _getPersistentHeaderExtentInfo(itemType, itemTypeObserves);
+        final extentInfo = _getPersistentHeaderExtentInfo(
+            itemType, itemTypeObserves, itemType == Constants.itemTypeLifeIndex ? weatherData?.indexes : null);
         return WeatherItemData(
           itemType: itemType,
           weatherData: weatherData,
@@ -55,8 +55,8 @@ class WeatherProvider extends BaseListProvider<WeatherItemData> {
     replace(weatherItems);
   }
 
-  List<double> _getPersistentHeaderExtentInfo(
-      int itemType, List<int>? itemTypeObserves) {
+  List<double> _getPersistentHeaderExtentInfo(int itemType,
+      List<int>? itemTypeObserves, List<WeatherIndexData>? indexes) {
     switch (itemType) {
       case Constants.itemTypeHourWeather:
         return [124.w, 0];
@@ -65,7 +65,10 @@ class WeatherProvider extends BaseListProvider<WeatherItemData> {
       case Constants.itemTypeAirQuality:
         return [88.w, 0];
       case Constants.itemTypeLifeIndex:
-        return [248.w, 0];
+        final length = indexes?.length ?? 0;
+        final columnHeight = (ScreenUtil().screenWidth - 2 * 16.w) / 3;
+        final height = (length / 3).ceil() * columnHeight + Constants.itemStickyHeight;
+        return [height, 0];
       case Constants.itemTypeAlarms:
         return [132.w, 0];
       case Constants.itemTypeForecast40:
@@ -73,7 +76,8 @@ class WeatherProvider extends BaseListProvider<WeatherItemData> {
       case Constants.itemTypeObserve:
         final length = itemTypeObserves?.length ?? 0;
         final count = (length / 2).ceil();
-    final height = count * Constants.itemObservePanelHeight.w + (count - 1) * 12.w;
+        final height =
+            count * Constants.itemObservePanelHeight.w + (count - 1) * 12.w;
         return [height, 0];
       default:
         return [294.w, 88.w];

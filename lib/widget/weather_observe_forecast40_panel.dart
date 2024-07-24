@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_yd_weather/utils/commons_ext.dart';
 import 'package:flutter_yd_weather/utils/log.dart';
-import 'package:flutter_yd_weather/widget/scale_layout.dart';
 
 import '../config/constants.dart';
 import '../model/weather_item_data.dart';
@@ -33,8 +32,9 @@ class WeatherObserveForecase40Panel extends StatelessWidget {
     final upDaysDesc = upDays > 0 ? "$upDays天升温" : "预计近期气温平稳";
     final rainDaysDesc = rainDays > 0 ? "$rainDays天有雨" : "预计近期无降雨";
     Log.e("shrinkOffset = $shrinkOffset");
-    return Opacity(
+    return AnimatedOpacity(
       opacity: percent,
+      duration: Duration.zero,
       child: Stack(
         children: [
           Positioned(
@@ -110,7 +110,7 @@ class WeatherObserveForecase40Panel extends StatelessWidget {
             top: shrinkOffset,
             child: Container(
               height: min(Constants.itemStickyHeight.w,
-                  Constants.itemObservePanelHeight.w - shrinkOffset),
+                  Constants.itemObservePanelHeight.w - shrinkOffset).positiveNumber(),
               padding: EdgeInsets.only(left: 16.w),
               alignment: Alignment.centerLeft,
               child: Text(

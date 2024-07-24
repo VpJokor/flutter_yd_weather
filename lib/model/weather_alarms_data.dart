@@ -9,12 +9,15 @@ class WeatherAlarmsData {
   String? title;
   String? desc;
   String? details;
+  @JsonKey(name: "pub_time")
+  String? pubTime;
 
   WeatherAlarmsData(
       this.degree,
       this.title,
       this.desc,
       this.details,
+      this.pubTime,
       );
 
   factory WeatherAlarmsData.fromJson(Map<String, dynamic> json) =>

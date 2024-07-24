@@ -28,8 +28,9 @@ class WeatherObserveWdPanel extends StatelessWidget {
         ((Constants.itemObservePanelHeight.w - 12.w - shrinkOffset) /
                 Constants.itemStickyHeight.w)
             .fixPercent();
-    return Opacity(
+    return AnimatedOpacity(
       opacity: percent,
+      duration: Duration.zero,
       child: Stack(
         children: [
           Positioned(
@@ -98,7 +99,7 @@ class WeatherObserveWdPanel extends StatelessWidget {
             top: shrinkOffset,
             child: Container(
               height: min(Constants.itemStickyHeight.w,
-                  Constants.itemObservePanelHeight.w - shrinkOffset),
+                  Constants.itemObservePanelHeight.w - shrinkOffset).positiveNumber(),
               padding: EdgeInsets.only(left: 16.w),
               alignment: Alignment.centerLeft,
               child: Text(

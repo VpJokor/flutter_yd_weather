@@ -40,8 +40,9 @@ class _WeatherAlarmsPanelState extends State<WeatherAlarmsPanel> {
         .fixPercent();
     Log.e(
         "titlePercent = $titlePercent timePercent = $timePercent percent = $percent");
-    return Opacity(
+    return AnimatedOpacity(
       opacity: percent,
+      duration: Duration.zero,
       child: Stack(
         children: [
           BlurryContainer(
@@ -82,14 +83,21 @@ class _WeatherAlarmsPanelState extends State<WeatherAlarmsPanel> {
                       itemBuilder: (_, index) {
                         final item = weatherItemData.weatherData?.alarms
                             ?.getOrNull(index);
+                        final dateTime = DateTime.tryParse(item?.pubTime ?? "");
+                        int numOfHour = 0;
+                        if (dateTime != null) {
+                          final diff = DateTime.now().millisecondsSinceEpoch - dateTime.millisecondsSinceEpoch;
+                          numOfHour = (diff / 1000 / 60 / 60).floor();
+                        }
                         return SingleChildScrollView(
                           padding: EdgeInsets.symmetric(horizontal: 16.w),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Gaps.generateGap(height: 12.w),
-                              Opacity(
+                              AnimatedOpacity(
                                 opacity: titlePercent,
+                                duration: Duration.zero,
                                 child: Text(
                                   item?.title ?? "",
                                   style: TextStyle(
@@ -100,10 +108,11 @@ class _WeatherAlarmsPanelState extends State<WeatherAlarmsPanel> {
                                 ),
                               ),
                               Gaps.generateGap(height: 4.w),
-                              Opacity(
+                              AnimatedOpacity(
                                 opacity: timePercent,
+                                duration: Duration.zero,
                                 child: Text(
-                                  "17小时前更新",
+                                  "$numOfHour小时前更新",
                                   style: TextStyle(
                                     fontSize: 13.sp,
                                     color: Colours.white,
@@ -155,8 +164,9 @@ class _WeatherAlarmsPanelState extends State<WeatherAlarmsPanel> {
               ],
             ),
           ),
-          Opacity(
+          AnimatedOpacity(
             opacity: 1 - timePercent,
+            duration: Duration.zero,
             child: Container(
               height: Constants.itemStickyHeight.w,
               margin: EdgeInsets.symmetric(horizontal: 16.w),

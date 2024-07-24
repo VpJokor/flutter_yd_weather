@@ -42,8 +42,9 @@ class WeatherObserveUvPanel extends StatelessWidget {
       uvIndexMax = currentWeatherDetailData?.uvIndexMax ?? 0;
       uvLevel = currentWeatherDetailData?.uvLevel ?? "0";
     }
-    return Opacity(
+    return AnimatedOpacity(
       opacity: percent,
+      duration: Duration.zero,
       child: Stack(
         children: [
           Positioned(
@@ -99,7 +100,8 @@ class WeatherObserveUvPanel extends StatelessWidget {
             top: shrinkOffset,
             child: Container(
               height: min(Constants.itemStickyHeight.w,
-                  Constants.itemObservePanelHeight.w - shrinkOffset),
+                      Constants.itemObservePanelHeight.w - shrinkOffset)
+                  .positiveNumber(),
               padding: EdgeInsets.only(left: 16.w),
               alignment: Alignment.centerLeft,
               child: Text(

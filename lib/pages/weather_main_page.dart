@@ -6,10 +6,13 @@ import 'package:flutter_yd_weather/mvp/power_presenter.dart';
 import 'package:flutter_yd_weather/pages/presenter/weather_main_presenter.dart';
 import 'package:flutter_yd_weather/pages/provider/weather_provider.dart';
 import 'package:flutter_yd_weather/res/gaps.dart';
+import 'package:flutter_yd_weather/routers/app_router.dart';
+import 'package:flutter_yd_weather/routers/fluro_navigator.dart';
 import 'package:flutter_yd_weather/utils/image_utils.dart';
 import 'package:flutter_yd_weather/utils/log.dart';
 import 'package:flutter_yd_weather/utils/weather_persistent_header_delegate.dart';
 import 'package:flutter_yd_weather/widget/load_asset_image.dart';
+import 'package:flutter_yd_weather/widget/opacity_layout.dart';
 import 'package:flutter_yd_weather/widget/weather_header_widget.dart';
 import 'package:provider/provider.dart';
 import '../base/base_list_page.dart';
@@ -77,6 +80,24 @@ class _WeatherMainPageState
                     ),
                   ],
                 ),
+                Positioned(
+                  right: 0,
+                  top: ScreenUtil().statusBarHeight,
+                  child: OpacityLayout(
+                    child: Container(
+                      padding: EdgeInsets.all(12.w),
+                      margin: EdgeInsets.all(8.w),
+                      child: LoadAssetImage(
+                        "ic_add",
+                        width: 20.w,
+                        height: 20.w,
+                      ),
+                    ),
+                    onPressed: () {
+                      NavigatorUtils.push(context, AppRouter.selectCityPage);
+                    },
+                  ),
+                ),
               ],
             );
           }),
@@ -139,6 +160,26 @@ class _WeatherMainPageState
   @override
   Widget buildItem(BuildContext context, int index, WeatherProvider provider) {
     return Gaps.empty;
+  }
+
+  @override
+  Widget? getFooter(WeatherProvider provider) {
+    final source = provider.list.firstOrNull()?.weatherData?.source?.title;
+    return source.isNullOrEmpty()
+        ? null
+        : SliverToBoxAdapter(
+            child: Container(
+              alignment: Alignment.center,
+              padding: EdgeInsets.only(bottom: 12.w),
+              child: Text(
+                "天气信息来自$source",
+                style: TextStyle(
+                  fontSize: 12.sp,
+                  color: Colours.white.withOpacity(0.4),
+                ),
+              ),
+            ),
+          );
   }
 
   @override

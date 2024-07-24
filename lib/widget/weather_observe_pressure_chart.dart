@@ -91,6 +91,7 @@ class _WeatherObservePressurePainter extends BoxPainter {
   void paint(Canvas canvas, Offset offset, ImageConfiguration configuration) {
     final size = configuration.size ?? Size.zero;
     final rect = offset & size;
+    canvas.saveLayer(rect, _pressurePaint);
     final newRect = Rect.fromLTRB(
         rect.left + 2.w, rect.top + 2.w, rect.right - 2.w, rect.bottom - 2.w);
     _path.reset();
@@ -126,7 +127,7 @@ class _WeatherObservePressurePainter extends BoxPainter {
         ..color = Colours.white.withOpacity(0)
         ..strokeWidth = 6.w
         ..strokeCap = StrokeCap.square
-        ..blendMode = BlendMode.src,
+        ..blendMode = BlendMode.clear,
     );
     canvas.drawLine(
       Offset(rect.width * 0.5 - 2.w + 4.w, 0),
@@ -135,8 +136,9 @@ class _WeatherObservePressurePainter extends BoxPainter {
         ..color = Colours.white
         ..strokeWidth = 2.5.w
         ..strokeCap = StrokeCap.round
-        ..blendMode = BlendMode.src,
+        ..blendMode = BlendMode.srcOver,
     );
+    canvas.restore();
     canvas.restore();
   }
 }

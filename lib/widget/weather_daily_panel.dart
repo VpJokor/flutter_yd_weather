@@ -35,8 +35,9 @@ class WeatherDailyPanel extends StatelessWidget {
         ?.reduce((e1, e2) => (e1.high ?? 0) > (e2.high ?? 0) ? e1 : e2);
     final minTempData = weatherItemData.weatherData?.forecast15
         ?.reduce((e1, e2) => (e1.low ?? 0) < (e2.low ?? 0) ? e1 : e2);
-    return Opacity(
+    return AnimatedOpacity(
       opacity: percent,
+      duration: Duration.zero,
       child: Stack(
         children: [
           BlurryContainer(
@@ -113,8 +114,9 @@ class WeatherDailyPanel extends StatelessWidget {
                               ),
                             ),
                             Gaps.generateGap(height: 12.w),
-                            Opacity(
+                            AnimatedOpacity(
                               opacity: isYesterday ? 0.5 : 1,
+                              duration: Duration.zero,
                               child: LoadAssetImage(
                                 WeatherIconUtils.getWeatherIconByType(
                                   item?.type ?? -1,
@@ -133,8 +135,9 @@ class WeatherDailyPanel extends StatelessWidget {
                               maxTemp: maxTempData?.high ?? 0,
                               minTemp: minTempData?.low ?? 0,
                             ),
-                            Opacity(
+                            AnimatedOpacity(
                               opacity: isYesterday ? 0.5 : 1,
+                              duration: Duration.zero,
                               child: LoadAssetImage(
                                 WeatherIconUtils.getWeatherIconByType(
                                   item?.type ?? -1,

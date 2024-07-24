@@ -159,6 +159,7 @@ class WeatherObservePanel extends StatelessWidget {
             right: 0,
             bottom: 0,
             child: Stack(
+              fit: StackFit.passthrough,
               children: observePanels,
             ),
           ),

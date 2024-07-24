@@ -34,8 +34,9 @@ class WeatherForecast40Panel extends StatelessWidget {
     final rainDays = weatherItemData.weatherData?.forecast40Data?.rainDays ?? 0;
     final upDaysDesc = upDays > 0 ? "$upDays天升温" : "预计近期气温平稳";
     final rainDaysDesc = rainDays > 0 ? "$rainDays天有雨" : "预计近期无降雨";
-    return Opacity(
+    return AnimatedOpacity(
       opacity: percent,
+      duration: Duration.zero,
       child: Stack(
         children: [
           BlurryContainer(
@@ -65,8 +66,9 @@ class WeatherForecast40Panel extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Gaps.generateGap(height: 12.w),
-                        Opacity(
+                        AnimatedOpacity(
                           opacity: titlePercent,
+                          duration: Duration.zero,
                           child: Text(
                             "未来40日天气",
                             style: TextStyle(
@@ -160,8 +162,9 @@ class WeatherForecast40Panel extends StatelessWidget {
               ],
             ),
           ),
-          Opacity(
+          AnimatedOpacity(
             opacity: 1 - titlePercent,
+            duration: Duration.zero,
             child: Container(
               height: Constants.itemStickyHeight.w,
               margin: EdgeInsets.symmetric(horizontal: 16.w),
