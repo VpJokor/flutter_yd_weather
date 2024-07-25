@@ -86,46 +86,39 @@ class _SelectCityPageState
             visible: provider.searchResult.isNotNullOrEmpty(),
             child: Container(
               color: context.backgroundColor,
-              child: NotificationListener<ScrollUpdateNotification>(
-                onNotification: (notification) {
-                  if (notification.dragDetails != null) {
-                    context.hideKeyboard();
-                  }
-                  return true;
-                },
-                child: ListView.builder(
-                  physics: const BouncingScrollPhysics(),
-                  padding: EdgeInsets.symmetric(vertical: 12.w),
-                  itemBuilder: (context, index) {
-                    final data = provider.searchResult?[index];
-                    final mainP = context.read<MainProvider>();
-                    final cityDataBox = mainP.cityDataBox;
-                    final hasAdded = cityDataBox.containsKey(data?.cityId);
-                    final content = (data?.prov.isNullOrEmpty() ?? true)
-                        ? "${data?.name} - ${data?.country}"
-                        : "${data?.name} - ${data?.prov} - ${data?.country}";
-                    return OpacityLayout(
-                      child: Padding(
-                        padding: EdgeInsets.symmetric(
-                            horizontal: 16.w, vertical: 12.w),
-                        child: Text(
-                          content,
-                          style: TextStyle(
-                            fontSize: 15.sp,
-                            color: hasAdded
-                                ? context.appMain
-                                : context.textColor01,
-                            fontWeight: FontWeight.bold,
-                          ),
+              child: ListView.builder(
+                physics: const BouncingScrollPhysics(),
+                padding: EdgeInsets.symmetric(vertical: 12.w),
+                keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+                itemBuilder: (context, index) {
+                  final data = provider.searchResult?[index];
+                  final mainP = context.read<MainProvider>();
+                  final cityDataBox = mainP.cityDataBox;
+                  final hasAdded = cityDataBox.containsKey(data?.cityId);
+                  final content = (data?.prov.isNullOrEmpty() ?? true)
+                      ? "${data?.name} - ${data?.country}"
+                      : "${data?.name} - ${data?.prov} - ${data?.country}";
+                  return OpacityLayout(
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(
+                          horizontal: 16.w, vertical: 12.w),
+                      child: Text(
+                        content,
+                        style: TextStyle(
+                          fontSize: 15.sp,
+                          color: hasAdded
+                              ? context.appMain
+                              : context.textColor01,
+                          fontWeight: FontWeight.bold,
                         ),
                       ),
-                      onPressed: () {
-                        mainP.addCity(context, hasAdded, data);
-                      },
-                    );
-                  },
-                  itemCount: provider.searchResult?.length ?? 0,
-                ),
+                    ),
+                    onPressed: () {
+                      mainP.addCity(context, hasAdded, data);
+                    },
+                  );
+                },
+                itemCount: provider.searchResult?.length ?? 0,
               ),
             ),
           ),

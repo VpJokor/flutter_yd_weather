@@ -229,10 +229,10 @@ packages:
     dependency: "direct main"
     description:
       name: dio
-      sha256: "11e40df547d418cc0c4900a9318b26304e665da6fa4755399a9ff9efd09034b5"
+      sha256: e17f6b3097b8c51b72c74c9f071a605c47bcc8893839bd66732457a5ebe73714
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "5.4.3+1"
+    version: "5.5.0+1"
   dio_cookie_manager:
     dependency: "direct main"
     description:
@@ -241,6 +241,14 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "3.1.1"
+  dio_web_adapter:
+    dependency: transitive
+    description:
+      name: dio_web_adapter
+      sha256: "36c5b2d79eb17cdae41e974b7a8284fec631651d2a6f39a8a2ff22327e90aeac"
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "1.0.1"
   easy_refresh:
     dependency: "direct main"
     description:
@@ -249,6 +257,14 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "3.4.0"
+  event_bus:
+    dependency: "direct main"
+    description:
+      name: event_bus
+      sha256: "44baa799834f4c803921873e7446a2add0f3efa45e101a054b1f0ab9b95f8edc"
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "2.0.0"
   extended_image:
     dependency: "direct main"
     description:
@@ -391,10 +407,10 @@ packages:
     dependency: "direct main"
     description:
       name: flutter_smart_dialog
-      sha256: c3e1e1ff1e805f0cb910a88ff2f23390bc5d21422a12886b87d222eee1e1ccf9
+      sha256: aa48bcac76178b29d4d18816c962a91c2553b95d4193325e654e6c90eb722620
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "4.9.7+7"
+    version: "4.9.7+9"
   flutter_test:
     dependency: "direct dev"
     description: flutter
@@ -966,10 +982,10 @@ packages:
     dependency: "direct main"
     description:
       name: smooth_page_indicator
-      sha256: eebe23a5bd887ca4bc7b9c6173362edb2c625e37aee6043a567a342973357a7b
+      sha256: "3b28b0c545fa67ed9e5997d9f9720d486f54c0c607e056a1094544e36934dff3"
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "1.2.0"
+    version: "1.2.0+3"
   source_gen:
     dependency: transitive
     description:

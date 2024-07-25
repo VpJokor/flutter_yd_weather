@@ -47,7 +47,7 @@ Map<String, dynamic> _$WeatherDetailDataToJson(WeatherDetailData instance) =>
       'uv_index': instance.uvIndex,
       'uv_index_max': instance.uvIndexMax,
       'uv_level': instance.uvLevel,
-      'visibility': instance.uvLevel,
+      'visibility': instance.visibility,
       'day': instance.day,
       'night': instance.night,
     };

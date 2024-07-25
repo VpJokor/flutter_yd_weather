@@ -1,14 +1,17 @@
-import 'package:extended_image/extended_image.dart';
+import 'dart:async';
+
+import 'package:fluro/fluro.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_yd_weather/main.dart';
 import 'package:flutter_yd_weather/mvp/power_presenter.dart';
 import 'package:flutter_yd_weather/pages/presenter/weather_main_presenter.dart';
 import 'package:flutter_yd_weather/pages/provider/weather_provider.dart';
+import 'package:flutter_yd_weather/pages/view/weather_main_view.dart';
 import 'package:flutter_yd_weather/res/gaps.dart';
 import 'package:flutter_yd_weather/routers/app_router.dart';
 import 'package:flutter_yd_weather/routers/fluro_navigator.dart';
-import 'package:flutter_yd_weather/utils/image_utils.dart';
 import 'package:flutter_yd_weather/utils/log.dart';
 import 'package:flutter_yd_weather/utils/weather_persistent_header_delegate.dart';
 import 'package:flutter_yd_weather/widget/load_asset_image.dart';
@@ -16,13 +19,10 @@ import 'package:flutter_yd_weather/widget/opacity_layout.dart';
 import 'package:flutter_yd_weather/widget/weather_header_widget.dart';
 import 'package:provider/provider.dart';
 import '../base/base_list_page.dart';
-import '../base/base_list_view.dart';
 import '../config/constants.dart';
 import '../model/weather_item_data.dart';
 import '../res/colours.dart';
 import 'package:flutter_yd_weather/utils/commons_ext.dart';
-
-import '../utils/commons.dart';
 
 class WeatherMainPage extends StatefulWidget {
   const WeatherMainPage({super.key});
@@ -33,15 +33,27 @@ class WeatherMainPage extends StatefulWidget {
 
 class _WeatherMainPageState
     extends BaseListPageState<WeatherMainPage, WeatherItemData, WeatherProvider>
-    implements BaseListView<WeatherItemData> {
+    implements WeatherMainView {
   late WeatherMainPresenter _weatherMainPresenter;
   final _weatherHeaderKey = GlobalKey<WeatherHeaderWidgetState>();
+  late StreamSubscription<RefreshWeatherDataEvent>
+      _refreshWeatherDataEventSubscription;
 
   @override
   void initState() {
     super.initState();
     setEnableRefresh(false);
     setEnableLoad(false);
+    _refreshWeatherDataEventSubscription =
+        eventBus.on<RefreshWeatherDataEvent>().listen((event) {
+      _weatherMainPresenter.obtainWeatherData(delayMilliseconds: 200);
+    });
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _refreshWeatherDataEventSubscription.cancel();
   }
 
   @override
@@ -62,45 +74,57 @@ class _WeatherMainPageState
         ),
         child: ChangeNotifierProvider<WeatherProvider>(
           create: (_) => provider,
-          child: Consumer<WeatherProvider>(builder: (_, p, __) {
-            final weatherHeaderItemData = p.list.singleOrNull((element) =>
-                element.itemType == Constants.itemTypeWeatherHeader);
-            return Stack(
-              children: [
-                WeatherHeaderWidget(
-                  key: _weatherHeaderKey,
-                  weatherItemData: weatherHeaderItemData,
-                ),
-                Column(
-                  children: [
-                    Gaps.generateGap(height: ScreenUtil().statusBarHeight),
-                    Gaps.generateGap(height: weatherHeaderItemData?.minHeight),
-                    Expanded(
-                      child: super.build(context),
-                    ),
-                  ],
-                ),
-                Positioned(
-                  right: 0,
-                  top: ScreenUtil().statusBarHeight,
-                  child: OpacityLayout(
-                    child: Container(
-                      padding: EdgeInsets.all(12.w),
-                      margin: EdgeInsets.all(8.w),
-                      child: LoadAssetImage(
-                        "ic_add",
-                        width: 20.w,
-                        height: 20.w,
-                      ),
-                    ),
-                    onPressed: () {
-                      NavigatorUtils.push(context, AppRouter.selectCityPage);
+          child: Consumer<WeatherProvider>(
+            builder: (_, p, __) {
+              final weatherHeaderItemData = p.list.singleOrNull((element) =>
+                  element.itemType == Constants.itemTypeWeatherHeader);
+              return Stack(
+                children: [
+                  WeatherHeaderWidget(
+                    key: _weatherHeaderKey,
+                    weatherItemData: weatherHeaderItemData,
+                    onRefresh: () {
+                      _weatherMainPresenter.obtainWeatherData(delayMilliseconds: 800);
                     },
                   ),
-                ),
-              ],
-            );
-          }),
+                  Column(
+                    children: [
+                      Gaps.generateGap(height: ScreenUtil().statusBarHeight),
+                      Gaps.generateGap(
+                          height: weatherHeaderItemData?.minHeight),
+                      Expanded(
+                        child: Listener(
+                          onPointerUp: (_) {
+                            _weatherHeaderKey.currentState?.onRelease();
+                          },
+                          child: super.build(context),
+                        ),
+                      ),
+                    ],
+                  ),
+                  Positioned(
+                    right: 0,
+                    top: ScreenUtil().statusBarHeight,
+                    child: OpacityLayout(
+                      child: Container(
+                        padding: EdgeInsets.all(12.w),
+                        margin: EdgeInsets.all(8.w),
+                        child: LoadAssetImage(
+                          "ic_add",
+                          width: 20.w,
+                          height: 20.w,
+                        ),
+                      ),
+                      onPressed: () {
+                        NavigatorUtils.push(context, AppRouter.cityManagerPage,
+                            transition: TransitionType.fadeIn);
+                      },
+                    ),
+                  ),
+                ],
+              );
+            },
+          ),
         ),
       ),
     );
@@ -193,4 +217,9 @@ class _WeatherMainPageState
 
   @override
   WeatherProvider generateProvider() => WeatherProvider();
+
+  @override
+  void obtainWeatherDataCallback() {
+    _weatherHeaderKey.currentState?.refreshComplete();
+  }
 }

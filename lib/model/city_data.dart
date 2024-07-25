@@ -1,4 +1,6 @@
 import 'package:flutter_yd_weather/config/constants.dart';
+import 'package:flutter_yd_weather/model/simple_weather_data.dart';
+import 'package:flutter_yd_weather/model/weather_data.dart';
 import 'package:hive/hive.dart';
 import 'package:json_annotation/json_annotation.dart';
 
@@ -32,6 +34,9 @@ class CityData {
   @HiveField(9)
   @JsonKey(includeFromJson: false, includeToJson: false)
   bool? isLocationCity;
+  @HiveField(10)
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  SimpleWeatherData? weatherData;
 
   CityData(
     this.cityLevelName,

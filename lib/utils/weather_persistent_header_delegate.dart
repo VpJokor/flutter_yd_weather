@@ -23,36 +23,43 @@ class WeatherPersistentHeaderDelegate extends SliverPersistentHeaderDelegate {
       BuildContext context, double shrinkOffset, bool overlapsContent) {
     if (weatherItemData.itemType == Constants.itemTypeAlarms) {
       return WeatherAlarmsPanel(
+        key: ValueKey(weatherItemData.itemType),
         data: weatherItemData,
         shrinkOffset: shrinkOffset,
       );
     } else if (weatherItemData.itemType == Constants.itemTypeAirQuality) {
       return WeatherAirQualityPanel(
+        key: ValueKey(weatherItemData.itemType),
         data: weatherItemData,
         shrinkOffset: shrinkOffset,
       );
     } else if (weatherItemData.itemType == Constants.itemTypeHourWeather) {
       return WeatherHourPanel(
+        key: ValueKey(weatherItemData.itemType),
         data: weatherItemData,
         shrinkOffset: shrinkOffset,
       );
     } else if (weatherItemData.itemType == Constants.itemTypeDailyWeather) {
       return WeatherDailyPanel(
+        key: ValueKey(weatherItemData.itemType),
         data: weatherItemData,
         shrinkOffset: shrinkOffset,
       );
     } else if (weatherItemData.itemType == Constants.itemTypeForecast40) {
       return WeatherForecast40Panel(
+        key: ValueKey(weatherItemData.itemType),
         data: weatherItemData,
         shrinkOffset: shrinkOffset,
       );
     } else if (weatherItemData.itemType == Constants.itemTypeObserve) {
       return WeatherObservePanel(
+        key: ValueKey(weatherItemData.itemType),
         data: weatherItemData,
         shrinkOffset: shrinkOffset,
       );
     } else if (weatherItemData.itemType == Constants.itemTypeLifeIndex) {
       return WeatherLifeIndexPanel(
+        key: ValueKey(weatherItemData.itemType),
         data: weatherItemData,
         shrinkOffset: shrinkOffset,
       );

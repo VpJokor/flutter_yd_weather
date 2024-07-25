@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../mvp/base_page.dart';
@@ -21,13 +22,17 @@ abstract class BaseLoadingPageState<T extends StatefulWidget,
     return ChangeNotifierProvider<PROVIDER>(
       create: (_) => _provider,
       child: Consumer<PROVIDER>(builder: (_, provider, __) {
-        return MultipleStatusLayout(
-          status: provider.status,
-          content: getContent(provider),
-          onTap: onRetry,
-          title: provider.title,
-        );
+        return getRoot(provider);
       }),
+    );
+  }
+
+  Widget getRoot(PROVIDER provider) {
+    return MultipleStatusLayout(
+      status: provider.status,
+      content: getContent(provider),
+      onTap: onRetry,
+      title: provider.title,
     );
   }
 

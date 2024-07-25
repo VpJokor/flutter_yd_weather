@@ -26,13 +26,15 @@ class CityDataAdapter extends TypeAdapter<CityData> {
       fields[6] as String?,
       fields[7] as String?,
       fields[8] as String?,
-    )..isLocationCity = fields[9] as bool?;
+    )
+      ..isLocationCity = fields[9] as bool?
+      ..weatherData = fields[10] as SimpleWeatherData?;
   }
 
   @override
   void write(BinaryWriter writer, CityData obj) {
     writer
-      ..writeByte(10)
+      ..writeByte(11)
       ..writeByte(0)
       ..write(obj.cityLevelName)
       ..writeByte(1)
@@ -52,7 +54,9 @@ class CityDataAdapter extends TypeAdapter<CityData> {
       ..writeByte(8)
       ..write(obj.cityLevelId)
       ..writeByte(9)
-      ..write(obj.isLocationCity);
+      ..write(obj.isLocationCity)
+      ..writeByte(10)
+      ..write(obj.weatherData);
   }
 
   @override

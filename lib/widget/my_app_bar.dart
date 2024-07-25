@@ -14,7 +14,7 @@ class MyAppBar extends StatelessWidget implements PreferredSizeWidget {
     this.title = '',
     this.centerTitle = '',
     this.titleColor = Colours.black,
-    this.backImg = 'ic_title_back_black',
+    this.backImg = 'ic_close_icon',
     this.backImgColor,
     this.rightIcon1,
     this.rightIcon2,
@@ -59,13 +59,13 @@ class MyAppBar extends StatelessWidget implements PreferredSizeWidget {
             if (rightIcon2.isNotNullOrEmpty())
               IconButton(
                 onPressed: onRightIcon2Pressed,
-                tooltip: rightIcon1,
+                tooltip: rightIcon2,
                 padding: const EdgeInsets.all(12.0),
                 icon: LoadAssetImage(
                   rightIcon2 ?? "",
                   color: rightIconColor ?? Colours.color333333,
-                  width: 24.w,
-                  height: 24.w,
+                  width: 20.w,
+                  height: 20.w,
                 ),
               ),
             if (rightIcon1.isNotNullOrEmpty())
@@ -76,8 +76,8 @@ class MyAppBar extends StatelessWidget implements PreferredSizeWidget {
                 icon: LoadAssetImage(
                   rightIcon1 ?? "",
                   color: rightIconColor ?? Colours.color333333,
-                  width: 24.w,
-                  height: 24.w,
+                  width: 20.w,
+                  height: 20.w,
                 ),
               ),
           ],
@@ -93,12 +93,12 @@ class MyAppBar extends StatelessWidget implements PreferredSizeWidget {
               }
             },
             tooltip: 'Back',
-            padding: const EdgeInsets.all(12.0),
+            padding: EdgeInsets.symmetric(horizontal:  24.w),
             icon: LoadAssetImage(
               backImg,
               color: backImgColor ?? Colours.color333333,
-              width: (29 / 3).w,
-              height: (51 / 3).w,
+              width: 22.w,
+              height: 22.w,
             ),
           )
         : Gaps.empty;

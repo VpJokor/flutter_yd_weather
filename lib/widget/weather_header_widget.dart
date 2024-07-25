@@ -4,7 +4,9 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_yd_weather/config/constants.dart';
 import 'package:flutter_yd_weather/model/weather_item_data.dart';
 import 'package:flutter_yd_weather/res/gaps.dart';
+import 'package:flutter_yd_weather/utils/commons.dart';
 import 'package:flutter_yd_weather/utils/commons_ext.dart';
+import 'package:flutter_yd_weather/widget/load_asset_image.dart';
 
 import '../res/colours.dart';
 import '../utils/log.dart';
@@ -13,9 +15,11 @@ class WeatherHeaderWidget extends StatefulWidget {
   const WeatherHeaderWidget({
     super.key,
     required this.weatherItemData,
+    this.onRefresh,
   });
 
   final WeatherItemData? weatherItemData;
+  final void Function()? onRefresh;
 
   @override
   State<StatefulWidget> createState() => WeatherHeaderWidgetState();
@@ -26,10 +30,14 @@ class WeatherHeaderWidgetState extends State<WeatherHeaderWidget> {
   double _marginTop = 0;
   final _currentMarginTop = 44.w;
   final _minMarginTop = 22.w;
+  final _refreshTriggerOffset = 128.w;
+  Duration _refreshDuration = Duration.zero;
   double _opacity1 = 1;
   double _opacity2 = 1;
   double _opacity3 = 1;
   double _opacity4 = 0;
+  double _refreshOpacity = 0;
+  int _refreshStatus = Constants.refreshNone;
 
   @override
   void initState() {
@@ -70,7 +78,45 @@ class WeatherHeaderWidgetState extends State<WeatherHeaderWidget> {
       _opacity3 = opacity3 > 1 ? 1 : (opacity3 < 0 ? 0 : opacity3);
       final opacity4 = 1 - (newPercent - 0.9) / (0.9 - 1.0);
       _opacity4 = opacity4 > 1 ? 1 : (opacity4 < 0 ? 0 : opacity4);
+      _refreshOpacity = (_refreshStatus == Constants.refreshing ||
+              _refreshStatus == Constants.refreshComplete)
+          ? 1
+          : offset < 0
+              ? (offset / _refreshTriggerOffset).abs().fixPercent()
+              : 0;
+      Log.e("_refreshOpacity = $_refreshOpacity");
     });
+  }
+
+  void onRelease() {
+    if (_refreshStatus == Constants.refreshing) return;
+    if (_refreshOpacity >= 1) {
+      widget.onRefresh?.call();
+      setState(() {
+        _refreshStatus = Constants.refreshing;
+      });
+    }
+  }
+
+  void refreshComplete() {
+    if (_refreshStatus == Constants.refreshing) {
+      setState(() {
+        _refreshStatus = Constants.refreshComplete;
+        Commons.postDelayed(delayMilliseconds: 400, () {
+          setState(() {
+            _refreshDuration = const Duration(milliseconds: 300);
+            _refreshOpacity = 0;
+            _refreshStatus = Constants.refreshed;
+            Commons.postDelayed(delayMilliseconds: 300, () {
+              setState(() {
+                _refreshStatus = Constants.refreshNone;
+                _refreshDuration = Duration.zero;
+              });
+            });
+          });
+        });
+      });
+    }
   }
 
   @override
@@ -81,6 +127,12 @@ class WeatherHeaderWidgetState extends State<WeatherHeaderWidget> {
           element.date ==
           DateUtil.formatDate(DateTime.now(), format: Constants.yyyymmdd),
     );
+    String refreshDesc = "释放刷新";
+    if (_refreshStatus == Constants.refreshing) {
+      refreshDesc = "正在刷新";
+    } else if (_refreshStatus == Constants.refreshComplete || _refreshStatus == Constants.refreshed) {
+      refreshDesc = "刷新完成";
+    }
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -93,7 +145,37 @@ class WeatherHeaderWidgetState extends State<WeatherHeaderWidget> {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Gaps.generateGap(height: _marginTop),
+                Container(
+                  height: _marginTop,
+                  alignment: Alignment.center,
+                  child: AnimatedOpacity(
+                    opacity: _refreshOpacity,
+                    duration: _refreshDuration,
+                    child: AnimatedSlide(
+                      offset: Offset(0, -0.2 * (1 - _refreshOpacity)),
+                      duration: _refreshDuration,
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          LoadAssetImage(
+                            "ic_refresh_icon",
+                            width: 16.w,
+                            height: 16.w,
+                            color: Colours.white.withOpacity(0.6),
+                          ),
+                          Gaps.generateGap(width: 4.w),
+                          Text(
+                            refreshDesc,
+                            style: TextStyle(
+                              fontSize: 12.sp,
+                              color: Colours.white.withOpacity(0.6),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
                 Text(
                   weatherData?.meta?.city ?? "",
                   style: TextStyle(
@@ -240,7 +322,7 @@ class WeatherHeaderWidgetState extends State<WeatherHeaderWidget> {
                           opacity: _opacity1,
                           duration: Duration.zero,
                           child: Text(
-                            currentWeatherDetailData?.wthr ?? "",
+                            weatherData?.observe?.wthr ?? "",
                             style: TextStyle(
                               fontSize: 20.sp,
                               color: Colours.white,
@@ -265,7 +347,7 @@ class WeatherHeaderWidgetState extends State<WeatherHeaderWidget> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Text(
-                            "${weatherData?.observe?.temp.getTemp()} | ${currentWeatherDetailData?.wthr}",
+                            "${weatherData?.observe?.temp.getTemp()} | ${weatherData?.observe?.wthr}",
                             style: TextStyle(
                               fontSize: 20.sp,
                               color: Colours.white,

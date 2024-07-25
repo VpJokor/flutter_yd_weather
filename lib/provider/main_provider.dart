@@ -1,5 +1,6 @@
 import 'package:fluro/fluro.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_yd_weather/main.dart';
 import 'package:hive/hive.dart';
 import 'package:sp_util/sp_util.dart';
 
@@ -24,7 +25,6 @@ class MainProvider extends ChangeNotifier {
       final isLocationCity = cityData.isLocationCity ?? false;
       SpUtil.putString(Constants.currentCityId, isLocationCity ? Constants.locationCityId : cityData.cityId ?? "");
     }
-    notifyListeners();
   }
 
   void addCity(BuildContext context, bool hasAdded, CityData? cityData) {
@@ -41,6 +41,7 @@ class MainProvider extends ChangeNotifier {
               cityData)
           .then((_) {
         currentCityData = cityData;
+        eventBus.fire(RefreshWeatherDataEvent());
         if (Navigator.canPop(context)) {
           NavigatorUtils.goBackUntil(context, Routes.main);
         } else {

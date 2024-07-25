@@ -1,12 +1,14 @@
 import 'package:cookie_jar/cookie_jar.dart';
 import 'package:dio/dio.dart';
 import 'package:dio_cookie_manager/dio_cookie_manager.dart' as dioCookieManager;
+import 'package:event_bus/event_bus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:flutter_yd_weather/config/constants.dart';
 import 'package:flutter_yd_weather/model/city_data.dart';
+import 'package:flutter_yd_weather/model/simple_weather_data.dart';
 import 'package:flutter_yd_weather/pages/splash_page.dart';
 import 'package:flutter_yd_weather/provider/locale_provider.dart';
 import 'package:flutter_yd_weather/provider/main_provider.dart';
@@ -26,6 +28,12 @@ import 'config/app_runtime_data.dart';
 import 'net/intercept.dart';
 import 'net/net_utils.dart';
 
+EventBus eventBus = EventBus();
+
+class RefreshWeatherDataEvent {
+  RefreshWeatherDataEvent();
+}
+
 Future<void> main() async {
   /// 异常处理
   handleError(() async {
@@ -38,6 +46,7 @@ Future<void> main() async {
     /// Hive
     await Hive.initFlutter();
     Hive.registerAdapter(CityDataAdapter());
+    Hive.registerAdapter(SimpleWeatherDataAdapter());
     await Hive.openBox<CityData>(Constants.cityDataBox);
     runApp(MyApp());
   });

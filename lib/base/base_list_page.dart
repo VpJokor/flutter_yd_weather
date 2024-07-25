@@ -70,29 +70,33 @@ abstract class BaseListPageState<T extends StatefulWidget, ITEM,
       return Container(
         color: _bgColor,
         child: EasyRefresh.builder(
-            controller: _controller,
-            scrollController: _scrollController,
-            onRefresh: _enableRefresh
-                ? () async {
-                    onRefresh();
-                  }
-                : null,
-            onLoad: _enableLoad
-                ? () async {
-                    onLoad();
-                  }
-                : null,
-            childBuilder: (context, physics) {
-              return CustomScrollView(
-                controller: _scrollController,
-                anchor: getAnchor(provider, constraints.maxHeight),
-                physics: physics,
-                slivers: slivers,
-              );
-            }),
+          controller: _controller,
+          scrollController: _scrollController,
+          notRefreshHeader: notRefreshHeader,
+          onRefresh: _enableRefresh
+              ? () async {
+                  onRefresh();
+                }
+              : null,
+          onLoad: _enableLoad
+              ? () async {
+                  onLoad();
+                }
+              : null,
+          childBuilder: (context, physics) {
+            return CustomScrollView(
+              controller: _scrollController,
+              anchor: getAnchor(provider, constraints.maxHeight),
+              physics: physics,
+              slivers: slivers,
+            );
+          },
+        ),
       );
     });
   }
+
+  NotRefreshHeader? notRefreshHeader;
 
   void finishRefresh() {
     _controller.finishRefresh();
