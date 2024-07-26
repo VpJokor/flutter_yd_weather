@@ -24,7 +24,12 @@ class WeatherProvider extends BaseListProvider<WeatherItemData> {
       (itemType) {
         final itemTypeObserves = _getItemTypeObserves(itemType, weatherData);
         final extentInfo = _getPersistentHeaderExtentInfo(
-            itemType, itemTypeObserves, itemType == Constants.itemTypeLifeIndex ? weatherData?.indexes : null);
+            itemType,
+            itemTypeObserves,
+            (itemType == Constants.itemTypeDailyWeather ||
+                    itemType == Constants.itemTypeLifeIndex)
+                ? weatherData
+                : null);
         return WeatherItemData(
           itemType: itemType,
           weatherData: weatherData,
@@ -46,28 +51,33 @@ class WeatherProvider extends BaseListProvider<WeatherItemData> {
           (weatherData?.forecast15.isNullOrEmpty() ?? true);
       final removeObservePanel = itemType == Constants.itemTypeObserve &&
           element.itemTypeObserves.isNullOrEmpty();
+      final removeLifeIndexPanel = itemType == Constants.itemTypeLifeIndex &&
+          (weatherData?.indexes.isNullOrEmpty() ?? true);
       return removeAlarmsPanel ||
           removeAirQualityPanel ||
           removeHourPanel ||
           removeDailyPanel ||
-          removeObservePanel;
+          removeObservePanel ||
+          removeLifeIndexPanel;
     });
     replace(weatherItems);
   }
 
-  List<double> _getPersistentHeaderExtentInfo(int itemType,
-      List<int>? itemTypeObserves, List<WeatherIndexData>? indexes) {
+  List<double> _getPersistentHeaderExtentInfo(
+      int itemType, List<int>? itemTypeObserves, WeatherData? weatherData) {
     switch (itemType) {
       case Constants.itemTypeHourWeather:
         return [124.w, 0];
       case Constants.itemTypeDailyWeather:
-        return [394.w, 0];
+        final find = weatherData?.forecast15?.singleOrNull((element) => element.aqiLevelName.isNotNullOrEmpty());
+        return [find != null ? 394.w : 374.w, 0];
       case Constants.itemTypeAirQuality:
         return [88.w, 0];
       case Constants.itemTypeLifeIndex:
-        final length = indexes?.length ?? 0;
+        final length = weatherData?.indexes?.length ?? 0;
         final columnHeight = (ScreenUtil().screenWidth - 2 * 16.w) / 3;
-        final height = (length / 3).ceil() * columnHeight + Constants.itemStickyHeight;
+        final height =
+            (length / 3).ceil() * columnHeight + Constants.itemStickyHeight;
         return [height, 0];
       case Constants.itemTypeAlarms:
         return [132.w, 0];
@@ -110,24 +120,29 @@ class WeatherProvider extends BaseListProvider<WeatherItemData> {
           uvIndexMax = currentWeatherDetailData?.uvIndexMax ?? 0;
           uvLevel = currentWeatherDetailData?.uvLevel ?? "0";
         }
-        final removeUvPanel =
-            uvIndex <= 0 || uvIndexMax <= 0 || uvLevel.isEmpty;
-        final removeShiDuPanel =
-            weatherData.observe?.shiDu.isNullOrEmpty() ?? true;
-        final removeTiGanPanel =
-            weatherData.observe?.tiGan.isNullOrEmpty() ?? true;
-        final removeWdPanel =
-            (weatherData.observe?.wd.isNullOrEmpty() ?? true) ||
-                (weatherData.observe?.wp.isNullOrEmpty() ?? true);
+        final removeUvPanel = element == Constants.itemTypeObserveUv &&
+            (uvIndex <= 0 || uvIndexMax <= 0 || uvLevel.isEmpty);
+        final removeShiDuPanel = element == Constants.itemTypeObserveShiDu &&
+            (weatherData.observe?.shiDu.isNullOrEmpty() ?? true);
+        final removeTiGanPanel = element == Constants.itemTypeObserveTiGan &&
+            (weatherData.observe?.tiGan.isNullOrEmpty() ?? true);
+        final removeWdPanel = element == Constants.itemTypeObserveWd &&
+            ((weatherData.observe?.wd.isNullOrEmpty() ?? true) ||
+                (weatherData.observe?.wp.isNullOrEmpty() ?? true));
         final removeSunriseSunsetPanel =
-            (currentWeatherDetailData?.sunrise.isNullOrEmpty() ?? true) ||
-                (currentWeatherDetailData?.sunset.isNullOrEmpty() ?? true);
+            element == Constants.itemTypeObserveSunriseSunset &&
+                ((currentWeatherDetailData?.sunrise.isNullOrEmpty() ?? true) ||
+                    (currentWeatherDetailData?.sunset.isNullOrEmpty() ?? true));
         final removePressurePanel =
-            weatherData.observe?.pressure.isNullOrEmpty() ?? true;
-        final removeVisibilityPanel =
-            (weatherData.observe?.visibility.isNullOrEmpty() ?? true) ||
-                (currentWeatherDetailData?.visibility.isNullOrEmpty() ?? true);
-        final removeForecast40Panel = weatherData.forecast40Data == null;
+            element == Constants.itemTypeObservePressure &&
+                (weatherData.observe?.pressure.isNullOrEmpty() ?? true);
+        final removeVisibilityPanel = element ==
+                Constants.itemTypeObserveVisibility &&
+            ((weatherData.observe?.visibility.isNullOrEmpty() ?? true) ||
+                (currentWeatherDetailData?.visibility.isNullOrEmpty() ?? true));
+        final removeForecast40Panel =
+            element == Constants.itemTypeObserveForecast40 &&
+                weatherData.forecast40Data == null;
         return removeUvPanel ||
             removeShiDuPanel ||
             removeTiGanPanel ||

@@ -14,6 +14,10 @@ abstract class BaseListPageState<T extends StatefulWidget, ITEM,
 
   ScrollController? get scrollController => _scrollController;
 
+  final _contentKey = GlobalKey();
+
+  GlobalKey get contentKey => _contentKey;
+
   // 是否开启刷新
   bool _enableRefresh = true;
 
@@ -68,6 +72,7 @@ abstract class BaseListPageState<T extends StatefulWidget, ITEM,
     }
     return LayoutBuilder(builder: (_, constraints) {
       return Container(
+        key: _contentKey,
         color: _bgColor,
         child: EasyRefresh.builder(
           controller: _controller,

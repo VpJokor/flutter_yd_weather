@@ -130,100 +130,86 @@ class WeatherHeaderWidgetState extends State<WeatherHeaderWidget> {
     String refreshDesc = "释放刷新";
     if (_refreshStatus == Constants.refreshing) {
       refreshDesc = "正在刷新";
-    } else if (_refreshStatus == Constants.refreshComplete || _refreshStatus == Constants.refreshed) {
+    } else if (_refreshStatus == Constants.refreshComplete ||
+        _refreshStatus == Constants.refreshed) {
       refreshDesc = "刷新完成";
     }
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Gaps.generateGap(height: ScreenUtil().statusBarHeight),
-        SizedBox(
-          width: double.infinity,
-          height: _currentHeight,
-          child: SingleChildScrollView(
-            physics: const NeverScrollableScrollPhysics(),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Container(
-                  height: _marginTop,
-                  alignment: Alignment.center,
-                  child: AnimatedOpacity(
-                    opacity: _refreshOpacity,
-                    duration: _refreshDuration,
-                    child: AnimatedSlide(
-                      offset: Offset(0, -0.2 * (1 - _refreshOpacity)),
+    return SingleChildScrollView(
+      physics: const NeverScrollableScrollPhysics(),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Gaps.generateGap(height: ScreenUtil().statusBarHeight),
+          SizedBox(
+            width: double.infinity,
+            height: _currentHeight,
+            child: SingleChildScrollView(
+              physics: const NeverScrollableScrollPhysics(),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Container(
+                    height: _marginTop,
+                    alignment: Alignment.center,
+                    child: AnimatedOpacity(
+                      opacity: _refreshOpacity,
                       duration: _refreshDuration,
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          LoadAssetImage(
-                            "ic_refresh_icon",
-                            width: 16.w,
-                            height: 16.w,
-                            color: Colours.white.withOpacity(0.6),
-                          ),
-                          Gaps.generateGap(width: 4.w),
-                          Text(
-                            refreshDesc,
-                            style: TextStyle(
-                              fontSize: 12.sp,
+                      child: AnimatedSlide(
+                        offset: Offset(0, -0.2 * (1 - _refreshOpacity)),
+                        duration: _refreshDuration,
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            LoadAssetImage(
+                              "ic_refresh_icon",
+                              width: 16.w,
+                              height: 16.w,
                               color: Colours.white.withOpacity(0.6),
                             ),
-                          ),
-                        ],
+                            Gaps.generateGap(width: 4.w),
+                            Text(
+                              refreshDesc,
+                              style: TextStyle(
+                                fontSize: 12.sp,
+                                color: Colours.white.withOpacity(0.6),
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   ),
-                ),
-                Text(
-                  weatherData?.meta?.city ?? "",
-                  style: TextStyle(
-                    fontSize: 28.sp,
-                    color: Colours.white,
-                    height: 1,
-                    fontFamily: "RobotoThin",
-                    shadows: const [
-                      BoxShadow(
-                        color: Colours.black_3,
-                        offset: Offset(1, 1),
-                        blurRadius: 2,
-                      ),
-                    ],
+                  Text(
+                    weatherData?.meta?.city ?? "",
+                    style: TextStyle(
+                      fontSize: 28.sp,
+                      color: Colours.white,
+                      height: 1,
+                      fontFamily: "RobotoThin",
+                      shadows: const [
+                        BoxShadow(
+                          color: Colours.black_3,
+                          offset: Offset(1, 1),
+                          blurRadius: 2,
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-                Gaps.generateGap(height: 5.w),
-                Stack(
-                  children: [
-                    Column(
-                      children: [
-                        AnimatedOpacity(
-                          opacity: _opacity3,
-                          duration: Duration.zero,
-                          child: Row(
-                            children: [
-                              Expanded(child: Gaps.generateGap()),
-                              Text(
-                                weatherData?.observe?.temp?.toString() ?? "",
-                                style: TextStyle(
-                                  fontSize: 92.sp,
-                                  color: Colours.white,
-                                  height: 1,
-                                  fontFamily: "RobotoThin",
-                                  shadows: const [
-                                    BoxShadow(
-                                      color: Colours.black_3,
-                                      offset: Offset(1, 1),
-                                      blurRadius: 2,
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              Expanded(
-                                child: Text(
-                                  "°",
+                  Gaps.generateGap(height: 5.w),
+                  Stack(
+                    children: [
+                      Column(
+                        children: [
+                          AnimatedOpacity(
+                            opacity: _opacity3,
+                            duration: Duration.zero,
+                            child: Row(
+                              children: [
+                                Expanded(child: Gaps.generateGap()),
+                                Text(
+                                  weatherData?.observe?.temp?.toString() ?? "",
                                   style: TextStyle(
-                                    fontSize: 86.sp,
+                                    fontSize: 92.sp,
                                     color: Colours.white,
                                     height: 1,
                                     fontFamily: "RobotoThin",
@@ -236,142 +222,163 @@ class WeatherHeaderWidgetState extends State<WeatherHeaderWidget> {
                                     ],
                                   ),
                                 ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        Gaps.generateGap(height: 5.w),
-                        AnimatedOpacity(
-                          opacity: _opacity2,
-                          duration: Duration.zero,
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Text(
-                                "最\n高",
-                                style: TextStyle(
-                                  fontSize: 15.sp,
-                                  color: Colours.white,
-                                  height: 1,
-                                  fontFamily: "RobotoLight",
-                                  shadows: const [
-                                    BoxShadow(
-                                      color: Colours.black_3,
-                                      offset: Offset(1, 1),
-                                      blurRadius: 2,
+                                Expanded(
+                                  child: Text(
+                                    "°",
+                                    style: TextStyle(
+                                      fontSize: 86.sp,
+                                      color: Colours.white,
+                                      height: 1,
+                                      fontFamily: "RobotoThin",
+                                      shadows: const [
+                                        BoxShadow(
+                                          color: Colours.black_3,
+                                          offset: Offset(1, 1),
+                                          blurRadius: 2,
+                                        ),
+                                      ],
                                     ),
-                                  ],
-                                ),
-                              ),
-                              Gaps.generateGap(width: 3.w),
-                              Text(
-                                currentWeatherDetailData?.high.getTemp() ?? "",
-                                style: TextStyle(
-                                  fontSize: 34.sp,
-                                  color: Colours.white,
-                                  height: 1,
-                                  fontFamily: "RobotoLight",
-                                  shadows: const [
-                                    BoxShadow(
-                                      color: Colours.black_3,
-                                      offset: Offset(1, 1),
-                                      blurRadius: 2,
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              Gaps.generateGap(width: 12.w),
-                              Text(
-                                "最\n低",
-                                style: TextStyle(
-                                  fontSize: 15.sp,
-                                  color: Colours.white,
-                                  height: 1,
-                                  fontFamily: "RobotoLight",
-                                  shadows: const [
-                                    BoxShadow(
-                                      color: Colours.black_3,
-                                      offset: Offset(1, 1),
-                                      blurRadius: 2,
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              Gaps.generateGap(width: 3.w),
-                              Text(
-                                currentWeatherDetailData?.low.getTemp() ?? "",
-                                style: TextStyle(
-                                  fontSize: 34.sp,
-                                  color: Colours.white,
-                                  height: 1,
-                                  fontFamily: "RobotoLight",
-                                  shadows: const [
-                                    BoxShadow(
-                                      color: Colours.black_3,
-                                      offset: Offset(1, 1),
-                                      blurRadius: 2,
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        Gaps.generateGap(height: 5.w),
-                        AnimatedOpacity(
-                          opacity: _opacity1,
-                          duration: Duration.zero,
-                          child: Text(
-                            weatherData?.observe?.wthr ?? "",
-                            style: TextStyle(
-                              fontSize: 20.sp,
-                              color: Colours.white,
-                              height: 1,
-                              fontFamily: "RobotoLight",
-                              shadows: const [
-                                BoxShadow(
-                                  color: Colours.black_3,
-                                  offset: Offset(1, 1),
-                                  blurRadius: 2,
+                                  ),
                                 ),
                               ],
                             ),
                           ),
-                        ),
-                      ],
-                    ),
-                    AnimatedOpacity(
-                      opacity: _opacity4,
-                      duration: Duration.zero,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(
-                            "${weatherData?.observe?.temp.getTemp()} | ${weatherData?.observe?.wthr}",
-                            style: TextStyle(
-                              fontSize: 20.sp,
-                              color: Colours.white,
-                              height: 1,
-                              fontFamily: "RobotoLight",
-                              shadows: const [
-                                BoxShadow(
-                                  color: Colours.black_3,
-                                  offset: Offset(1, 1),
-                                  blurRadius: 2,
+                          Gaps.generateGap(height: 5.w),
+                          AnimatedOpacity(
+                            opacity: _opacity2,
+                            duration: Duration.zero,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(
+                                  "最\n高",
+                                  style: TextStyle(
+                                    fontSize: 15.sp,
+                                    color: Colours.white,
+                                    height: 1,
+                                    fontFamily: "RobotoLight",
+                                    shadows: const [
+                                      BoxShadow(
+                                        color: Colours.black_3,
+                                        offset: Offset(1, 1),
+                                        blurRadius: 2,
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                Gaps.generateGap(width: 3.w),
+                                Text(
+                                  currentWeatherDetailData?.high.getTemp() ??
+                                      "",
+                                  style: TextStyle(
+                                    fontSize: 34.sp,
+                                    color: Colours.white,
+                                    height: 1,
+                                    fontFamily: "RobotoLight",
+                                    shadows: const [
+                                      BoxShadow(
+                                        color: Colours.black_3,
+                                        offset: Offset(1, 1),
+                                        blurRadius: 2,
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                Gaps.generateGap(width: 12.w),
+                                Text(
+                                  "最\n低",
+                                  style: TextStyle(
+                                    fontSize: 15.sp,
+                                    color: Colours.white,
+                                    height: 1,
+                                    fontFamily: "RobotoLight",
+                                    shadows: const [
+                                      BoxShadow(
+                                        color: Colours.black_3,
+                                        offset: Offset(1, 1),
+                                        blurRadius: 2,
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                Gaps.generateGap(width: 3.w),
+                                Text(
+                                  currentWeatherDetailData?.low.getTemp() ?? "",
+                                  style: TextStyle(
+                                    fontSize: 34.sp,
+                                    color: Colours.white,
+                                    height: 1,
+                                    fontFamily: "RobotoLight",
+                                    shadows: const [
+                                      BoxShadow(
+                                        color: Colours.black_3,
+                                        offset: Offset(1, 1),
+                                        blurRadius: 2,
+                                      ),
+                                    ],
+                                  ),
                                 ),
                               ],
+                            ),
+                          ),
+                          Gaps.generateGap(height: 5.w),
+                          AnimatedOpacity(
+                            opacity: _opacity1,
+                            duration: Duration.zero,
+                            child: Text(
+                              weatherData?.observe?.wthr ??
+                                  currentWeatherDetailData?.wthr ??
+                                  "",
+                              style: TextStyle(
+                                fontSize: 20.sp,
+                                color: Colours.white,
+                                height: 1,
+                                fontFamily: "RobotoLight",
+                                shadows: const [
+                                  BoxShadow(
+                                    color: Colours.black_3,
+                                    offset: Offset(1, 1),
+                                    blurRadius: 2,
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
                         ],
                       ),
-                    ),
-                  ],
-                ),
-              ],
+                      AnimatedOpacity(
+                        opacity: _opacity4,
+                        duration: Duration.zero,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              "${weatherData?.observe?.temp.getTemp()} | ${weatherData?.observe?.wthr ?? currentWeatherDetailData?.wthr}",
+                              style: TextStyle(
+                                fontSize: 20.sp,
+                                color: Colours.white,
+                                height: 1,
+                                fontFamily: "RobotoLight",
+                                shadows: const [
+                                  BoxShadow(
+                                    color: Colours.black_3,
+                                    offset: Offset(1, 1),
+                                    blurRadius: 2,
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
             ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }

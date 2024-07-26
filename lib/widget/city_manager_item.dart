@@ -16,20 +16,25 @@ class CityManagerItem extends StatefulWidget {
   const CityManagerItem({
     super.key,
     required this.index,
+    this.generateKey,
   });
 
   final int index;
+  final void Function(String cityId, GlobalKey<CityManagerItemState> key)? generateKey;
 
   @override
-  State<StatefulWidget> createState() => _CityManagerItemState();
+  State<StatefulWidget> createState() => CityManagerItemState();
 }
 
-class _CityManagerItemState extends State<CityManagerItem> {
+class CityManagerItemState extends State<CityManagerItem> {
+  final _key = GlobalKey<CityManagerItemState>();
+
   @override
   Widget build(BuildContext context) {
     final mainP = context.read<MainProvider>();
     final cityData = mainP.cityDataBox.getAt(widget.index);
     final weatherData = cityData?.weatherData;
+    widget.generateKey?.call(cityData?.cityId??"", _key);
     return ScaleLayout(
       scale: 0.95,
       onPressed: () {
@@ -40,6 +45,7 @@ class _CityManagerItemState extends State<CityManagerItem> {
         NavigatorUtils.goBackUntil(context, Routes.main);
       },
       child: Container(
+        key: _key,
         width: double.infinity,
         height: 98.w,
         margin: EdgeInsets.symmetric(horizontal: 16.w),

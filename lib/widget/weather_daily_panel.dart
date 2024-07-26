@@ -1,10 +1,7 @@
-import 'dart:math';
-
 import 'package:common_utils/common_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_yd_weather/utils/commons_ext.dart';
-import 'package:flutter_yd_weather/widget/scale_layout.dart';
 import 'package:flutter_yd_weather/widget/weather_daily_temp_panel.dart';
 
 import '../config/constants.dart';
@@ -63,7 +60,7 @@ class WeatherDailyPanel extends StatelessWidget {
                   child: ListView.builder(
                     scrollDirection: Axis.horizontal,
                     itemCount:
-                    weatherItemData.weatherData?.forecast15?.length ?? 0,
+                        weatherItemData.weatherData?.forecast15?.length ?? 0,
                     itemExtent: 60.w,
                     itemBuilder: (_, index) {
                       final preItem = weatherItemData.weatherData?.forecast15
@@ -180,21 +177,29 @@ class WeatherDailyPanel extends StatelessWidget {
                                 height: 1,
                               ),
                             ),
-                            Gaps.generateGap(height: 8.w),
-                            Container(
-                              padding: EdgeInsets.symmetric(
-                                  horizontal: 8.w, vertical: 2.w),
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(8.w),
-                                color:
-                                item?.aqi.getAqiColor().withOpacity(0.48),
-                              ),
-                              child: Text(
-                                item?.aqiLevelName ?? "",
-                                style: TextStyle(
-                                  fontSize: 11.sp,
-                                  color: Colours.white,
-                                  height: 1,
+                            Visibility(
+                              visible: item?.aqiLevelName.isNotNullOrEmpty() ??
+                                  false,
+                              child: Gaps.generateGap(height: 8.w),
+                            ),
+                            Visibility(
+                              visible: item?.aqiLevelName.isNotNullOrEmpty() ??
+                                  false,
+                              child: Container(
+                                padding: EdgeInsets.symmetric(
+                                    horizontal: 8.w, vertical: 2.w),
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(8.w),
+                                  color:
+                                      item?.aqi.getAqiColor().withOpacity(0.48),
+                                ),
+                                child: Text(
+                                  item?.aqiLevelName ?? "",
+                                  style: TextStyle(
+                                    fontSize: 11.sp,
+                                    color: Colours.white,
+                                    height: 1,
+                                  ),
                                 ),
                               ),
                             ),

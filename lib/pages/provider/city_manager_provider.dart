@@ -13,7 +13,7 @@ class CityManagerProvider extends BaseListProvider<CityData> {
 
   void changeAlpha(BuildContext context, double alpha) {
     _titleColor = ColorUtils.adjustAlpha(context.black, alpha);
-    largeTitleColor = ColorUtils.adjustAlpha(context.textColor01, 1 - alpha);
+    largeTitleColor = ColorUtils.adjustAlpha(context.black, 1 - alpha);
     notifyListeners();
   }
 }

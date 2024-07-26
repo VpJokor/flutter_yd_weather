@@ -63,7 +63,7 @@ class MyAppBar extends StatelessWidget implements PreferredSizeWidget {
                 padding: const EdgeInsets.all(12.0),
                 icon: LoadAssetImage(
                   rightIcon2 ?? "",
-                  color: rightIconColor ?? Colours.color333333,
+                  color: rightIconColor ?? context.black,
                   width: 20.w,
                   height: 20.w,
                 ),
@@ -75,7 +75,7 @@ class MyAppBar extends StatelessWidget implements PreferredSizeWidget {
                 padding: const EdgeInsets.all(12.0),
                 icon: LoadAssetImage(
                   rightIcon1 ?? "",
-                  color: rightIconColor ?? Colours.color333333,
+                  color: rightIconColor ?? context.black,
                   width: 20.w,
                   height: 20.w,
                 ),
@@ -96,7 +96,7 @@ class MyAppBar extends StatelessWidget implements PreferredSizeWidget {
             padding: EdgeInsets.symmetric(horizontal:  24.w),
             icon: LoadAssetImage(
               backImg,
-              color: backImgColor ?? Colours.color333333,
+              color: backImgColor ?? context.black,
               width: 22.w,
               height: 22.w,
             ),

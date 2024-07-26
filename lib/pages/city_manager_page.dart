@@ -10,6 +10,7 @@ import 'package:flutter_yd_weather/routers/app_router.dart';
 import 'package:flutter_yd_weather/routers/fluro_navigator.dart';
 import 'package:flutter_yd_weather/utils/commons.dart';
 import 'package:flutter_yd_weather/utils/commons_ext.dart';
+import 'package:flutter_yd_weather/utils/log.dart';
 import 'package:flutter_yd_weather/utils/theme_utils.dart';
 import 'package:flutter_yd_weather/widget/city_manager_item.dart';
 import 'package:hive_flutter/adapters.dart';
@@ -24,12 +25,14 @@ class CityManagerPage extends StatefulWidget {
   const CityManagerPage({super.key});
 
   @override
-  State<CityManagerPage> createState() => _CityManagerPageState();
+  State<CityManagerPage> createState() => CityManagerPageState();
 }
 
-class _CityManagerPageState
+class CityManagerPageState
     extends BaseListPageState<CityManagerPage, CityData, CityManagerProvider>
     implements BaseListView<CityData> {
+  final _keyMap = <String, GlobalKey<CityManagerItemState>>{};
+
   @override
   NotRefreshHeader? get notRefreshHeader => const NotRefreshHeader(
         position: IndicatorPosition.locator,
@@ -42,9 +45,69 @@ class _CityManagerPageState
     setEnableRefresh(false);
     setEnableLoad(false);
     Commons.post((_) {
-      provider.largeTitleColor = context.textColor01;
+      provider.largeTitleColor = context.black;
       provider.hideLoading();
     });
+  }
+
+  List<Offset> fixItemPosition(String cityId, {bool jumpTo = true}) {
+    final contentPosition =
+        (contentKey.currentContext?.findRenderObject() as RenderBox?)
+                ?.localToGlobal(Offset.zero) ??
+            Offset.zero;
+    final contentHeight = contentKey.currentContext?.size?.height ?? 0;
+    final itemPosition = _findItemPosition(cityId) ?? Offset.zero;
+    final offset = scrollController?.offset ?? 0;
+    if (itemPosition.dy < contentPosition.dy) {
+      if (jumpTo) {
+        scrollController
+            ?.jumpTo(offset - (itemPosition.dy - contentPosition.dy).abs());
+      }
+      return [
+        Offset(contentPosition.dx, contentPosition.dy + contentHeight),
+        Offset(itemPosition.dx, contentPosition.dy),
+      ];
+    } else if (itemPosition.dy + 98.w > contentPosition.dy + contentHeight) {
+      if (jumpTo) {
+        scrollController?.jumpTo(offset +
+            ((itemPosition.dy + 98.w) - (contentPosition.dy + contentHeight))
+                .abs());
+      }
+      return [
+        Offset(contentPosition.dx, contentPosition.dy + contentHeight),
+        Offset(itemPosition.dx, contentPosition.dy + contentHeight - 98.w),
+      ];
+    }
+    return [
+      Offset(contentPosition.dx, contentPosition.dy + contentHeight),
+      itemPosition,
+    ];
+  }
+
+  List<Offset> fixItemPositionOnBack(String cityId) {
+    final contentPosition =
+        (contentKey.currentContext?.findRenderObject() as RenderBox?)
+                ?.localToGlobal(Offset.zero) ??
+            Offset.zero;
+    final contentHeight = contentKey.currentContext?.size?.height ?? 0;
+    final itemPosition = _findItemPosition(cityId) ?? Offset.zero;
+    if (itemPosition.dy < contentPosition.dy ||
+        itemPosition.dy + 98.w > contentPosition.dy + contentHeight) {
+      return [
+        Offset(contentPosition.dx, contentPosition.dy + contentHeight),
+        Offset(
+            itemPosition.dx, contentPosition.dy + contentHeight * 0.5 - 98.w),
+      ];
+    }
+    return [
+      Offset(contentPosition.dx, contentPosition.dy + contentHeight),
+      itemPosition,
+    ];
+  }
+
+  Offset? _findItemPosition(String cityId) {
+    return (_keyMap[cityId]?.currentContext?.findRenderObject() as RenderBox?)
+        ?.localToGlobal(Offset.zero);
   }
 
   @override
@@ -120,6 +183,9 @@ class _CityManagerPageState
       BuildContext context, int index, CityManagerProvider provider) {
     return CityManagerItem(
       index: index,
+      generateKey: (cityId, key) {
+        _keyMap[cityId] = key;
+      },
     );
   }
 
