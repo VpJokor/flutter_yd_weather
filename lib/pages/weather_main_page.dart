@@ -41,10 +41,13 @@ class _WeatherMainPageState
   final _cityManagerPageKey = GlobalKey<CityManagerPageState>();
   double _weatherContentOpacity = 1;
   double _weatherContainerOpacity = 1;
+  bool _weatherContainerOffstage = false;
   Rect _weatherContentRect = Rect.zero;
   Duration _weatherContentPositionedDuration =
-      const Duration(milliseconds: 400);
+      const Duration(milliseconds: 300);
   BorderRadius _weatherContentBorderRadius = BorderRadius.zero;
+  double _weatherContentMargin = 0;
+  SystemUiOverlayStyle _systemUiOverlayStyle = SystemUiOverlayStyle.light;
 
   @override
   void initState() {
@@ -66,7 +69,7 @@ class _WeatherMainPageState
   @override
   Widget build(BuildContext context) {
     return AnnotatedRegion(
-      value: SystemUiOverlayStyle.light,
+      value: _systemUiOverlayStyle,
       child: PopScope(
         onPopInvoked: _onPopInvoked,
         canPop: false,
@@ -74,6 +77,7 @@ class _WeatherMainPageState
           children: [
             CityManagerPage(
               key: _cityManagerPageKey,
+              hideCityManagerPage: _hideCityManagerPage,
             ),
             AnimatedPositioned(
               left: _weatherContentRect.left,
@@ -81,6 +85,7 @@ class _WeatherMainPageState
               right: _weatherContentRect.right,
               bottom: _weatherContentRect.bottom,
               duration: _weatherContentPositionedDuration,
+              curve: Curves.decelerate,
               child: super.build(context),
             ),
           ],
@@ -91,9 +96,12 @@ class _WeatherMainPageState
 
   void _onPopInvoked(bool didPop) {
     if (didPop) return;
-    if (_weatherContentOpacity <= 1) {
+    if (_weatherContentOpacity <= 0) {
       _hideCityManagerPage();
+      return;
     }
+    /// 不推荐使用 `dart:io` 的 exit(0)
+    SystemNavigator.pop();
   }
 
   @override
@@ -102,69 +110,74 @@ class _WeatherMainPageState
         (element) => element.itemType == Constants.itemTypeWeatherHeader);
     return AnimatedOpacity(
       opacity: _weatherContainerOpacity,
-      duration: const Duration(milliseconds: 200),
+      duration: const Duration(milliseconds: 100),
       child: Offstage(
-        offstage: _weatherContainerOpacity != 1,
-        child: AnimatedContainer(
-          duration: const Duration(milliseconds: 400),
-          decoration: BoxDecoration(
-            borderRadius: _weatherContentBorderRadius,
-            gradient: const LinearGradient(
-              colors: [
-                Colours.color464E96,
-                Colours.color547EA9,
-                Colours.color409AAF,
-              ],
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
+        offstage: _weatherContainerOffstage,
+        child: Stack(
+          children: [
+            AnimatedContainer(
+              duration: const Duration(milliseconds: 300),
+              margin: EdgeInsets.symmetric(horizontal: _weatherContentMargin),
+              decoration: BoxDecoration(
+                borderRadius: _weatherContentBorderRadius,
+                gradient: const LinearGradient(
+                  colors: [
+                    Colours.color464E96,
+                    Colours.color547EA9,
+                    Colours.color409AAF,
+                  ],
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                ),
+              ),
             ),
-          ),
-          child: AnimatedOpacity(
-            opacity: _weatherContentOpacity,
-            duration: const Duration(milliseconds: 200),
-            child: Stack(
-              children: [
-                WeatherHeaderWidget(
-                  key: _weatherHeaderKey,
-                  weatherItemData: weatherHeaderItemData,
-                  onRefresh: () {
-                    _weatherMainPresenter.obtainWeatherData(
-                        delayMilliseconds: 400);
-                  },
-                ),
-                Padding(
-                  padding: EdgeInsets.only(
-                    top: ScreenUtil().statusBarHeight +
-                        (weatherHeaderItemData?.minHeight ?? 0),
-                  ),
-                  child: Listener(
-                    onPointerUp: (_) {
-                      _weatherHeaderKey.currentState?.onRelease();
+            AnimatedOpacity(
+              opacity: _weatherContentOpacity,
+              duration: const Duration(milliseconds: 200),
+              child: Stack(
+                children: [
+                  WeatherHeaderWidget(
+                    key: _weatherHeaderKey,
+                    weatherItemData: weatherHeaderItemData,
+                    onRefresh: () {
+                      _weatherMainPresenter.obtainWeatherData(
+                          delayMilliseconds: 400);
                     },
-                    child: super.getRoot(provider),
                   ),
-                ),
-                Positioned(
-                  right: 0,
-                  top: ScreenUtil().statusBarHeight,
-                  child: OpacityLayout(
-                    child: Container(
-                      padding: EdgeInsets.all(12.w),
-                      margin: EdgeInsets.all(8.w),
-                      child: LoadAssetImage(
-                        "ic_add",
-                        width: 20.w,
-                        height: 20.w,
-                      ),
+                  Padding(
+                    padding: EdgeInsets.only(
+                      top: ScreenUtil().statusBarHeight +
+                          (weatherHeaderItemData?.minHeight ?? 0),
                     ),
-                    onPressed: () {
-                      _showCityManagerPage();
-                    },
+                    child: Listener(
+                      onPointerUp: (_) {
+                        _weatherHeaderKey.currentState?.onRelease();
+                      },
+                      child: super.getRoot(provider),
+                    ),
                   ),
-                ),
-              ],
+                  Positioned(
+                    right: 0,
+                    top: ScreenUtil().statusBarHeight,
+                    child: OpacityLayout(
+                      child: Container(
+                        padding: EdgeInsets.all(12.w),
+                        margin: EdgeInsets.all(8.w),
+                        child: LoadAssetImage(
+                          "ic_add",
+                          width: 20.w,
+                          height: 20.w,
+                        ),
+                      ),
+                      onPressed: () {
+                        _showCityManagerPage();
+                      },
+                    ),
+                  ),
+                ],
+              ),
             ),
-          ),
+          ],
         ),
       ),
     );
@@ -178,11 +191,19 @@ class _WeatherMainPageState
     setState(() {
       _weatherContentOpacity = 0;
       _weatherContentBorderRadius = BorderRadius.circular(16.w);
-      _weatherContentRect = Rect.fromLTRB(16.w, itemPosition.dy, 16.w,
-          contentPosition.dy - (itemPosition.dy + 98.w));
-      Commons.postDelayed(delayMilliseconds: 400, () {
+      _weatherContentRect = Rect.fromLTRB(
+          0, itemPosition.dy, 0, contentPosition.dy - (itemPosition.dy + 98.w));
+      _weatherContentMargin = 16.w;
+      _systemUiOverlayStyle = SystemUiOverlayStyle.dark;
+      Commons.postDelayed(delayMilliseconds: 300, () {
         setState(() {
           _weatherContainerOpacity = 0;
+          Commons.postDelayed(delayMilliseconds: 100, () {
+            setState(() {
+              _weatherContainerOffstage = true;
+            });
+            _cityManagerPageKey.currentState?.show(cityId);
+          });
         });
       });
     });
@@ -190,21 +211,27 @@ class _WeatherMainPageState
 
   void _hideCityManagerPage() {
     final cityId = context.read<MainProvider>().currentCityData?.cityId ?? "";
-    final positions =
-        _cityManagerPageKey.currentState?.fixItemPosition(cityId, jumpTo: false);
+    final positions = _cityManagerPageKey.currentState
+        ?.fixItemPosition(cityId, jumpTo: false);
     final contentPosition = positions?.getOrNull(0) ?? Offset.zero;
     final itemPosition = positions?.getOrNull(1) ?? Offset.zero;
     setState(() {
       _weatherContentPositionedDuration = Duration.zero;
-      _weatherContentRect = Rect.fromLTRB(16.w, itemPosition.dy, 16.w,
-          contentPosition.dy - (itemPosition.dy + 98.w));
+      _weatherContentRect = Rect.fromLTRB(
+          0, itemPosition.dy, 0, contentPosition.dy - (itemPosition.dy + 98.w));
       _weatherContainerOpacity = 1;
-      Commons.postDelayed(delayMilliseconds: 200, () {
+      _weatherContainerOffstage = false;
+      Commons.postDelayed(delayMilliseconds: 100, () {
         setState(() {
           _weatherContentOpacity = 1;
           _weatherContentBorderRadius = BorderRadius.zero;
-          _weatherContentPositionedDuration = const Duration(milliseconds: 400);
+          _weatherContentMargin = 0;
+          _weatherContentPositionedDuration = const Duration(milliseconds: 300);
           _weatherContentRect = Rect.zero;
+          _systemUiOverlayStyle = SystemUiOverlayStyle.light;
+          Commons.postDelayed(delayMilliseconds: 300, () {
+            _cityManagerPageKey.currentState?.hide(cityId);
+          });
         });
       });
     });

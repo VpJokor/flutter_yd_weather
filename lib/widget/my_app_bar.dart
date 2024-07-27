@@ -24,6 +24,7 @@ class MyAppBar extends StatelessWidget implements PreferredSizeWidget {
     this.onRightIcon2Pressed,
     this.isBack = true,
     this.overlayStyle,
+    this.needOverlayStyle = true,
     this.height,
   });
 
@@ -41,16 +42,12 @@ class MyAppBar extends StatelessWidget implements PreferredSizeWidget {
   final VoidCallback? onRightIcon2Pressed;
   final bool isBack;
   final SystemUiOverlayStyle? overlayStyle;
+  final bool needOverlayStyle;
   final double? height;
 
   @override
   Widget build(BuildContext context) {
     final Color bgColor = backgroundColor ?? Colours.white;
-
-    final SystemUiOverlayStyle overlayStyle = this.overlayStyle ??
-        (ThemeData.estimateBrightnessForColor(bgColor) == Brightness.dark
-            ? SystemUiOverlayStyle.light
-            : SystemUiOverlayStyle.dark);
 
     final rightIcons = Positioned(
         right: 8.w,
@@ -93,7 +90,7 @@ class MyAppBar extends StatelessWidget implements PreferredSizeWidget {
               }
             },
             tooltip: 'Back',
-            padding: EdgeInsets.symmetric(horizontal:  24.w),
+            padding: EdgeInsets.symmetric(horizontal: 24.w),
             icon: LoadAssetImage(
               backImg,
               color: backImgColor ?? context.black,
@@ -121,35 +118,42 @@ class MyAppBar extends StatelessWidget implements PreferredSizeWidget {
       ),
     );
 
-    return AnnotatedRegion<SystemUiOverlayStyle>(
-      value: overlayStyle,
-      child: Material(
-        color: bgColor,
-        child: SafeArea(
-          bottom: false,
-          child: height == null
-              ? Stack(
+    final content = Material(
+      color: bgColor,
+      child: SafeArea(
+        bottom: false,
+        child: height == null
+            ? Stack(
+                alignment: Alignment.centerLeft,
+                children: <Widget>[
+                  titleWidget,
+                  back,
+                  rightIcons,
+                ],
+              )
+            : SizedBox(
+                height: height,
+                child: Stack(
                   alignment: Alignment.centerLeft,
                   children: <Widget>[
                     titleWidget,
                     back,
                     rightIcons,
                   ],
-                )
-              : SizedBox(
-                  height: height,
-                  child: Stack(
-                    alignment: Alignment.centerLeft,
-                    children: <Widget>[
-                      titleWidget,
-                      back,
-                      rightIcons,
-                    ],
-                  ),
                 ),
-        ),
+              ),
       ),
     );
+    return needOverlayStyle
+        ? AnnotatedRegion<SystemUiOverlayStyle>(
+            value: overlayStyle ??
+                (ThemeData.estimateBrightnessForColor(bgColor) ==
+                        Brightness.dark
+                    ? SystemUiOverlayStyle.light
+                    : SystemUiOverlayStyle.dark),
+            child: content,
+          )
+        : content;
   }
 
   @override

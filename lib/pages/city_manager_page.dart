@@ -15,14 +15,18 @@ import 'package:flutter_yd_weather/utils/theme_utils.dart';
 import 'package:flutter_yd_weather/widget/city_manager_item.dart';
 import 'package:hive_flutter/adapters.dart';
 import 'package:provider/provider.dart';
+import 'package:scrollview_observer/scrollview_observer.dart';
 
 import '../base/base_list_page.dart';
 import '../res/colours.dart';
 import '../res/gaps.dart';
+import '../widget/animated_list_item.dart';
 import '../widget/my_app_bar.dart';
 
 class CityManagerPage extends StatefulWidget {
-  const CityManagerPage({super.key});
+  const CityManagerPage({super.key, this.hideCityManagerPage,});
+
+  final VoidCallback? hideCityManagerPage;
 
   @override
   State<CityManagerPage> createState() => CityManagerPageState();
@@ -31,10 +35,14 @@ class CityManagerPage extends StatefulWidget {
 class CityManagerPageState
     extends BaseListPageState<CityManagerPage, CityData, CityManagerProvider>
     implements BaseListView<CityData> {
-  final _keyMap = <String, GlobalKey<CityManagerItemState>>{};
+  late AnimationController _animationController;
+  int _animStartIndex = 0;
+  int _animEndIndex = 0;
+  List<int> _displayingChildIndexList = [];
 
   @override
-  NotRefreshHeader? get notRefreshHeader => const NotRefreshHeader(
+  NotRefreshHeader? get notRefreshHeader =>
+      const NotRefreshHeader(
         position: IndicatorPosition.locator,
         hitOver: true,
       );
@@ -44,16 +52,26 @@ class CityManagerPageState
     super.initState();
     setEnableRefresh(false);
     setEnableLoad(false);
+    _animationController = AnimationController(
+      duration: const Duration(milliseconds: 300),
+      vsync: this,
+    );
     Commons.post((_) {
       provider.largeTitleColor = context.black;
       provider.hideLoading();
     });
   }
 
+  @override
+  void dispose() {
+    super.dispose();
+    _animationController.dispose();
+  }
+
   List<Offset> fixItemPosition(String cityId, {bool jumpTo = true}) {
     final contentPosition =
         (contentKey.currentContext?.findRenderObject() as RenderBox?)
-                ?.localToGlobal(Offset.zero) ??
+            ?.localToGlobal(Offset.zero) ??
             Offset.zero;
     final contentHeight = contentKey.currentContext?.size?.height ?? 0;
     final itemPosition = _findItemPosition(cityId) ?? Offset.zero;
@@ -84,37 +102,50 @@ class CityManagerPageState
     ];
   }
 
-  List<Offset> fixItemPositionOnBack(String cityId) {
+  void show(String cityId) {
     final contentPosition =
         (contentKey.currentContext?.findRenderObject() as RenderBox?)
-                ?.localToGlobal(Offset.zero) ??
+            ?.localToGlobal(Offset.zero) ??
             Offset.zero;
     final contentHeight = contentKey.currentContext?.size?.height ?? 0;
-    final itemPosition = _findItemPosition(cityId) ?? Offset.zero;
-    if (itemPosition.dy < contentPosition.dy ||
-        itemPosition.dy + 98.w > contentPosition.dy + contentHeight) {
-      return [
-        Offset(contentPosition.dx, contentPosition.dy + contentHeight),
-        Offset(
-            itemPosition.dx, contentPosition.dy + contentHeight * 0.5 - 98.w),
-      ];
-    }
-    return [
-      Offset(contentPosition.dx, contentPosition.dy + contentHeight),
-      itemPosition,
-    ];
+    final currentItemPosition = _findItemPosition(cityId) ?? Offset.zero;
+    setState(() {
+      if (currentItemPosition.dy > contentPosition.dy + contentHeight * 0.5) {
+        _animStartIndex = _displayingChildIndexList.last;
+        _animEndIndex = _displayingChildIndexList.first;
+      } else {
+        _animStartIndex = _displayingChildIndexList.first;
+        _animEndIndex = _displayingChildIndexList.last;
+      }
+    });
+    _animationController.forward();
+  }
+
+  void hide(String cityId) {
+    _animationController.reset();
   }
 
   Offset? _findItemPosition(String cityId) {
-    return (_keyMap[cityId]?.currentContext?.findRenderObject() as RenderBox?)
-        ?.localToGlobal(Offset.zero);
+    final mainP = context.read<MainProvider>();
+    final index = mainP.cityDataBox.values.toList().indexWhere((cityData) => cityData.cityId == cityId);
+    if (index >= 0) {
+      final contentPosition =
+          (contentKey.currentContext?.findRenderObject() as RenderBox?)
+              ?.localToGlobal(Offset.zero) ??
+              Offset.zero;
+      final offset = scrollController?.offset ?? 0;
+      final itemPosition = Offset(0, index * (98.w + 12.w) + 72.w - offset + contentPosition.dy);
+      Log.e("itemPosition = $itemPosition offset = $offset index = $index dy = ${contentPosition.dy}");
+      return itemPosition;
+    }
+    return null;
   }
 
   @override
   void setScrollController(ScrollController? scrollController) {
     super.setScrollController(scrollController);
     scrollController?.addListener(() {
-      final percent = (scrollController.offset / 108.w).fixPercent();
+      final percent = (scrollController.offset / 72.w).fixPercent();
       provider.changeAlpha(context, percent);
     });
   }
@@ -124,6 +155,7 @@ class CityManagerPageState
     return Scaffold(
       backgroundColor: context.backgroundColor,
       appBar: MyAppBar(
+        needOverlayStyle: false,
         centerTitle: "城市管理",
         titleColor: provider.titleColor,
         backgroundColor: context.backgroundColor,
@@ -132,7 +164,13 @@ class CityManagerPageState
           NavigatorUtils.push(context, AppRouter.selectCityPage);
         },
       ),
-      body: super.getRoot(provider),
+      body: ListViewObserver(
+        onObserve: (resultModel) {
+          _displayingChildIndexList = resultModel.displayingChildIndexList;
+          Log.e("_displayingChildIndexList = $_displayingChildIndexList");
+        },
+        child: super.getRoot(provider),
+      ),
     );
   }
 
@@ -142,9 +180,24 @@ class CityManagerPageState
     return ValueListenableBuilder(
       valueListenable: mainP.cityDataBox.listenable(),
       builder: (context, cityDataBox, child) {
+        if (mounted && _displayingChildIndexList.isEmpty) {
+          Commons.post((_) {
+            final contentHeight = contentKey.currentContext?.size?.height ?? 0;
+            final count = ((contentHeight - 72.w) / (98.w + 12.w)).ceil();
+            _displayingChildIndexList = List.generate(count, (index) => index);
+            Log.e("_displayingChildIndexList = $_displayingChildIndexList");
+          });
+        }
         return SliverList.separated(
           itemBuilder: (context, index) {
-            return buildItem(context, index, provider);
+            return AnimatedListItem(
+              index: index,
+              length: cityDataBox.length,
+              aniController: _animationController,
+              startIndex: _animStartIndex,
+              endIndex: _animEndIndex,
+              child: buildItem(context, index, provider),
+            );
           },
           separatorBuilder: (context, index) {
             return buildItemDecoration(context, index);
@@ -179,13 +232,12 @@ class CityManagerPageState
   }
 
   @override
-  Widget buildItem(
-      BuildContext context, int index, CityManagerProvider provider) {
+  Widget buildItem(BuildContext context, int index,
+      CityManagerProvider provider) {
     return CityManagerItem(
+      key: GlobalKey(),
       index: index,
-      generateKey: (cityId, key) {
-        _keyMap[cityId] = key;
-      },
+      onTap: widget.hideCityManagerPage,
     );
   }
 

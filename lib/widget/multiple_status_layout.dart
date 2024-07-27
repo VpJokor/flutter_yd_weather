@@ -19,7 +19,6 @@ class MultipleStatusLayout extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Log.e("MultipleStatusLayout status = $status");
     switch (status) {
       case LoadStatus.loading:
         return Container(

@@ -1,6 +1,5 @@
 import 'package:flutter_yd_weather/config/constants.dart';
 import 'package:flutter_yd_weather/model/simple_weather_data.dart';
-import 'package:flutter_yd_weather/model/weather_data.dart';
 import 'package:hive/hive.dart';
 import 'package:json_annotation/json_annotation.dart';
 

@@ -84,7 +84,6 @@ class WeatherHeaderWidgetState extends State<WeatherHeaderWidget> {
           : offset < 0
               ? (offset / _refreshTriggerOffset).abs().fixPercent()
               : 0;
-      Log.e("_refreshOpacity = $_refreshOpacity");
     });
   }
 
