@@ -5,12 +5,7 @@ import 'package:flutter_yd_weather/net/api.dart';
 import 'package:flutter_yd_weather/pages/provider/weather_provider.dart';
 import 'package:flutter_yd_weather/pages/view/weather_main_view.dart';
 import 'package:flutter_yd_weather/provider/main_provider.dart';
-import 'package:flutter_yd_weather/utils/commons.dart';
-import 'package:flutter_yd_weather/utils/log.dart';
 import 'package:provider/provider.dart';
-import 'package:sp_util/sp_util.dart';
-
-import '../../base/base_list_view.dart';
 import '../../mvp/base_page_presenter.dart';
 import '../../net/net_utils.dart';
 

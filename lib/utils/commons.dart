@@ -87,4 +87,9 @@ class Commons {
           dateTime.day == 1);
     }
   }
+
+  static bool isNight(DateTime? dateTime) {
+    if (dateTime == null) return false;
+    return dateTime.hour > 18 || (dateTime.hour >= 0 && dateTime.hour < 6);
+  }
 }

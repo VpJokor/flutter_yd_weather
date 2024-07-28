@@ -23,13 +23,15 @@ class SimpleWeatherDataAdapter extends TypeAdapter<SimpleWeatherData> {
       fields[3] as int?,
       fields[4] as int?,
       fields[5] as String?,
+      fields[6] as String?,
+      fields[7] as String?,
     );
   }
 
   @override
   void write(BinaryWriter writer, SimpleWeatherData obj) {
     writer
-      ..writeByte(6)
+      ..writeByte(8)
       ..writeByte(0)
       ..write(obj.city)
       ..writeByte(1)
@@ -41,7 +43,11 @@ class SimpleWeatherDataAdapter extends TypeAdapter<SimpleWeatherData> {
       ..writeByte(4)
       ..write(obj.weatherType)
       ..writeByte(5)
-      ..write(obj.weatherDesc);
+      ..write(obj.weatherDesc)
+      ..writeByte(6)
+      ..write(obj.dayWeatherCardBg)
+      ..writeByte(7)
+      ..write(obj.nightWeatherCardBg);
   }
 
   @override

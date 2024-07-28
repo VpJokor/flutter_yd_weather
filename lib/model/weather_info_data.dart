@@ -5,6 +5,7 @@ part 'weather_info_data.g.dart';
 @JsonSerializable()
 class WeatherInfoData {
   String? bgPic;
+  String? smPic;
   String? wthr;
   String? wd;
   String? wp;
@@ -13,6 +14,7 @@ class WeatherInfoData {
 
   WeatherInfoData(
     this.bgPic,
+    this.smPic,
     this.wthr,
     this.wd,
     this.wp,

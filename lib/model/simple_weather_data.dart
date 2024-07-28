@@ -20,6 +20,10 @@ class SimpleWeatherData {
   int? weatherType;
   @HiveField(5)
   String? weatherDesc;
+  @HiveField(6)
+  String? dayWeatherCardBg;
+  @HiveField(7)
+  String? nightWeatherCardBg;
 
   SimpleWeatherData(
     this.city,
@@ -28,6 +32,8 @@ class SimpleWeatherData {
     this.tempLow,
     this.weatherType,
     this.weatherDesc,
+    this.dayWeatherCardBg,
+    this.nightWeatherCardBg,
   );
 
   SimpleWeatherData.fromWeatherData(WeatherData? weatherData) {
@@ -41,6 +47,14 @@ class SimpleWeatherData {
     tempHigh = currentWeatherDetailData?.high;
     tempLow = currentWeatherDetailData?.low;
     weatherType = weatherData?.observe?.type;
-    weatherDesc = weatherData?.observe?.wthr;
+    weatherDesc = weatherData?.observe?.wthr ?? currentWeatherDetailData?.wthr;
+    dayWeatherCardBg = weatherData?.observe?.day?.smPic;
+    nightWeatherCardBg = weatherData?.observe?.night?.smPic;
+    if (dayWeatherCardBg.isNullOrEmpty()) {
+      dayWeatherCardBg = currentWeatherDetailData?.day?.smPic;
+    }
+    if (nightWeatherCardBg.isNullOrEmpty()) {
+      nightWeatherCardBg = currentWeatherDetailData?.night?.smPic;
+    }
   }
 }

@@ -119,8 +119,7 @@ extension StringExt on String? {
   bool isNight() {
     if (isNullOrEmpty()) return false;
     final dateTime = DateTime.tryParse(this!.getDartDateTimeFormattedString());
-    if (dateTime == null) return false;
-    return dateTime.hour > 18 || (dateTime.hour >= 0 && dateTime.hour < 6);
+    return Commons.isNight(dateTime);
   }
 }
 

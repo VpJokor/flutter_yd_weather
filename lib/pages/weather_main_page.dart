@@ -1,4 +1,6 @@
 import 'dart:async';
+import 'package:common_utils/common_utils.dart';
+import 'package:extended_image/extended_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -100,6 +102,7 @@ class _WeatherMainPageState
       _hideCityManagerPage();
       return;
     }
+
     /// 不推荐使用 `dart:io` 的 exit(0)
     SystemNavigator.pop();
   }
@@ -108,6 +111,21 @@ class _WeatherMainPageState
   Widget getRoot(WeatherProvider provider) {
     final weatherHeaderItemData = provider.list.singleOrNull(
         (element) => element.itemType == Constants.itemTypeWeatherHeader);
+    final weatherData = weatherHeaderItemData?.weatherData;
+    final isNight = Commons.isNight(DateTime.now());
+    String? weatherBg = isNight
+        ? weatherData?.observe?.night?.bgPic
+        : weatherData?.observe?.day?.bgPic;
+    if (weatherBg.isNullOrEmpty()) {
+      final currentWeatherDetailData = weatherData?.forecast15?.singleOrNull(
+        (element) =>
+            element.date ==
+            DateUtil.formatDate(DateTime.now(), format: Constants.yyyymmdd),
+      );
+      weatherBg = isNight
+          ? currentWeatherDetailData?.night?.bgPic
+          : currentWeatherDetailData?.day?.bgPic;
+    }
     return AnimatedOpacity(
       opacity: _weatherContainerOpacity,
       duration: const Duration(milliseconds: 100),
@@ -120,15 +138,15 @@ class _WeatherMainPageState
               margin: EdgeInsets.symmetric(horizontal: _weatherContentMargin),
               decoration: BoxDecoration(
                 borderRadius: _weatherContentBorderRadius,
-                gradient: const LinearGradient(
-                  colors: [
-                    Colours.color464E96,
-                    Colours.color547EA9,
-                    Colours.color409AAF,
-                  ],
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                ),
+              ),
+              clipBehavior: Clip.hardEdge,
+              child: ExtendedImage.network(
+                weatherBg ?? "",
+                width: double.infinity,
+                height: double.infinity,
+                fit: BoxFit.cover,
+                loadStateChanged:
+                    Commons.loadStateChanged(placeholder: Colours.transparent),
               ),
             ),
             AnimatedOpacity(
@@ -198,11 +216,11 @@ class _WeatherMainPageState
       Commons.postDelayed(delayMilliseconds: 300, () {
         setState(() {
           _weatherContainerOpacity = 0;
+          _cityManagerPageKey.currentState?.show(cityId);
           Commons.postDelayed(delayMilliseconds: 100, () {
             setState(() {
               _weatherContainerOffstage = true;
             });
-            _cityManagerPageKey.currentState?.show(cityId);
           });
         });
       });

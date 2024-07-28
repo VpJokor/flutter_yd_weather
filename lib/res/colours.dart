@@ -99,6 +99,9 @@ class Colours {
   static const Color color1B81A7 = Color(0xFF1B81A7);
   static const Color color2FA6BA = Color(0xFF2FA6BA);
   static const Color color6DC1C1 = Color(0xFF6DC1C1);
+  static const Color colorF47359 = Color(0xFFF47359);
+  static const Color colorF49670 = Color(0xFFF49670);
+  static const Color colorF1AB80 = Color(0xFFF1AB80);
   static const Color color00E301 = Color(0xFF00E301);
   static const Color colorFDFD01 = Color(0xFFFDFD01);
   static const Color colorFD7E01 = Color(0xFFFD7E01);
