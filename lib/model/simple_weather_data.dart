@@ -17,7 +17,7 @@ class SimpleWeatherData {
   @HiveField(3)
   int? tempLow;
   @HiveField(4)
-  int? weatherType;
+  String? weatherType;
   @HiveField(5)
   String? weatherDesc;
   @HiveField(6)
@@ -46,7 +46,7 @@ class SimpleWeatherData {
     );
     tempHigh = currentWeatherDetailData?.high;
     tempLow = currentWeatherDetailData?.low;
-    weatherType = weatherData?.observe?.type;
+    weatherType = weatherData?.observe?.weatherType ?? currentWeatherDetailData?.weatherType;
     weatherDesc = weatherData?.observe?.wthr ?? currentWeatherDetailData?.wthr;
     dayWeatherCardBg = weatherData?.observe?.day?.smPic;
     nightWeatherCardBg = weatherData?.observe?.night?.smPic;

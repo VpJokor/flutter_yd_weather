@@ -21,7 +21,7 @@ class SimpleWeatherDataAdapter extends TypeAdapter<SimpleWeatherData> {
       fields[1] as int?,
       fields[2] as int?,
       fields[3] as int?,
-      fields[4] as int?,
+      fields[4] as String?,
       fields[5] as String?,
       fields[6] as String?,
       fields[7] as String?,

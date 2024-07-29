@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_yd_weather/config/constants.dart';
 import 'package:flutter_yd_weather/model/weather_item_data.dart';
 import 'package:flutter_yd_weather/res/gaps.dart';
-import 'package:flutter_yd_weather/utils/log.dart';
 import 'package:flutter_yd_weather/widget/weather_air_quality_panel.dart';
 import 'package:flutter_yd_weather/widget/weather_alarms_panel.dart';
 import 'package:flutter_yd_weather/widget/weather_daily_panel.dart';
@@ -76,7 +75,7 @@ class WeatherPersistentHeaderDelegate extends SliverPersistentHeaderDelegate {
   @override
   bool shouldRebuild(covariant WeatherPersistentHeaderDelegate oldDelegate) {
     final rebuild = weatherItemData != oldDelegate.weatherItemData;
-    Log.e("rebuild = $rebuild");
-    return true;
+    // Log.e("rebuild = $rebuild");
+    return rebuild;
   }
 }

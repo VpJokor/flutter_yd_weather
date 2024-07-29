@@ -9,6 +9,8 @@ class WeatherDetailData {
   String? sunrise;
   String? sunset;
   int? type;
+  @JsonKey(name: "third_type")
+  String? weatherType;
   int? high;
   int? low;
   String? wthr;
@@ -32,6 +34,7 @@ class WeatherDetailData {
     this.sunrise,
     this.sunset,
     this.type,
+    this.weatherType,
     this.high,
     this.low,
     this.wthr,

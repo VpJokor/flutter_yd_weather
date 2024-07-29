@@ -53,7 +53,7 @@ class CityManagerPageState
     setEnableRefresh(false);
     setEnableLoad(false);
     _animationController = AnimationController(
-      duration: const Duration(milliseconds: 150),
+      duration: const Duration(milliseconds: 200),
       vsync: this,
     );
     Commons.post((_) {

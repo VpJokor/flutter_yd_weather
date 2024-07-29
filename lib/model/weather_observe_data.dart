@@ -8,6 +8,8 @@ class WeatherObserveData {
   WeatherInfoData? day;
   WeatherInfoData? night;
   int? type;
+  @JsonKey(name: "third_type")
+  String? weatherType;
   int? temp;
   @JsonKey(name: "tigan")
   String? tiGan;
@@ -31,6 +33,7 @@ class WeatherObserveData {
     this.day,
     this.night,
     this.type,
+    this.weatherType,
     this.temp,
     this.tiGan,
     this.upTime,

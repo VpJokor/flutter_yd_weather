@@ -1,6 +1,4 @@
 import 'dart:async';
-import 'package:common_utils/common_utils.dart';
-import 'package:extended_image/extended_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -19,6 +17,7 @@ import 'package:flutter_yd_weather/utils/weather_persistent_header_delegate.dart
 import 'package:flutter_yd_weather/widget/load_asset_image.dart';
 import 'package:flutter_yd_weather/widget/opacity_layout.dart';
 import 'package:flutter_yd_weather/widget/weather_header_widget.dart';
+import 'package:flutter_yd_weather/widget/weather_main_clipper.dart';
 import 'package:provider/provider.dart';
 import '../base/base_list_page.dart';
 import '../config/constants.dart';
@@ -41,15 +40,11 @@ class _WeatherMainPageState
   late StreamSubscription<RefreshWeatherDataEvent>
       _refreshWeatherDataEventSubscription;
   final _cityManagerPageKey = GlobalKey<CityManagerPageState>();
-  double _weatherContentOpacity = 1;
-  double _weatherContainerOpacity = 1;
-  bool _weatherContainerOffstage = false;
-  Rect _weatherContentRect = Rect.zero;
-  Duration _weatherContentPositionedDuration =
-      const Duration(milliseconds: 300);
-  BorderRadius _weatherContentBorderRadius = BorderRadius.zero;
-  double _weatherContentMargin = 0;
-  SystemUiOverlayStyle _systemUiOverlayStyle = SystemUiOverlayStyle.light;
+  late AnimationController _animationController;
+  late Animation<double> _animation;
+  bool _isShowCityManagerPage = false;
+  bool _hasShow = false;
+  Rect? _weatherContentRect;
 
   @override
   void initState() {
@@ -60,199 +55,186 @@ class _WeatherMainPageState
         eventBus.on<RefreshWeatherDataEvent>().listen((event) {
       _weatherMainPresenter.obtainWeatherData(delayMilliseconds: 200);
     });
+    _animationController = AnimationController(vsync: this)
+      ..duration = const Duration(milliseconds: 400)
+      ..addStatusListener((status) {
+        final cityId = context.read<MainProvider>().currentCityData?.cityId ?? "";
+        if (status == AnimationStatus.completed) {
+
+        } else if (status == AnimationStatus.dismissed) {
+          _hasShow = false;
+          _cityManagerPageKey.currentState?.hide(cityId);
+        }
+      });
+    _animation = Tween<double>(begin: 0, end: 1).animate(_animationController);
   }
 
   @override
   void dispose() {
     super.dispose();
     _refreshWeatherDataEventSubscription.cancel();
+    _animationController.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return AnnotatedRegion(
-      value: _systemUiOverlayStyle,
-      child: PopScope(
-        onPopInvoked: _onPopInvoked,
-        canPop: false,
-        child: Stack(
-          children: [
-            CityManagerPage(
-              key: _cityManagerPageKey,
-              hideCityManagerPage: _hideCityManagerPage,
+    return AnimatedBuilder(
+      animation: _animationController,
+      builder: (_, __) {
+        final animValue = _animation.value;
+        if (animValue > 0.8 && !_hasShow) {
+          _hasShow = true;
+          Commons.post((_) {
+            final cityId = context.read<MainProvider>().currentCityData?.cityId ?? "";
+            _cityManagerPageKey.currentState?.show(cityId);
+          });
+        }
+        final clipRectAnimValue = _isShowCityManagerPage
+            ? (animValue * 1.25).fixPercent()
+            : 1 - animValue;
+        return AnnotatedRegion(
+          value: animValue >= 1 ? SystemUiOverlayStyle.dark : SystemUiOverlayStyle.light,
+          child: PopScope(
+            onPopInvoked: _onPopInvoked,
+            canPop: false,
+            child: Stack(
+              children: [
+                CityManagerPage(
+                  key: _cityManagerPageKey,
+                  hideCityManagerPage: _hideCityManagerPage,
+                ),
+                ClipPath(
+                  clipper: WeatherMainClipper(
+                    fromRect:
+                        _isShowCityManagerPage ? null : _weatherContentRect,
+                    toRect: _isShowCityManagerPage ? _weatherContentRect : null,
+                    animValue: clipRectAnimValue,
+                    radius: 16.w * animValue,
+                  ),
+                  child: Offstage(
+                    offstage: animValue >= 1,
+                    child: super.build(context),
+                  ),
+                ),
+              ],
             ),
-            AnimatedPositioned(
-              left: _weatherContentRect.left,
-              top: _weatherContentRect.top,
-              right: _weatherContentRect.right,
-              bottom: _weatherContentRect.bottom,
-              duration: _weatherContentPositionedDuration,
-              curve: Curves.decelerate,
-              child: super.build(context),
-            ),
-          ],
-        ),
-      ),
+          ),
+        );
+      },
     );
   }
 
   void _onPopInvoked(bool didPop) {
     if (didPop) return;
-    if (_weatherContentOpacity <= 0) {
+    if (_animationController.isAnimating) return;
+    if (_animation.value >= 1) {
       _hideCityManagerPage();
       return;
     }
 
-    /// 不推荐使用 `dart:io` 的 exit(0)
     SystemNavigator.pop();
   }
 
   @override
   Widget getRoot(WeatherProvider provider) {
+    final animValue = _animation.value;
+    final opacity1 = 1 - ((animValue - 0.8) / 0.2).fixPercent();
+    final opacity2 = _isShowCityManagerPage
+        ? ((0.2 - animValue) / 0.2).fixPercent()
+        : 1 - ((animValue - 0.8) / 0.2).fixPercent();
     final weatherHeaderItemData = provider.list.singleOrNull(
         (element) => element.itemType == Constants.itemTypeWeatherHeader);
-    final weatherData = weatherHeaderItemData?.weatherData;
-    final isNight = Commons.isNight(DateTime.now());
-    String? weatherBg = isNight
-        ? weatherData?.observe?.night?.bgPic
-        : weatherData?.observe?.day?.bgPic;
-    if (weatherBg.isNullOrEmpty()) {
-      final currentWeatherDetailData = weatherData?.forecast15?.singleOrNull(
-        (element) =>
-            element.date ==
-            DateUtil.formatDate(DateTime.now(), format: Constants.yyyymmdd),
-      );
-      weatherBg = isNight
-          ? currentWeatherDetailData?.night?.bgPic
-          : currentWeatherDetailData?.day?.bgPic;
-    }
     return AnimatedOpacity(
-      opacity: _weatherContainerOpacity,
-      duration: const Duration(milliseconds: 100),
-      child: Offstage(
-        offstage: _weatherContainerOffstage,
-        child: Stack(
-          children: [
-            AnimatedContainer(
-              duration: const Duration(milliseconds: 300),
-              margin: EdgeInsets.symmetric(horizontal: _weatherContentMargin),
-              decoration: BoxDecoration(
-                borderRadius: _weatherContentBorderRadius,
-              ),
-              clipBehavior: Clip.hardEdge,
-              child: ExtendedImage.network(
-                weatherBg ?? "",
-                width: double.infinity,
-                height: double.infinity,
-                fit: BoxFit.cover,
-                loadStateChanged:
-                    Commons.loadStateChanged(placeholder: Colours.transparent),
+      opacity: opacity1,
+      duration: Duration.zero,
+      child: Stack(
+        children: [
+          AnimatedContainer(
+            duration: const Duration(milliseconds: 300),
+            decoration: const BoxDecoration(
+              gradient: LinearGradient(
+                colors: [
+                  Colours.color1E2232,
+                  Colours.color1D2637,
+                  Colours.color354359,
+                ],
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
               ),
             ),
-            AnimatedOpacity(
-              opacity: _weatherContentOpacity,
-              duration: const Duration(milliseconds: 200),
-              child: Stack(
-                children: [
-                  WeatherHeaderWidget(
-                    key: _weatherHeaderKey,
-                    weatherItemData: weatherHeaderItemData,
-                    onRefresh: () {
-                      _weatherMainPresenter.obtainWeatherData(
-                          delayMilliseconds: 400);
+          ),
+          AnimatedOpacity(
+            opacity: opacity2,
+            duration: Duration.zero,
+            child: Stack(
+              children: [
+                WeatherHeaderWidget(
+                  key: _weatherHeaderKey,
+                  weatherItemData: weatherHeaderItemData,
+                  onRefresh: () {
+                    _weatherMainPresenter.obtainWeatherData(
+                        delayMilliseconds: 400);
+                  },
+                ),
+                Padding(
+                  padding: EdgeInsets.only(
+                    top: ScreenUtil().statusBarHeight +
+                        (weatherHeaderItemData?.minHeight ?? 0),
+                  ),
+                  child: Listener(
+                    onPointerUp: (_) {
+                      _weatherHeaderKey.currentState?.onRelease();
+                    },
+                    child: super.getRoot(provider),
+                  ),
+                ),
+                Positioned(
+                  right: 0,
+                  top: ScreenUtil().statusBarHeight,
+                  child: OpacityLayout(
+                    child: Container(
+                      padding: EdgeInsets.all(12.w),
+                      margin: EdgeInsets.all(8.w),
+                      child: LoadAssetImage(
+                        "ic_add",
+                        width: 20.w,
+                        height: 20.w,
+                      ),
+                    ),
+                    onPressed: () {
+                      _showCityManagerPage();
                     },
                   ),
-                  Padding(
-                    padding: EdgeInsets.only(
-                      top: ScreenUtil().statusBarHeight +
-                          (weatherHeaderItemData?.minHeight ?? 0),
-                    ),
-                    child: Listener(
-                      onPointerUp: (_) {
-                        _weatherHeaderKey.currentState?.onRelease();
-                      },
-                      child: super.getRoot(provider),
-                    ),
-                  ),
-                  Positioned(
-                    right: 0,
-                    top: ScreenUtil().statusBarHeight,
-                    child: OpacityLayout(
-                      child: Container(
-                        padding: EdgeInsets.all(12.w),
-                        margin: EdgeInsets.all(8.w),
-                        child: LoadAssetImage(
-                          "ic_add",
-                          width: 20.w,
-                          height: 20.w,
-                        ),
-                      ),
-                      onPressed: () {
-                        _showCityManagerPage();
-                      },
-                    ),
-                  ),
-                ],
-              ),
+                ),
+              ],
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
 
   void _showCityManagerPage() {
+    if (_animationController.isAnimating) return;
     final cityId = context.read<MainProvider>().currentCityData?.cityId ?? "";
     final positions = _cityManagerPageKey.currentState?.fixItemPosition(cityId);
-    final contentPosition = positions?.getOrNull(0) ?? Offset.zero;
     final itemPosition = positions?.getOrNull(1) ?? Offset.zero;
-    setState(() {
-      _weatherContentOpacity = 0;
-      _weatherContentBorderRadius = BorderRadius.circular(16.w);
-      _weatherContentRect = Rect.fromLTRB(
-          0, itemPosition.dy, 0, contentPosition.dy - (itemPosition.dy + 98.w));
-      _weatherContentMargin = 16.w;
-      _systemUiOverlayStyle = SystemUiOverlayStyle.dark;
-      Commons.postDelayed(delayMilliseconds: 300, () {
-        setState(() {
-          _weatherContainerOpacity = 0;
-          _cityManagerPageKey.currentState?.show(cityId);
-          Commons.postDelayed(delayMilliseconds: 100, () {
-            setState(() {
-              _weatherContainerOffstage = true;
-            });
-          });
-        });
-      });
-    });
+    _weatherContentRect = Rect.fromLTRB(16.w, itemPosition.dy,
+        ScreenUtil().screenWidth - 16.w, itemPosition.dy + 98.w);
+    _isShowCityManagerPage = true;
+    _animationController..duration = const Duration(milliseconds: 400)..forward();
   }
 
   void _hideCityManagerPage() {
+    if (_animationController.isAnimating) return;
     final cityId = context.read<MainProvider>().currentCityData?.cityId ?? "";
     final positions = _cityManagerPageKey.currentState
         ?.fixItemPosition(cityId, jumpTo: false);
-    final contentPosition = positions?.getOrNull(0) ?? Offset.zero;
     final itemPosition = positions?.getOrNull(1) ?? Offset.zero;
-    setState(() {
-      _weatherContentPositionedDuration = Duration.zero;
-      _weatherContentRect = Rect.fromLTRB(
-          0, itemPosition.dy, 0, contentPosition.dy - (itemPosition.dy + 98.w));
-      _weatherContainerOpacity = 1;
-      _weatherContainerOffstage = false;
-      Commons.postDelayed(delayMilliseconds: 100, () {
-        setState(() {
-          _weatherContentOpacity = 1;
-          _weatherContentBorderRadius = BorderRadius.zero;
-          _weatherContentMargin = 0;
-          _weatherContentPositionedDuration = const Duration(milliseconds: 300);
-          _weatherContentRect = Rect.zero;
-          _systemUiOverlayStyle = SystemUiOverlayStyle.light;
-          Commons.postDelayed(delayMilliseconds: 300, () {
-            _cityManagerPageKey.currentState?.hide(cityId);
-          });
-        });
-      });
-    });
+    _weatherContentRect = Rect.fromLTRB(16.w, itemPosition.dy,
+        ScreenUtil().screenWidth - 16.w, itemPosition.dy + 98.w);
+    _isShowCityManagerPage = false;
+    _animationController..reverseDuration = const Duration(milliseconds: 300)..reverse();
   }
 
   @override

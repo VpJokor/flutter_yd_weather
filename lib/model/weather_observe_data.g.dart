@@ -15,6 +15,7 @@ WeatherObserveData _$WeatherObserveDataFromJson(Map<String, dynamic> json) =>
           ? null
           : WeatherInfoData.fromJson(json['night'] as Map<String, dynamic>),
       (json['type'] as num?)?.toInt(),
+      json['third_type'] as String?,
       (json['temp'] as num?)?.toInt(),
       json['tigan'] as String?,
       json['up_time'] as String?,
@@ -34,6 +35,7 @@ Map<String, dynamic> _$WeatherObserveDataToJson(WeatherObserveData instance) =>
       'day': instance.day,
       'night': instance.night,
       'type': instance.type,
+      'third_type': instance.weatherType,
       'temp': instance.temp,
       'tigan': instance.tiGan,
       'up_time': instance.upTime,

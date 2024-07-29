@@ -8,7 +8,6 @@ import 'package:flutter_yd_weather/model/weather_item_data.dart';
 import 'package:flutter_yd_weather/res/colours.dart';
 import 'package:flutter_yd_weather/res/gaps.dart';
 import 'package:flutter_yd_weather/utils/commons_ext.dart';
-import 'package:flutter_yd_weather/utils/log.dart';
 import 'package:flutter_yd_weather/widget/blurry_container.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
@@ -37,8 +36,6 @@ class _WeatherAlarmsPanelState extends State<WeatherAlarmsPanel> {
     final percent = ((weatherItemData.maxHeight - 12.w - widget.shrinkOffset) /
             Constants.itemStickyHeight.w)
         .fixPercent();
-    Log.e(
-        "titlePercent = $titlePercent timePercent = $timePercent percent = $percent");
     return AnimatedOpacity(
       opacity: percent,
       duration: Duration.zero,
