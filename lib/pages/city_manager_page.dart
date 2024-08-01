@@ -1,8 +1,10 @@
 import 'package:easy_refresh/easy_refresh.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:flutter_yd_weather/base/base_list_view.dart';
 import 'package:flutter_yd_weather/model/city_data.dart';
+import 'package:flutter_yd_weather/model/city_manager_data.dart';
 import 'package:flutter_yd_weather/mvp/power_presenter.dart';
 import 'package:flutter_yd_weather/pages/provider/city_manager_provider.dart';
 import 'package:flutter_yd_weather/provider/main_provider.dart';
@@ -15,6 +17,7 @@ import 'package:flutter_yd_weather/utils/theme_utils.dart';
 import 'package:flutter_yd_weather/widget/city_manager_item.dart';
 import 'package:hive_flutter/adapters.dart';
 import 'package:provider/provider.dart';
+import 'package:reorderables/reorderables.dart';
 import 'package:scrollview_observer/scrollview_observer.dart';
 
 import '../base/base_list_page.dart';
@@ -22,9 +25,13 @@ import '../res/colours.dart';
 import '../res/gaps.dart';
 import '../widget/animated_list_item.dart';
 import '../widget/my_app_bar.dart';
+import '../widget/yd_reorderable_list.dart';
 
 class CityManagerPage extends StatefulWidget {
-  const CityManagerPage({super.key, this.hideCityManagerPage,});
+  const CityManagerPage({
+    super.key,
+    this.hideCityManagerPage,
+  });
 
   final VoidCallback? hideCityManagerPage;
 
@@ -33,16 +40,16 @@ class CityManagerPage extends StatefulWidget {
 }
 
 class CityManagerPageState
-    extends BaseListPageState<CityManagerPage, CityData, CityManagerProvider>
-    implements BaseListView<CityData> {
+    extends BaseListPageState<CityManagerPage, CityManagerData, CityManagerProvider>
+    implements BaseListView<CityManagerData> {
   late AnimationController _animationController;
+  late SlidableController _slidableController;
   int _animStartIndex = 0;
   int _animEndIndex = 0;
   List<int> _displayingChildIndexList = [];
 
   @override
-  NotRefreshHeader? get notRefreshHeader =>
-      const NotRefreshHeader(
+  NotRefreshHeader? get notRefreshHeader => const NotRefreshHeader(
         position: IndicatorPosition.locator,
         hitOver: true,
       );
@@ -52,13 +59,17 @@ class CityManagerPageState
     super.initState();
     setEnableRefresh(false);
     setEnableLoad(false);
+    _slidableController = SlidableController(this);
     _animationController = AnimationController(
-      duration: const Duration(milliseconds: 200),
+      duration: const Duration(milliseconds: 300),
       vsync: this,
     );
     Commons.post((_) {
       provider.largeTitleColor = context.black;
       provider.hideLoading();
+
+      final mainP = context.read<MainProvider>();
+      provider.generate(mainP);
     });
   }
 
@@ -66,12 +77,13 @@ class CityManagerPageState
   void dispose() {
     super.dispose();
     _animationController.dispose();
+    _slidableController.dispose();
   }
 
   List<Offset> fixItemPosition(String cityId, {bool jumpTo = true}) {
     final contentPosition =
         (contentKey.currentContext?.findRenderObject() as RenderBox?)
-            ?.localToGlobal(Offset.zero) ??
+                ?.localToGlobal(Offset.zero) ??
             Offset.zero;
     final contentHeight = contentKey.currentContext?.size?.height ?? 0;
     final itemPosition = _findItemPosition(cityId) ?? Offset.zero;
@@ -105,7 +117,7 @@ class CityManagerPageState
   void show(String cityId) {
     final contentPosition =
         (contentKey.currentContext?.findRenderObject() as RenderBox?)
-            ?.localToGlobal(Offset.zero) ??
+                ?.localToGlobal(Offset.zero) ??
             Offset.zero;
     final contentHeight = contentKey.currentContext?.size?.height ?? 0;
     final currentItemPosition = _findItemPosition(cityId) ?? Offset.zero;
@@ -126,16 +138,17 @@ class CityManagerPageState
   }
 
   Offset? _findItemPosition(String cityId) {
-    final mainP = context.read<MainProvider>();
-    final index = mainP.cityDataBox.values.toList().indexWhere((cityData) => cityData.cityId == cityId);
+    final index = provider.list.indexWhere((element) => element.cityData?.cityId == cityId);
     if (index >= 0) {
       final contentPosition =
           (contentKey.currentContext?.findRenderObject() as RenderBox?)
-              ?.localToGlobal(Offset.zero) ??
+                  ?.localToGlobal(Offset.zero) ??
               Offset.zero;
       final offset = scrollController?.offset ?? 0;
-      final itemPosition = Offset(0, index * (98.w + 12.w) + 72.w - offset + contentPosition.dy);
-      Log.e("itemPosition = $itemPosition offset = $offset index = $index dy = ${contentPosition.dy}");
+      final itemPosition =
+          Offset(0, index * (98.w + 12.w) + 72.w - offset + contentPosition.dy);
+      Log.e(
+          "itemPosition = $itemPosition offset = $offset index = $index dy = ${contentPosition.dy}");
       return itemPosition;
     }
     return null;
@@ -169,42 +182,58 @@ class CityManagerPageState
           _displayingChildIndexList = resultModel.displayingChildIndexList;
           Log.e("_displayingChildIndexList = $_displayingChildIndexList");
         },
-        child: super.getRoot(provider),
+        child: SlidableAutoCloseBehavior(
+          child: YdReorderableList(
+            onReorder: _reorderCallback,
+            child: super.getRoot(provider),
+          ),
+        ),
       ),
     );
   }
 
+  int _indexOfKey(Key key) {
+    return provider.list.indexWhere((element) => element.key == key);
+  }
+
+  bool _reorderCallback(Key item, Key newPosition) {
+    final draggingIndex = _indexOfKey(item);
+    final draggedItem = provider.list[draggingIndex];
+    if (draggedItem.cityData?.isLocationCity ?? false) {
+      return false;
+    }
+    final newPositionIndex = _indexOfKey(newPosition);
+    provider.swap(draggingIndex, newPositionIndex, draggedItem);
+    Log.e(
+        "draggingIndex = $draggingIndex newPositionIndex = $newPositionIndex");
+    return true;
+  }
+
   @override
   Widget getRefreshContent(CityManagerProvider provider) {
-    final mainP = context.read<MainProvider>();
-    return ValueListenableBuilder(
-      valueListenable: mainP.cityDataBox.listenable(),
-      builder: (context, cityDataBox, child) {
-        if (mounted && _displayingChildIndexList.isEmpty) {
-          Commons.post((_) {
-            final contentHeight = contentKey.currentContext?.size?.height ?? 0;
-            final count = ((contentHeight - 72.w) / (98.w + 12.w)).ceil();
-            _displayingChildIndexList = List.generate(count, (index) => index);
-            Log.e("_displayingChildIndexList = $_displayingChildIndexList");
-          });
-        }
-        return SliverList.separated(
-          itemBuilder: (context, index) {
-            return AnimatedListItem(
-              index: index,
-              length: cityDataBox.length,
-              aniController: _animationController,
-              startIndex: _animStartIndex,
-              endIndex: _animEndIndex,
-              child: buildItem(context, index, provider),
-            );
-          },
-          separatorBuilder: (context, index) {
-            return buildItemDecoration(context, index);
-          },
-          itemCount: cityDataBox.length,
+    if (mounted && _displayingChildIndexList.isEmpty) {
+      Commons.post((_) {
+        final contentHeight = contentKey.currentContext?.size?.height ?? 0;
+        final count = ((contentHeight - 72.w) / (98.w + 12.w)).ceil();
+        _displayingChildIndexList = List.generate(count, (index) => index);
+      });
+    }
+    Log.e("getRefreshContent");
+    return SliverList.separated(
+      itemBuilder: (context, index) {
+        return AnimatedListItem(
+          index: index,
+          length: provider.list.length,
+          aniController: _animationController,
+          startIndex: _animStartIndex,
+          endIndex: _animEndIndex,
+          child: buildItem(context, index, provider),
         );
       },
+      separatorBuilder: (context, index) {
+        return buildItemDecoration(context, index);
+      },
+      itemCount: provider.list.length,
     );
   }
 
@@ -232,11 +261,11 @@ class CityManagerPageState
   }
 
   @override
-  Widget buildItem(BuildContext context, int index,
-      CityManagerProvider provider) {
+  Widget buildItem(
+      BuildContext context, int index, CityManagerProvider provider) {
     return CityManagerItem(
-      key: GlobalKey(),
-      index: index,
+      cityManagerData: provider.list[index],
+      slidableController: _slidableController,
       onTap: widget.hideCityManagerPage,
     );
   }

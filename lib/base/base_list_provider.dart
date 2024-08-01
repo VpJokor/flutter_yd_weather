@@ -16,15 +16,19 @@ class BaseListProvider<T> extends BasePageProvider {
     notifyListeners();
   }
 
-  void replace(List<T>? data) {
+  void replace(List<T>? data, {bool refresh = true}) {
     _list.clear();
     _list.addAll(data ?? <T>[]);
-    notifyListeners();
+    if (refresh) {
+      notifyListeners();
+    }
   }
 
-  void insert(int i, T data) {
+  void insert(int i, T data, {bool refresh = true}) {
     _list.insert(i, data);
-    notifyListeners();
+    if (refresh) {
+      notifyListeners();
+    }
   }
 
   void insertAll(int i, List<T> data) {
@@ -37,9 +41,11 @@ class BaseListProvider<T> extends BasePageProvider {
     notifyListeners();
   }
 
-  void removeAt(int i) {
+  void removeAt(int i, {bool refresh = true}) {
     _list.removeAt(i);
-    notifyListeners();
+    if (refresh) {
+      notifyListeners();
+    }
   }
 
   void clear() {

@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:common_utils/common_utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -13,6 +14,7 @@ import 'package:flutter_yd_weather/provider/main_provider.dart';
 import 'package:flutter_yd_weather/res/gaps.dart';
 import 'package:flutter_yd_weather/utils/commons.dart';
 import 'package:flutter_yd_weather/utils/log.dart';
+import 'package:flutter_yd_weather/utils/weather_bg_utils.dart';
 import 'package:flutter_yd_weather/utils/weather_persistent_header_delegate.dart';
 import 'package:flutter_yd_weather/widget/load_asset_image.dart';
 import 'package:flutter_yd_weather/widget/opacity_layout.dart';
@@ -42,8 +44,8 @@ class _WeatherMainPageState
   final _cityManagerPageKey = GlobalKey<CityManagerPageState>();
   late AnimationController _animationController;
   late Animation<double> _animation;
+  SystemUiOverlayStyle _systemUiOverlayStyle = SystemUiOverlayStyle.light;
   bool _isShowCityManagerPage = false;
-  bool _hasShow = false;
   Rect? _weatherContentRect;
 
   @override
@@ -56,14 +58,20 @@ class _WeatherMainPageState
       _weatherMainPresenter.obtainWeatherData(delayMilliseconds: 200);
     });
     _animationController = AnimationController(vsync: this)
-      ..duration = const Duration(milliseconds: 400)
+      ..duration = const Duration(milliseconds: 300)
       ..addStatusListener((status) {
-        final cityId = context.read<MainProvider>().currentCityData?.cityId ?? "";
+        final cityId =
+            context.read<MainProvider>().currentCityData?.cityId ?? "";
         if (status == AnimationStatus.completed) {
-
+          _cityManagerPageKey.currentState?.show(cityId);
+          setState(() {
+            _systemUiOverlayStyle = SystemUiOverlayStyle.dark;
+          });
         } else if (status == AnimationStatus.dismissed) {
-          _hasShow = false;
           _cityManagerPageKey.currentState?.hide(cityId);
+          setState(() {
+            _systemUiOverlayStyle = SystemUiOverlayStyle.light;
+          });
         }
       });
     _animation = Tween<double>(begin: 0, end: 1).animate(_animationController);
@@ -78,32 +86,25 @@ class _WeatherMainPageState
 
   @override
   Widget build(BuildContext context) {
-    return AnimatedBuilder(
-      animation: _animationController,
-      builder: (_, __) {
-        final animValue = _animation.value;
-        if (animValue > 0.8 && !_hasShow) {
-          _hasShow = true;
-          Commons.post((_) {
-            final cityId = context.read<MainProvider>().currentCityData?.cityId ?? "";
-            _cityManagerPageKey.currentState?.show(cityId);
-          });
-        }
-        final clipRectAnimValue = _isShowCityManagerPage
-            ? (animValue * 1.25).fixPercent()
-            : 1 - animValue;
-        return AnnotatedRegion(
-          value: animValue >= 1 ? SystemUiOverlayStyle.dark : SystemUiOverlayStyle.light,
-          child: PopScope(
-            onPopInvoked: _onPopInvoked,
-            canPop: false,
-            child: Stack(
-              children: [
-                CityManagerPage(
-                  key: _cityManagerPageKey,
-                  hideCityManagerPage: _hideCityManagerPage,
-                ),
-                ClipPath(
+    return AnnotatedRegion(
+      value: _systemUiOverlayStyle,
+      child: PopScope(
+        onPopInvoked: _onPopInvoked,
+        canPop: false,
+        child: Stack(
+          children: [
+            CityManagerPage(
+              key: _cityManagerPageKey,
+              hideCityManagerPage: _hideCityManagerPage,
+            ),
+            AnimatedBuilder(
+              animation: _animationController,
+              builder: (_, __) {
+                final animValue = _animation.value;
+                final clipRectAnimValue = _isShowCityManagerPage
+                    ? (animValue * 1.25).fixPercent()
+                    : 1 - animValue;
+                return ClipPath(
                   clipper: WeatherMainClipper(
                     fromRect:
                         _isShowCityManagerPage ? null : _weatherContentRect,
@@ -115,12 +116,12 @@ class _WeatherMainPageState
                     offstage: animValue >= 1,
                     child: super.build(context),
                   ),
-                ),
-              ],
+                );
+              },
             ),
-          ),
-        );
-      },
+          ],
+        ),
+      ),
     );
   }
 
@@ -144,6 +145,17 @@ class _WeatherMainPageState
         : 1 - ((animValue - 0.8) / 0.2).fixPercent();
     final weatherHeaderItemData = provider.list.singleOrNull(
         (element) => element.itemType == Constants.itemTypeWeatherHeader);
+    String weatherType =
+        weatherHeaderItemData?.weatherData?.observe?.weatherType ?? "";
+    if (weatherType.isNullOrEmpty()) {
+      final currentWeatherDetailData =
+          weatherHeaderItemData?.weatherData?.forecast15?.singleOrNull(
+        (element) =>
+            element.date ==
+            DateUtil.formatDate(DateTime.now(), format: Constants.yyyymmdd),
+      );
+      weatherType = currentWeatherDetailData?.weatherType ?? "";
+    }
     return AnimatedOpacity(
       opacity: opacity1,
       duration: Duration.zero,
@@ -151,16 +163,9 @@ class _WeatherMainPageState
         children: [
           AnimatedContainer(
             duration: const Duration(milliseconds: 300),
-            decoration: const BoxDecoration(
-              gradient: LinearGradient(
-                colors: [
-                  Colours.color1E2232,
-                  Colours.color1D2637,
-                  Colours.color354359,
-                ],
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-              ),
+            decoration: BoxDecoration(
+              gradient: WeatherBgUtils.getWeatherBg(
+                  weatherType, Commons.isNight(DateTime.now())),
             ),
           ),
           AnimatedOpacity(
@@ -222,7 +227,9 @@ class _WeatherMainPageState
     _weatherContentRect = Rect.fromLTRB(16.w, itemPosition.dy,
         ScreenUtil().screenWidth - 16.w, itemPosition.dy + 98.w);
     _isShowCityManagerPage = true;
-    _animationController..duration = const Duration(milliseconds: 400)..forward();
+    _animationController
+      ..duration = const Duration(milliseconds: 400)
+      ..forward();
   }
 
   void _hideCityManagerPage() {
@@ -234,7 +241,9 @@ class _WeatherMainPageState
     _weatherContentRect = Rect.fromLTRB(16.w, itemPosition.dy,
         ScreenUtil().screenWidth - 16.w, itemPosition.dy + 98.w);
     _isShowCityManagerPage = false;
-    _animationController..reverseDuration = const Duration(milliseconds: 300)..reverse();
+    _animationController
+      ..reverseDuration = const Duration(milliseconds: 300)
+      ..reverse();
   }
 
   @override

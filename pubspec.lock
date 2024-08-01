@@ -403,6 +403,14 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "5.9.3"
+  flutter_slidable:
+    dependency: "direct main"
+    description:
+      name: flutter_slidable
+      sha256: "2c5611c0b44e20d180e4342318e1bbc28b0a44ad2c442f5df16962606fd3e8e3"
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "3.1.1"
   flutter_smart_dialog:
     dependency: "direct main"
     description:
@@ -893,6 +901,14 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "2.2.2"
+  reorderables:
+    dependency: "direct main"
+    description:
+      name: reorderables
+      sha256: "004a886e4878df1ee27321831c838bc1c976311f4ca6a74ce7d561e506540a77"
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "0.6.0"
   rxdart:
     dependency: "direct main"
     description:

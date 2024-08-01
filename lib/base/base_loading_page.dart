@@ -10,7 +10,7 @@ abstract class BaseLoadingPageState<T extends StatefulWidget,
         PROVIDER extends BasePageProvider> extends State<T>
     with
         AutomaticKeepAliveClientMixin<T>,
-        SingleTickerProviderStateMixin<T>,
+        TickerProviderStateMixin<T>,
         BasePageMixin<T, PowerPresenter<dynamic>> {
   late PROVIDER _provider;
 

@@ -41,6 +41,9 @@ class MainProvider extends ChangeNotifier {
               cityData)
           .then((_) {
         currentCityData = cityData;
+        final currentCityIdList = SpUtil.getStringList(Constants.currentCityIdList, defValue: []) ?? [];
+        currentCityIdList.add(isLocationCity ? Constants.locationCityId : (cityData.cityId ?? ""));
+        SpUtil.putStringList(Constants.currentCityIdList, currentCityIdList);
         eventBus.fire(RefreshWeatherDataEvent());
         if (Navigator.canPop(context)) {
           NavigatorUtils.goBackUntil(context, Routes.main);

@@ -7,9 +7,9 @@ import '../res/colours.dart';
 // 大风	WIND
 class WeatherBgUtils {
   static LinearGradient getWeatherBg(String type, bool isNight) {
-    Color color1 = Colours.colorF47359;
-    Color color2 = Colours.colorF49670;
-    Color color3 = Colours.colorF1AB80;
+    Color color1 = Colours.color464E96;
+    Color color2 = Colours.color547EA9;
+    Color color3 = Colours.color409AAF;
     switch (type) {
       case "CLEAR_DAY":
       case "CLEAR_NIGHT":
@@ -32,49 +32,54 @@ class WeatherBgUtils {
         color3 = isNight ? Colours.color354359 : Colours.color828D9E;
         break;
       case "LIGHT_HAZE":
-        // 轻度雾霾
-        break;
       case "MODERATE_HAZE":
-        // 中度雾霾
+        // 轻度雾霾 中度雾霾
+        color1 = Colours.colorBC8E3E;
+        color2 = Colours.colorCFA451;
+        color3 = Colours.colorE5BB62;
         break;
       case "HEAVY_HAZE":
         // 重度雾霾
+        color1 = Colours.colorB77B32;
+        color2 = Colours.colorD79B4D;
+        color3 = Colours.colorF7BA66;
         break;
       case "LIGHT_RAIN":
         // 小雨
+        color1 = isNight ? Colours.color171A2A : Colours.color5E738D;
+        color2 = isNight ? Colours.color21273C : Colours.color7D849C;
+        color3 = isNight ? Colours.color3C4354 : Colours.color8F9AAD;
         break;
       case "MODERATE_RAIN":
-        // 中雨
-        break;
       case "HEAVY_RAIN":
-        // 大雨
-        break;
       case "STORM_RAIN":
-        // 暴雨
+        // 中雨 大雨 暴雨
+        color1 = Colours.color171A2A;
+        color2 = Colours.color21273C;
+        color3 = Colours.color3C4354;
         break;
       case "FOG":
-        // 雾
-        break;
       case "LIGHT_SNOW":
-        // 小雪
-        break;
       case "MODERATE_SNOW":
-        // 中雪
-        break;
       case "HEAVY_SNOW":
-        // 大雪
-        break;
       case "STORM_SNOW":
-        // 暴雪
+        // 雾 小雪 中雪 大雪 暴雪
+        color1 = Colours.colorABB7C4;
+        color2 = Colours.colorAEC7D7;
+        color3 = Colours.colorB6C7CD;
         break;
       case "DUST":
-        // 浮尘
-        break;
       case "SAND":
-        // 沙尘
+        // 浮尘 沙尘
+        color1 = Colours.colorF7CB6A;
+        color2 = Colours.colorFBB777;
+        color3 = Colours.colorFDA085;
         break;
       case "WIND":
         // 大风
+        color1 = Colours.color4776B0;
+        color2 = Colours.color8A8AB1;
+        color3 = Colours.colorE9A4B4;
         break;
     }
     return LinearGradient(
