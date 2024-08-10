@@ -44,8 +44,9 @@ class CityManagerSlidableAction extends StatelessWidget {
             ),
           ),
           onPressed: () {
-            this.onTap?.call();
-            Slidable.of(context)?.close();
+            Slidable.of(context)?.close().then((_) {
+              onTap?.call();
+            });
           },
         ),
       ),

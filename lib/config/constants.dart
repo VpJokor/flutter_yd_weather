@@ -14,6 +14,7 @@ class Constants {
 
   static const String currentCityId = 'currentCityId';
   static const String currentCityIdList = 'currentCityIdList';
+  static const String currentWeatherCardSort = 'currentWeatherCardSort';
 
   static const int cityDataTypeId = 1;
   static const int simpleWeatherDataTypeId = 2;
@@ -30,6 +31,7 @@ class Constants {
   static const int itemTypeLifeIndex = 4;
   static const int itemTypeAlarms = 5;
   static const int itemTypeForecast40 = 6;
+
   /// 紫外线、湿度、体感、风向、日出日落、气压、可见度、未来40日天气
   static const int itemTypeObserve = 7;
 
@@ -56,4 +58,14 @@ class Constants {
   static const String yy_mm_dd_hh_mm_ss = "yyMMddHHmmss";
   static const String yyyy_mm_dd_hh_mm = "yyyy-MM-dd HH:mm";
   static const String yyyy_mm_dd_hh_mm_chinese = "yyyy年MM月dd日HH:mm";
+
+  static const defaultWeatherCardSort = [
+    "${Constants.itemTypeWeatherHeader}",
+    "${Constants.itemTypeAlarms}",
+    "${Constants.itemTypeAirQuality}",
+    "${Constants.itemTypeHourWeather}",
+    "${Constants.itemTypeDailyWeather}",
+    "${Constants.itemTypeObserve}",
+    "${Constants.itemTypeLifeIndex}",
+  ];
 }

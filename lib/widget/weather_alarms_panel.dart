@@ -9,7 +9,10 @@ import 'package:flutter_yd_weather/res/colours.dart';
 import 'package:flutter_yd_weather/res/gaps.dart';
 import 'package:flutter_yd_weather/utils/commons_ext.dart';
 import 'package:flutter_yd_weather/widget/blurry_container.dart';
+import 'package:provider/provider.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
+
+import '../pages/provider/weather_provider.dart';
 
 class WeatherAlarmsPanel extends StatefulWidget {
   const WeatherAlarmsPanel({
@@ -36,6 +39,7 @@ class _WeatherAlarmsPanelState extends State<WeatherAlarmsPanel> {
     final percent = ((weatherItemData.maxHeight - 12.w - widget.shrinkOffset) /
             Constants.itemStickyHeight.w)
         .fixPercent();
+    final isDark = context.read<WeatherProvider>().isDark;
     return AnimatedOpacity(
       opacity: percent,
       duration: Duration.zero,
@@ -52,7 +56,7 @@ class _WeatherAlarmsPanelState extends State<WeatherAlarmsPanel> {
             padding: EdgeInsets.only(
               top: min(widget.shrinkOffset, Constants.itemStickyHeight.w),
             ),
-            color: Colours.white.withOpacity(0.1),
+            color: (isDark ? Colours.white : Colours.black).withOpacity(0.1),
             borderRadius: BorderRadius.circular(12.w),
             child: Stack(
               children: [
@@ -64,13 +68,13 @@ class _WeatherAlarmsPanelState extends State<WeatherAlarmsPanel> {
                   bottom: 0,
                   child: Visibility(
                     visible: weatherItemData.weatherData?.alarms
-                        .isNotNullOrEmpty() ??
+                            .isNotNullOrEmpty() ??
                         false,
                     child: Swiper(
                       key: const Key('alarms_swiper'),
                       loop: false,
                       itemCount:
-                      weatherItemData.weatherData?.alarms?.length ?? 0,
+                          weatherItemData.weatherData?.alarms?.length ?? 0,
                       onIndexChanged: (index) {
                         setState(() {
                           _index = index;
@@ -82,7 +86,8 @@ class _WeatherAlarmsPanelState extends State<WeatherAlarmsPanel> {
                         final dateTime = DateTime.tryParse(item?.pubTime ?? "");
                         String pubTimeDesc = "";
                         if (dateTime != null) {
-                          final diff = DateTime.now().millisecondsSinceEpoch - dateTime.millisecondsSinceEpoch;
+                          final diff = DateTime.now().millisecondsSinceEpoch -
+                              dateTime.millisecondsSinceEpoch;
                           final fewHours = (diff / 1000 / 60 / 60).floor();
                           pubTimeDesc = "$fewHours小时前更新";
                           if (fewHours <= 0) {
@@ -146,14 +151,14 @@ class _WeatherAlarmsPanelState extends State<WeatherAlarmsPanel> {
                   right: 0,
                   bottom: 0,
                   child: Visibility(
-                    visible: (weatherItemData.weatherData?.alarms?.length ?? 0) > 1,
+                    visible:
+                        (weatherItemData.weatherData?.alarms?.length ?? 0) > 1,
                     child: Container(
                       margin: EdgeInsets.only(bottom: 12.w),
                       alignment: Alignment.center,
                       child: AnimatedSmoothIndicator(
                         activeIndex: _index,
-                        count:
-                        weatherItemData.weatherData?.alarms?.length ?? 0,
+                        count: weatherItemData.weatherData?.alarms?.length ?? 0,
                         effect: ExpandingDotsEffect(
                           expansionFactor: 1.5,
                           spacing: 3.w,

@@ -3,9 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_yd_weather/utils/commons_ext.dart';
 import 'package:flutter_yd_weather/widget/weather_daily_temp_panel.dart';
+import 'package:provider/provider.dart';
 
 import '../config/constants.dart';
 import '../model/weather_item_data.dart';
+import '../pages/provider/weather_provider.dart';
 import '../res/colours.dart';
 import '../res/gaps.dart';
 import '../utils/weather_icon_utils.dart';
@@ -32,6 +34,7 @@ class WeatherDailyPanel extends StatelessWidget {
         ?.reduce((e1, e2) => (e1.high ?? 0) > (e2.high ?? 0) ? e1 : e2);
     final minTempData = weatherItemData.weatherData?.forecast15
         ?.reduce((e1, e2) => (e1.low ?? 0) < (e2.low ?? 0) ? e1 : e2);
+    final isDark = context.read<WeatherProvider>().isDark;
     return AnimatedOpacity(
       opacity: percent,
       duration: Duration.zero,
@@ -48,7 +51,7 @@ class WeatherDailyPanel extends StatelessWidget {
             padding: EdgeInsets.only(
               top: Constants.itemStickyHeight.w,
             ),
-            color: Colours.white.withOpacity(0.1),
+            color: (isDark ? Colours.white : Colours.black).withOpacity(0.1),
             borderRadius: BorderRadius.circular(12.w),
             child: Stack(
               children: [

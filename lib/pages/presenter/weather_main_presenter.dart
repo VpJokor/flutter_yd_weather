@@ -15,7 +15,10 @@ class WeatherMainPresenter extends BasePagePresenter<WeatherMainView> {
     obtainWeatherData(delayMilliseconds: 200);
   }
 
-  Future<dynamic> obtainWeatherData({int delayMilliseconds = 0}) {
+  Future<dynamic> obtainWeatherData({
+    int delayMilliseconds = 0,
+    bool isAdd = false,
+  }) {
     final mainP = view.getContext().read<MainProvider>();
     final Map<String, String> params = <String, String>{};
     final currentCityId = mainP.currentCityData?.cityId ?? "";
@@ -24,8 +27,7 @@ class WeatherMainPresenter extends BasePagePresenter<WeatherMainView> {
         url: Api.weatherApi,
         queryParameters: params,
         delayMilliseconds: delayMilliseconds, onSuccess: (data) {
-      view.obtainWeatherDataCallback();
-      (view.baseProvider as WeatherProvider).setWeatherData(data);
+      (view.baseProvider as WeatherProvider).setWeatherData(mainP.currentWeatherCardSort, data);
       if (mainP.currentCityData != null) {
         mainP.currentCityData!.weatherData =
             SimpleWeatherData.fromWeatherData(data);
@@ -34,8 +36,9 @@ class WeatherMainPresenter extends BasePagePresenter<WeatherMainView> {
             isLocationCity ? Constants.locationCityId : currentCityId,
             mainP.currentCityData!);
       }
+      view.obtainWeatherDataCallback(isAdd);
     }, onError: (_) {
-      view.obtainWeatherDataCallback();
+      view.obtainWeatherDataCallback(false);
     });
   }
 }

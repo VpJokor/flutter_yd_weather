@@ -17,6 +17,14 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "6.4.1"
+  animated_visibility:
+    dependency: "direct main"
+    description:
+      name: animated_visibility
+      sha256: f68b65a78ef1fbe6b9d665d5a6399d1c859fcd0755eaa648345d1224eea9b342
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "0.0.4"
   archive:
     dependency: transitive
     description:
@@ -49,6 +57,14 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "2.1.1"
+  bubble_box:
+    dependency: "direct main"
+    description:
+      name: bubble_box
+      sha256: "6194c3471291ff2f2e765bb50fdc72a2322a36bb47a04663c03e2c94f3551132"
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "0.5.3"
   build:
     dependency: transitive
     description:

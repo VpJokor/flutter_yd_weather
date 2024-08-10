@@ -2,11 +2,12 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_yd_weather/pages/provider/weather_provider.dart';
 import 'package:flutter_yd_weather/res/gaps.dart';
 import 'package:flutter_yd_weather/utils/commons_ext.dart';
 import 'package:flutter_yd_weather/widget/air_quality_bar.dart';
 import 'package:flutter_yd_weather/widget/blurry_container.dart';
-import 'package:flutter_yd_weather/widget/scale_layout.dart';
+import 'package:provider/provider.dart';
 
 import '../config/constants.dart';
 import '../model/weather_item_data.dart';
@@ -29,6 +30,7 @@ class WeatherAirQualityPanel extends StatelessWidget {
     final percent = ((weatherItemData.maxHeight - 12.w - shrinkOffset) /
             Constants.itemStickyHeight.w)
         .fixPercent();
+    final isDark = context.read<WeatherProvider>().isDark;
     return AnimatedOpacity(
       opacity: percent,
       duration: Duration.zero,
@@ -45,7 +47,7 @@ class WeatherAirQualityPanel extends StatelessWidget {
             padding: EdgeInsets.only(
               top: min(shrinkOffset, Constants.itemStickyHeight.w),
             ),
-            color: Colours.white.withOpacity(0.1),
+            color: (isDark ? Colours.white : Colours.black).withOpacity(0.1),
             borderRadius: BorderRadius.circular(12.w),
             child: Stack(
               children: [

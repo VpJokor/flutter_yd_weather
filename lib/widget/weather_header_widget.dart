@@ -7,7 +7,9 @@ import 'package:flutter_yd_weather/res/gaps.dart';
 import 'package:flutter_yd_weather/utils/commons.dart';
 import 'package:flutter_yd_weather/utils/commons_ext.dart';
 import 'package:flutter_yd_weather/widget/load_asset_image.dart';
+import 'package:provider/provider.dart';
 
+import '../pages/provider/weather_provider.dart';
 import '../res/colours.dart';
 import '../utils/log.dart';
 
@@ -133,6 +135,7 @@ class WeatherHeaderWidgetState extends State<WeatherHeaderWidget> {
         _refreshStatus == Constants.refreshed) {
       refreshDesc = "刷新完成";
     }
+    final isDark = context.read<WeatherProvider>().isDark;
     return SingleChildScrollView(
       physics: const NeverScrollableScrollPhysics(),
       child: Column(
@@ -163,14 +166,16 @@ class WeatherHeaderWidgetState extends State<WeatherHeaderWidget> {
                               "ic_refresh_icon",
                               width: 16.w,
                               height: 16.w,
-                              color: Colours.white.withOpacity(0.6),
+                              color: (isDark ? Colours.white : Colours.black)
+                                  .withOpacity(0.6),
                             ),
                             Gaps.generateGap(width: 4.w),
                             Text(
                               refreshDesc,
                               style: TextStyle(
                                 fontSize: 12.sp,
-                                color: Colours.white.withOpacity(0.6),
+                                color: (isDark ? Colours.white : Colours.black)
+                                    .withOpacity(0.6),
                               ),
                             ),
                           ],
@@ -182,7 +187,7 @@ class WeatherHeaderWidgetState extends State<WeatherHeaderWidget> {
                     weatherData?.meta?.city ?? "",
                     style: TextStyle(
                       fontSize: 28.sp,
-                      color: Colours.white,
+                      color: (isDark ? Colours.white : Colours.black),
                       height: 1,
                       fontFamily: "RobotoThin",
                       shadows: const [
@@ -209,7 +214,9 @@ class WeatherHeaderWidgetState extends State<WeatherHeaderWidget> {
                                   weatherData?.observe?.temp?.toString() ?? "",
                                   style: TextStyle(
                                     fontSize: 92.sp,
-                                    color: Colours.white,
+                                    color: (isDark
+                                        ? Colours.white
+                                        : Colours.black),
                                     height: 1,
                                     fontFamily: "RobotoThin",
                                     shadows: const [
@@ -226,7 +233,9 @@ class WeatherHeaderWidgetState extends State<WeatherHeaderWidget> {
                                     "°",
                                     style: TextStyle(
                                       fontSize: 86.sp,
-                                      color: Colours.white,
+                                      color: (isDark
+                                          ? Colours.white
+                                          : Colours.black),
                                       height: 1,
                                       fontFamily: "RobotoThin",
                                       shadows: const [
@@ -253,7 +262,9 @@ class WeatherHeaderWidgetState extends State<WeatherHeaderWidget> {
                                   "最\n高",
                                   style: TextStyle(
                                     fontSize: 15.sp,
-                                    color: Colours.white,
+                                    color: (isDark
+                                        ? Colours.white
+                                        : Colours.black),
                                     height: 1,
                                     fontFamily: "RobotoLight",
                                     shadows: const [
@@ -271,7 +282,9 @@ class WeatherHeaderWidgetState extends State<WeatherHeaderWidget> {
                                       "",
                                   style: TextStyle(
                                     fontSize: 34.sp,
-                                    color: Colours.white,
+                                    color: (isDark
+                                        ? Colours.white
+                                        : Colours.black),
                                     height: 1,
                                     fontFamily: "RobotoLight",
                                     shadows: const [
@@ -288,7 +301,9 @@ class WeatherHeaderWidgetState extends State<WeatherHeaderWidget> {
                                   "最\n低",
                                   style: TextStyle(
                                     fontSize: 15.sp,
-                                    color: Colours.white,
+                                    color: (isDark
+                                        ? Colours.white
+                                        : Colours.black),
                                     height: 1,
                                     fontFamily: "RobotoLight",
                                     shadows: const [
@@ -305,7 +320,9 @@ class WeatherHeaderWidgetState extends State<WeatherHeaderWidget> {
                                   currentWeatherDetailData?.low.getTemp() ?? "",
                                   style: TextStyle(
                                     fontSize: 34.sp,
-                                    color: Colours.white,
+                                    color: (isDark
+                                        ? Colours.white
+                                        : Colours.black),
                                     height: 1,
                                     fontFamily: "RobotoLight",
                                     shadows: const [
@@ -330,7 +347,7 @@ class WeatherHeaderWidgetState extends State<WeatherHeaderWidget> {
                                   "",
                               style: TextStyle(
                                 fontSize: 20.sp,
-                                color: Colours.white,
+                                color: (isDark ? Colours.white : Colours.black),
                                 height: 1,
                                 fontFamily: "RobotoLight",
                                 shadows: const [
@@ -355,7 +372,7 @@ class WeatherHeaderWidgetState extends State<WeatherHeaderWidget> {
                               "${weatherData?.observe?.temp.getTemp()} | ${weatherData?.observe?.wthr ?? currentWeatherDetailData?.wthr}",
                               style: TextStyle(
                                 fontSize: 20.sp,
-                                color: Colours.white,
+                                color: (isDark ? Colours.white : Colours.black),
                                 height: 1,
                                 fontFamily: "RobotoLight",
                                 shadows: const [

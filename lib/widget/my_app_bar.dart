@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_yd_weather/utils/color_utils.dart';
 import 'package:flutter_yd_weather/utils/commons_ext.dart';
 import '../res/colours.dart';
 import '../res/gaps.dart';
 import 'load_asset_image.dart';
+import 'opacity_layout.dart';
 
 /// 自定义AppBar
 class MyAppBar extends StatelessWidget implements PreferredSizeWidget {
@@ -13,15 +15,24 @@ class MyAppBar extends StatelessWidget implements PreferredSizeWidget {
     this.backgroundColor,
     this.title = '',
     this.centerTitle = '',
+    this.centerText,
     this.titleColor = Colours.black,
     this.backImg = 'ic_close_icon',
     this.backImgColor,
+    this.onBackPressed,
     this.rightIcon1,
     this.rightIcon2,
     this.rightIconColor,
+    this.rightAction1,
+    this.rightAction2,
+    this.rightAction1Enabled = true,
+    this.rightAction2Enabled = true,
+    this.rightActionColor,
     this.onPressed,
     this.onRightIcon1Pressed,
     this.onRightIcon2Pressed,
+    this.onRightAction1Pressed,
+    this.onRightAction2Pressed,
     this.isBack = true,
     this.overlayStyle,
     this.needOverlayStyle = true,
@@ -32,14 +43,23 @@ class MyAppBar extends StatelessWidget implements PreferredSizeWidget {
   final String title;
   final Color titleColor;
   final String centerTitle;
+  final Widget? centerText;
   final String backImg;
   final Color? backImgColor;
+  final VoidCallback? onBackPressed;
   final String? rightIcon1;
   final String? rightIcon2;
   final Color? rightIconColor;
+  final String? rightAction1;
+  final String? rightAction2;
+  final bool rightAction1Enabled;
+  final bool rightAction2Enabled;
+  final Color? rightActionColor;
   final VoidCallback? onPressed;
   final VoidCallback? onRightIcon1Pressed;
   final VoidCallback? onRightIcon2Pressed;
+  final VoidCallback? onRightAction1Pressed;
+  final VoidCallback? onRightAction2Pressed;
   final bool isBack;
   final SystemUiOverlayStyle? overlayStyle;
   final bool needOverlayStyle;
@@ -80,15 +100,69 @@ class MyAppBar extends StatelessWidget implements PreferredSizeWidget {
           ],
         ));
 
+    final rightActions = (rightAction1.isNotNullOrEmpty() ||
+            rightAction2.isNotNullOrEmpty())
+        ? Positioned(
+            right: 0,
+            child: Row(
+              children: [
+                if (rightAction2.isNotNullOrEmpty())
+                  Tooltip(
+                    message: rightAction2,
+                    child: OpacityLayout(
+                      onPressed:
+                          rightAction2Enabled ? onRightAction2Pressed : null,
+                      child: Padding(
+                        padding: EdgeInsets.all(12.w),
+                        child: Text(
+                          rightAction2 ?? "",
+                          style: TextStyle(
+                            fontSize: 14.sp,
+                            color: rightAction2Enabled
+                                ? (rightActionColor ?? context.black)
+                                : ColorUtils.adjustAlpha(
+                                    rightActionColor ?? context.black, 0.2),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                if (rightAction1.isNotNullOrEmpty())
+                  Tooltip(
+                    message: rightAction1,
+                    child: OpacityLayout(
+                      onPressed:
+                          rightAction1Enabled ? onRightAction1Pressed : null,
+                      child: Padding(
+                        padding: EdgeInsets.all(12.w),
+                        child: Text(
+                          rightAction1 ?? "",
+                          style: TextStyle(
+                            fontSize: 14.sp,
+                            color: rightAction1Enabled
+                                ? (rightActionColor ?? context.black)
+                                : ColorUtils.adjustAlpha(
+                                    rightActionColor ?? context.black, 0.2),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+              ],
+            ),
+          )
+        : Gaps.empty;
+
     final Widget back = isBack
         ? IconButton(
-            onPressed: () async {
-              FocusManager.instance.primaryFocus?.unfocus();
-              final isBack = await Navigator.maybePop(context);
-              if (!isBack) {
-                await SystemNavigator.pop();
-              }
-            },
+            onPressed: onBackPressed ??
+                () async {
+                  FocusManager.instance.primaryFocus?.unfocus();
+                  final isBack = await Navigator.maybePop(context);
+                  if (!isBack) {
+                    await SystemNavigator.pop();
+                  }
+                },
             tooltip: 'Back',
             padding: EdgeInsets.symmetric(horizontal: 24.w),
             icon: LoadAssetImage(
@@ -104,17 +178,19 @@ class MyAppBar extends StatelessWidget implements PreferredSizeWidget {
       namesRoute: true,
       header: true,
       child: Container(
-        alignment:
-            centerTitle.isEmpty ? Alignment.centerLeft : Alignment.center,
+        alignment: centerTitle.isEmpty && centerText == null
+            ? Alignment.centerLeft
+            : Alignment.center,
         width: double.infinity,
         margin: EdgeInsets.symmetric(horizontal: 20.w),
-        child: Text(
-          title.isEmpty ? centerTitle : title,
-          style: TextStyle(
-            fontSize: 18.sp,
-            color: titleColor,
-          ),
-        ),
+        child: centerText ??
+            Text(
+              title.isEmpty ? centerTitle : title,
+              style: TextStyle(
+                fontSize: 18.sp,
+                color: titleColor,
+              ),
+            ),
       ),
     );
 
@@ -129,6 +205,7 @@ class MyAppBar extends StatelessWidget implements PreferredSizeWidget {
                   titleWidget,
                   back,
                   rightIcons,
+                  rightActions,
                 ],
               )
             : SizedBox(
@@ -139,6 +216,7 @@ class MyAppBar extends StatelessWidget implements PreferredSizeWidget {
                     titleWidget,
                     back,
                     rightIcons,
+                    rightActions,
                   ],
                 ),
               ),

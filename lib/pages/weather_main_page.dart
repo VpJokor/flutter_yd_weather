@@ -1,5 +1,5 @@
 import 'dart:async';
-import 'package:common_utils/common_utils.dart';
+import 'package:fluro/fluro.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -12,9 +12,10 @@ import 'package:flutter_yd_weather/pages/provider/weather_provider.dart';
 import 'package:flutter_yd_weather/pages/view/weather_main_view.dart';
 import 'package:flutter_yd_weather/provider/main_provider.dart';
 import 'package:flutter_yd_weather/res/gaps.dart';
-import 'package:flutter_yd_weather/utils/commons.dart';
+import 'package:flutter_yd_weather/routers/app_router.dart';
+import 'package:flutter_yd_weather/routers/fluro_navigator.dart';
 import 'package:flutter_yd_weather/utils/log.dart';
-import 'package:flutter_yd_weather/utils/weather_bg_utils.dart';
+import 'package:flutter_yd_weather/utils/theme_utils.dart';
 import 'package:flutter_yd_weather/utils/weather_persistent_header_delegate.dart';
 import 'package:flutter_yd_weather/widget/load_asset_image.dart';
 import 'package:flutter_yd_weather/widget/opacity_layout.dart';
@@ -55,7 +56,8 @@ class _WeatherMainPageState
     setEnableLoad(false);
     _refreshWeatherDataEventSubscription =
         eventBus.on<RefreshWeatherDataEvent>().listen((event) {
-      _weatherMainPresenter.obtainWeatherData(delayMilliseconds: 200);
+      _weatherMainPresenter.obtainWeatherData(
+          delayMilliseconds: 200, isAdd: event.isAdd);
     });
     _animationController = AnimationController(vsync: this)
       ..duration = const Duration(milliseconds: 300)
@@ -65,12 +67,16 @@ class _WeatherMainPageState
         if (status == AnimationStatus.completed) {
           _cityManagerPageKey.currentState?.show(cityId);
           setState(() {
-            _systemUiOverlayStyle = SystemUiOverlayStyle.dark;
+            _systemUiOverlayStyle = context.isDark
+                ? SystemUiOverlayStyle.light
+                : SystemUiOverlayStyle.dark;
           });
         } else if (status == AnimationStatus.dismissed) {
           _cityManagerPageKey.currentState?.hide(cityId);
           setState(() {
-            _systemUiOverlayStyle = SystemUiOverlayStyle.light;
+            _systemUiOverlayStyle = provider.isDark
+                ? SystemUiOverlayStyle.light
+                : SystemUiOverlayStyle.dark;
           });
         }
       });
@@ -127,6 +133,10 @@ class _WeatherMainPageState
 
   void _onPopInvoked(bool didPop) {
     if (didPop) return;
+    if (_cityManagerPageKey.currentState?.isEditMode ?? false) {
+      _cityManagerPageKey.currentState?.closeEditMode();
+      return;
+    }
     if (_animationController.isAnimating) return;
     if (_animation.value >= 1) {
       _hideCityManagerPage();
@@ -145,27 +155,15 @@ class _WeatherMainPageState
         : 1 - ((animValue - 0.8) / 0.2).fixPercent();
     final weatherHeaderItemData = provider.list.singleOrNull(
         (element) => element.itemType == Constants.itemTypeWeatherHeader);
-    String weatherType =
-        weatherHeaderItemData?.weatherData?.observe?.weatherType ?? "";
-    if (weatherType.isNullOrEmpty()) {
-      final currentWeatherDetailData =
-          weatherHeaderItemData?.weatherData?.forecast15?.singleOrNull(
-        (element) =>
-            element.date ==
-            DateUtil.formatDate(DateTime.now(), format: Constants.yyyymmdd),
-      );
-      weatherType = currentWeatherDetailData?.weatherType ?? "";
-    }
     return AnimatedOpacity(
       opacity: opacity1,
       duration: Duration.zero,
       child: Stack(
         children: [
           AnimatedContainer(
-            duration: const Duration(milliseconds: 300),
+            duration: const Duration(milliseconds: 600),
             decoration: BoxDecoration(
-              gradient: WeatherBgUtils.getWeatherBg(
-                  weatherType, Commons.isNight(DateTime.now())),
+              gradient: provider.weatherBg,
             ),
           ),
           AnimatedOpacity(
@@ -204,6 +202,7 @@ class _WeatherMainPageState
                         "ic_add",
                         width: 20.w,
                         height: 20.w,
+                        color: provider.isDark ? Colours.white : Colours.black,
                       ),
                     ),
                     onPressed: () {
@@ -305,6 +304,11 @@ class _WeatherMainPageState
 
   @override
   Widget? getFooter(WeatherProvider provider) {
+    final weatherBgColor = provider.weatherBg?.colors.firstOrNull();
+    final isDark = weatherBgColor == null
+        ? false
+        : ThemeData.estimateBrightnessForColor(weatherBgColor) ==
+            Brightness.dark;
     final source = provider.list.firstOrNull()?.weatherData?.source?.title;
     return source.isNullOrEmpty()
         ? null
@@ -312,12 +316,62 @@ class _WeatherMainPageState
             child: Container(
               alignment: Alignment.center,
               padding: EdgeInsets.only(bottom: 12.w),
-              child: Text(
-                "天气信息来自$source",
-                style: TextStyle(
-                  fontSize: 12.sp,
-                  color: Colours.white.withOpacity(0.4),
-                ),
+              child: Column(
+                children: [
+                  Text(
+                    "天气信息来自$source",
+                    style: TextStyle(
+                      fontSize: 12.sp,
+                      color: (isDark ? Colours.white : Colours.black)
+                          .withOpacity(0.4),
+                      height: 1,
+                    ),
+                  ),
+                  Gaps.generateGap(height: 12.w),
+                  OpacityLayout(
+                    child: Container(
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 10.w, vertical: 6.w),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(6.w),
+                        border: Border.all(
+                          width: 0.5.w,
+                          color: (isDark ? Colours.white : Colours.black)
+                              .withOpacity(0.5),
+                        ),
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          LoadAssetImage(
+                            "ic_sort_icon",
+                            width: 18.w,
+                            height: 18.w,
+                            color: (isDark ? Colours.white : Colours.black)
+                                .withOpacity(0.5),
+                          ),
+                          Gaps.generateGap(width: 4.w),
+                          Text(
+                            "卡片排序",
+                            style: TextStyle(
+                              fontSize: 15.sp,
+                              color: (isDark ? Colours.white : Colours.black)
+                                  .withOpacity(0.5),
+                              height: 1,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    onPressed: () {
+                      NavigatorUtils.push(
+                        context,
+                        AppRouter.weatherCardSortPage,
+                        transition: TransitionType.inFromBottom,
+                      );
+                    },
+                  ),
+                ],
               ),
             ),
           );
@@ -333,10 +387,19 @@ class _WeatherMainPageState
   }
 
   @override
-  WeatherProvider generateProvider() => WeatherProvider();
+  WeatherProvider generateProvider() =>
+      WeatherProvider()..generateWeatherBg(null);
 
   @override
-  void obtainWeatherDataCallback() {
+  void obtainWeatherDataCallback(bool isAdd) {
     _weatherHeaderKey.currentState?.refreshComplete();
+    _cityManagerPageKey.currentState?.refresh(isAdd);
+    if (!_isShowCityManagerPage) {
+      setState(() {
+        _systemUiOverlayStyle = provider.isDark
+            ? SystemUiOverlayStyle.light
+            : SystemUiOverlayStyle.dark;
+      });
+    }
   }
 }

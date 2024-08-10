@@ -1,18 +1,22 @@
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:flutter_yd_weather/res/gaps.dart';
 import 'package:flutter_yd_weather/utils/commons_ext.dart';
+import 'package:flutter_yd_weather/widget/life_index_dialog.dart';
 import 'package:flutter_yd_weather/widget/scale_layout.dart';
+import 'package:provider/provider.dart';
 
 import '../config/constants.dart';
 import '../model/weather_item_data.dart';
+import '../pages/provider/weather_provider.dart';
 import '../res/colours.dart';
 import '../utils/commons.dart';
 import 'blurry_container.dart';
 
 class WeatherLifeIndexPanel extends StatelessWidget {
-  const WeatherLifeIndexPanel({
+  WeatherLifeIndexPanel({
     super.key,
     required this.data,
     required this.shrinkOffset,
@@ -21,12 +25,16 @@ class WeatherLifeIndexPanel extends StatelessWidget {
   final WeatherItemData data;
   final double shrinkOffset;
 
+  final _key = GlobalKey();
+  final _lifeIndexDialogKey = GlobalKey<LifeIndexDialogState>();
+
   @override
   Widget build(BuildContext context) {
     final weatherItemData = data;
     final percent = ((weatherItemData.maxHeight - 12.w - shrinkOffset) /
             Constants.itemStickyHeight.w)
         .fixPercent();
+    final isDark = context.read<WeatherProvider>().isDark;
     return AnimatedOpacity(
       opacity: percent,
       duration: Duration.zero,
@@ -43,7 +51,7 @@ class WeatherLifeIndexPanel extends StatelessWidget {
             padding: EdgeInsets.only(
               top: Constants.itemStickyHeight.w,
             ),
-            color: Colours.white.withOpacity(0.1),
+            color: (isDark ? Colours.white : Colours.black).withOpacity(0.1),
             borderRadius: BorderRadius.circular(12.w),
             child: Stack(
               children: [
@@ -57,18 +65,58 @@ class WeatherLifeIndexPanel extends StatelessWidget {
                     removeTop: true,
                     removeBottom: true,
                     child: GridView.builder(
+                      key: _key,
                       shrinkWrap: true,
                       physics: const NeverScrollableScrollPhysics(),
                       gridDelegate:
-                      const SliverGridDelegateWithFixedCrossAxisCount(
+                          const SliverGridDelegateWithFixedCrossAxisCount(
                         /// 每行 widget 数量
                         crossAxisCount: 3,
                         childAspectRatio: 1 / 1,
                       ),
                       itemBuilder: (_, index) {
-                        final item =
-                        weatherItemData.weatherData?.indexes.getOrNull(index);
+                        final item = weatherItemData.weatherData?.indexes
+                            .getOrNull(index);
                         return ScaleLayout(
+                          onPressed: () {
+                            final contentPosition = (_key.currentContext
+                                        ?.findRenderObject() as RenderBox?)
+                                    ?.localToGlobal(Offset.zero) ??
+                                Offset.zero;
+                            final contentWidth =
+                                _key.currentContext?.size?.width ?? 0;
+                            final size = contentWidth / 3;
+                            final row = (index / 3).floor();
+                            final column = index % 3;
+                            debugPrint(
+                                "contentPosition = $contentPosition contentWidth = $contentWidth");
+                            SmartDialog.show(
+                              maskColor: Colours.transparent,
+                              animationTime: const Duration(milliseconds: 200),
+                              clickMaskDismiss: true,
+                              onDismiss: () {
+                                _lifeIndexDialogKey.currentState?.exit();
+                              },
+                              animationBuilder: (
+                                controller,
+                                child,
+                                animationParam,
+                              ) {
+                                return child;
+                              },
+                              builder: (_) {
+                                return LifeIndexDialog(
+                                  key: _lifeIndexDialogKey,
+                                  data: item,
+                                  position: Offset(
+                                      contentPosition.dx + size * column,
+                                      contentPosition.dy + size * row),
+                                  size: size,
+                                  column: column,
+                                );
+                              },
+                            );
+                          },
                           child: Container(
                             alignment: Alignment.center,
                             child: Column(
@@ -84,7 +132,7 @@ class WeatherLifeIndexPanel extends StatelessWidget {
                                 ),
                                 Gaps.generateGap(height: 8.w),
                                 Text(
-                                  item?.name ?? "",
+                                  item?.value ?? "",
                                   style: TextStyle(
                                     fontSize: 13.sp,
                                     color: Colours.white,
@@ -96,7 +144,7 @@ class WeatherLifeIndexPanel extends StatelessWidget {
                         );
                       },
                       itemCount:
-                      weatherItemData.weatherData?.indexes?.length ?? 0,
+                          weatherItemData.weatherData?.indexes?.length ?? 0,
                     ),
                   ),
                 )

@@ -196,7 +196,7 @@ class _MySearchBarState extends State<MySearchBar> {
                   child: Text(
                     "取消",
                     style:
-                        TextStyle(fontSize: 14.sp, color: Colours.color333333),
+                        TextStyle(fontSize: 14.sp, color: Colours.color999999),
                   ),
                 ),
               ),

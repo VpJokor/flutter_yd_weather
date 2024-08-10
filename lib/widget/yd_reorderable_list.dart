@@ -46,6 +46,7 @@ class YdReorderableList extends StatefulWidget {
     super.key,
     required this.child,
     required this.onReorder,
+    this.onReorderStart,
     this.onReorderDone,
     this.cancellationToken,
     this.decoratePlaceholder = _defaultDecoratePlaceholder,
@@ -53,6 +54,7 @@ class YdReorderableList extends StatefulWidget {
 
   final Widget child;
 
+  final VoidCallback? onReorderStart;
   final ReorderItemCallback onReorder;
   final ReorderCompleteCallback? onReorderDone;
   final DecoratePlaceholder decoratePlaceholder;
@@ -285,7 +287,7 @@ class _YdReorderableListState extends State<YdReorderableList>
             .childBuilder(draggedItem.context, ReorderableItemState.dragProxy),
         draggedItem.context.findRenderObject() as RenderBox);
     _scrollable!.position.addListener(_scrolled);
-
+    widget.onReorderStart?.call();
     return this;
   }
 

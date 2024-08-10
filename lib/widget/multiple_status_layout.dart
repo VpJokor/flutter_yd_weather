@@ -24,8 +24,9 @@ class MultipleStatusLayout extends StatelessWidget {
         return Container(
           alignment: Alignment.center,
           child: CupertinoActivityIndicator(
-            animating: true,
+            animating: status == LoadStatus.loading,
             radius: 12.w,
+            color: Colours.white,
           ),
         );
       case LoadStatus.error:

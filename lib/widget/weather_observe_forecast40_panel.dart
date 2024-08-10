@@ -3,9 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_yd_weather/utils/commons_ext.dart';
 import 'package:flutter_yd_weather/utils/log.dart';
+import 'package:provider/provider.dart';
 
 import '../config/constants.dart';
 import '../model/weather_item_data.dart';
+import '../pages/provider/weather_provider.dart';
 import '../res/colours.dart';
 import '../res/gaps.dart';
 import 'blurry_container.dart';
@@ -31,7 +33,7 @@ class WeatherObserveForecase40Panel extends StatelessWidget {
     final rainDays = weatherItemData.weatherData?.forecast40Data?.rainDays ?? 0;
     final upDaysDesc = upDays > 0 ? "$upDays天升温" : "预计近期气温平稳";
     final rainDaysDesc = rainDays > 0 ? "$rainDays天有雨" : "预计近期无降雨";
-    Log.e("shrinkOffset = $shrinkOffset");
+    final isDark = context.read<WeatherProvider>().isDark;
     return AnimatedOpacity(
       opacity: percent,
       duration: Duration.zero,
@@ -46,7 +48,7 @@ class WeatherObserveForecase40Panel extends StatelessWidget {
               width: double.infinity,
               height: double.infinity,
               blur: 5,
-              color: Colours.white.withOpacity(0.1),
+              color: (isDark ? Colours.white : Colours.black).withOpacity(0.1),
               borderRadius: BorderRadius.circular(12.w),
               padding: EdgeInsets.only(
                 top: Constants.itemStickyHeight.w,
@@ -110,7 +112,8 @@ class WeatherObserveForecase40Panel extends StatelessWidget {
             top: shrinkOffset,
             child: Container(
               height: min(Constants.itemStickyHeight.w,
-                  Constants.itemObservePanelHeight.w - shrinkOffset).positiveNumber(),
+                      Constants.itemObservePanelHeight.w - shrinkOffset)
+                  .positiveNumber(),
               padding: EdgeInsets.only(left: 16.w),
               alignment: Alignment.centerLeft,
               child: Text(

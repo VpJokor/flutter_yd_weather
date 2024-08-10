@@ -4,6 +4,7 @@ class ScaleLayout extends StatefulWidget {
   final Widget child;
   final double? scale;
   final VoidCallback? onPressed;
+  final VoidCallback? onLongPressed;
   final bool canTap;
 
   const ScaleLayout({
@@ -11,6 +12,7 @@ class ScaleLayout extends StatefulWidget {
     required this.child,
     this.scale = 1.1,
     this.onPressed,
+    this.onLongPressed,
     this.canTap = true,
   });
 
@@ -108,6 +110,7 @@ class _ScaleLayoutState extends State<ScaleLayout>
       onTapUp: enabled ? _handleTapUp : null,
       onTapCancel: enabled ? _handleTapCancel : null,
       onTap: widget.onPressed,
+      onLongPress: widget.onLongPressed,
       child: Semantics(
         child: ScaleTransition(
           scale: _scaleAnimation,

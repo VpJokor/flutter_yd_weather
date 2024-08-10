@@ -77,7 +77,7 @@ class _AnimatedListItemState extends State<AnimatedListItem>
         }
         return Transform.scale(
           alignment: Alignment.center,
-          scale: itemAnimation(0.9).value,
+          scale: itemAnimation(0.95).value,
           child: child,
         );
       },

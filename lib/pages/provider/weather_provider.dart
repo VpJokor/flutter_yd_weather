@@ -1,4 +1,6 @@
 import 'package:common_utils/common_utils.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_yd_weather/config/constants.dart';
 import 'package:flutter_yd_weather/model/weather_data.dart';
@@ -6,21 +8,21 @@ import 'package:flutter_yd_weather/model/weather_item_data.dart';
 import 'package:flutter_yd_weather/utils/commons_ext.dart';
 
 import '../../base/base_list_provider.dart';
-import '../../model/weather_index_data.dart';
+import '../../utils/commons.dart';
+import '../../utils/weather_bg_utils.dart';
 
 class WeatherProvider extends BaseListProvider<WeatherItemData> {
-  final _weatherItemTypes = [
-    Constants.itemTypeWeatherHeader,
-    Constants.itemTypeAlarms,
-    Constants.itemTypeAirQuality,
-    Constants.itemTypeHourWeather,
-    Constants.itemTypeDailyWeather,
-    Constants.itemTypeObserve,
-    Constants.itemTypeLifeIndex,
-  ];
+  LinearGradient? _weatherBg;
 
-  void setWeatherData(WeatherData? weatherData) {
-    final weatherItems = _weatherItemTypes.map(
+  LinearGradient? get weatherBg => _weatherBg;
+
+  bool _isDark = false;
+
+  bool get isDark => _isDark;
+
+  void setWeatherData(List<int> currentWeatherSort, WeatherData? weatherData) {
+    generateWeatherBg(weatherData);
+    final weatherItems = currentWeatherSort.map(
       (itemType) {
         final itemTypeObserves = _getItemTypeObserves(itemType, weatherData);
         final extentInfo = _getPersistentHeaderExtentInfo(
@@ -63,13 +65,33 @@ class WeatherProvider extends BaseListProvider<WeatherItemData> {
     replace(weatherItems);
   }
 
+  void generateWeatherBg(WeatherData? weatherData) {
+    String weatherType = weatherData?.observe?.weatherType ?? "";
+    if (weatherType.isNullOrEmpty()) {
+      final currentWeatherDetailData = weatherData?.forecast15?.singleOrNull(
+        (element) =>
+            element.date ==
+            DateUtil.formatDate(DateTime.now(), format: Constants.yyyymmdd),
+      );
+      weatherType = currentWeatherDetailData?.weatherType ?? "";
+    }
+    _weatherBg = WeatherBgUtils.getWeatherBg(
+        weatherType, Commons.isNight(DateTime.now()));
+    final weatherBgColor = weatherBg?.colors.firstOrNull();
+    _isDark = weatherBgColor == null
+        ? false
+        : ThemeData.estimateBrightnessForColor(weatherBgColor) ==
+            Brightness.dark;
+  }
+
   List<double> _getPersistentHeaderExtentInfo(
       int itemType, List<int>? itemTypeObserves, WeatherData? weatherData) {
     switch (itemType) {
       case Constants.itemTypeHourWeather:
         return [124.w, 0];
       case Constants.itemTypeDailyWeather:
-        final find = weatherData?.forecast15?.singleOrNull((element) => element.aqiLevelName.isNotNullOrEmpty());
+        final find = weatherData?.forecast15?.singleOrNull(
+            (element) => element.aqiLevelName.isNotNullOrEmpty());
         return [find != null ? 394.w : 374.w, 0];
       case Constants.itemTypeAirQuality:
         return [88.w, 0];

@@ -7,9 +7,9 @@ import '../res/colours.dart';
 // 大风	WIND
 class WeatherBgUtils {
   static LinearGradient getWeatherBg(String type, bool isNight) {
-    Color color1 = Colours.color464E96;
-    Color color2 = Colours.color547EA9;
-    Color color3 = Colours.color409AAF;
+    Color color1 = isNight ? Colours.color1A1B30 : Colours.colorF47359;
+    Color color2 = isNight ? Colours.color232941 : Colours.colorF49670;
+    Color color3 = isNight ? Colours.color2E3C54 : Colours.colorF1AB80;
     switch (type) {
       case "CLEAR_DAY":
       case "CLEAR_NIGHT":

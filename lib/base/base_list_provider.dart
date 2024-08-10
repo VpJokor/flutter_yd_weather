@@ -1,4 +1,3 @@
-
 import 'base_page_provider.dart';
 
 class BaseListProvider<T> extends BasePageProvider {
@@ -31,6 +30,13 @@ class BaseListProvider<T> extends BasePageProvider {
     }
   }
 
+  void set(int i, T data, {bool refresh = true}) {
+    _list[i] = data;
+    if (refresh) {
+      notifyListeners();
+    }
+  }
+
   void insertAll(int i, List<T> data) {
     _list.insertAll(i, data);
     notifyListeners();
@@ -39,6 +45,13 @@ class BaseListProvider<T> extends BasePageProvider {
   void remove(T data) {
     _list.remove(data);
     notifyListeners();
+  }
+
+  void removeWhere(bool Function(T element) test, {bool refresh = true}) {
+    _list.removeWhere(test);
+    if (refresh) {
+      notifyListeners();
+    }
   }
 
   void removeAt(int i, {bool refresh = true}) {

@@ -19,11 +19,27 @@ class MainProvider extends ChangeNotifier {
 
   CityData? get currentCityData => _currentCityData;
 
+  List<String> _currentWeatherCardSort = SpUtil.getStringList(
+          Constants.currentWeatherCardSort,
+          defValue: Constants.defaultWeatherCardSort) ??
+      Constants.defaultWeatherCardSort;
+
+  List<int> get currentWeatherCardSort =>
+      _currentWeatherCardSort.map((e) => int.parse(e)).toList();
+
+  set currentWeatherCardSort(List<int> currentWeatherCardSort) {
+    _currentWeatherCardSort =
+        currentWeatherCardSort.map((e) => e.toString()).toList();
+    SpUtil.putStringList(
+        Constants.currentWeatherCardSort, _currentWeatherCardSort);
+  }
+
   set currentCityData(CityData? cityData) {
     _currentCityData = cityData;
     if (cityData != null) {
       final isLocationCity = cityData.isLocationCity ?? false;
-      SpUtil.putString(Constants.currentCityId, isLocationCity ? Constants.locationCityId : cityData.cityId ?? "");
+      SpUtil.putString(Constants.currentCityId,
+          isLocationCity ? Constants.locationCityId : cityData.cityId ?? "");
     }
   }
 
@@ -41,10 +57,14 @@ class MainProvider extends ChangeNotifier {
               cityData)
           .then((_) {
         currentCityData = cityData;
-        final currentCityIdList = SpUtil.getStringList(Constants.currentCityIdList, defValue: []) ?? [];
-        currentCityIdList.add(isLocationCity ? Constants.locationCityId : (cityData.cityId ?? ""));
+        final currentCityIdList =
+            SpUtil.getStringList(Constants.currentCityIdList, defValue: []) ??
+                [];
+        currentCityIdList.add(isLocationCity
+            ? Constants.locationCityId
+            : (cityData.cityId ?? ""));
         SpUtil.putStringList(Constants.currentCityIdList, currentCityIdList);
-        eventBus.fire(RefreshWeatherDataEvent());
+        eventBus.fire(RefreshWeatherDataEvent(isAdd: true));
         if (Navigator.canPop(context)) {
           NavigatorUtils.goBackUntil(context, Routes.main);
         } else {

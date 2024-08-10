@@ -31,7 +31,11 @@ import 'net/net_utils.dart';
 EventBus eventBus = EventBus();
 
 class RefreshWeatherDataEvent {
-  RefreshWeatherDataEvent();
+  final bool isAdd;
+
+  RefreshWeatherDataEvent({
+    this.isAdd = false,
+  });
 }
 
 Future<void> main() async {
@@ -64,6 +68,7 @@ class MyApp extends StatelessWidget {
 
   void _initDio() {
     final List<Interceptor> interceptors = <Interceptor>[];
+
     /// 打印Log(生产模式去除)
     if (!Constants.inProduction) {
       interceptors.add(LoggingInterceptor());
@@ -85,8 +90,8 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => MainProvider()),
       ],
       child: Consumer3<ThemeProvider, LocaleProvider, MainProvider>(
-        builder:
-            (_, ThemeProvider provider, LocaleProvider localeProvider, MainProvider mainProvider, __) {
+        builder: (_, ThemeProvider provider, LocaleProvider localeProvider,
+            MainProvider mainProvider, __) {
           return _buildMaterialApp(provider, localeProvider, mainProvider);
         },
       ),
@@ -102,8 +107,8 @@ class MyApp extends StatelessWidget {
     );
   }
 
-  Widget _buildMaterialApp(
-      ThemeProvider themeProvider, LocaleProvider localeProvider, MainProvider mainProvider) {
+  Widget _buildMaterialApp(ThemeProvider themeProvider,
+      LocaleProvider localeProvider, MainProvider mainProvider) {
     return ScreenUtilInit(
       designSize: const Size(375, 667),
       builder: (context, child) => MaterialApp(
@@ -126,19 +131,19 @@ class MyApp extends StatelessWidget {
         navigatorObservers: [FlutterSmartDialog.observer],
         builder: FlutterSmartDialog.init(
             builder: (BuildContext context, Widget? child) {
-              /// 仅针对安卓
-              if (Device.isAndroid) {
-                /// 切换深色模式会触发此方法，这里设置导航栏颜色
-                ThemeUtils.setSystemNavigationBar(themeProvider.getThemeMode());
-              }
+          /// 仅针对安卓
+          if (Device.isAndroid) {
+            /// 切换深色模式会触发此方法，这里设置导航栏颜色
+            ThemeUtils.setSystemNavigationBar(themeProvider.getThemeMode());
+          }
 
-              /// 保证文字大小不受手机系统设置影响 https://www.kikt.top/posts/flutter/layout/dynamic-text/
-              return MediaQuery(
-                data: MediaQuery.of(context)
-                    .copyWith(textScaler: TextScaler.noScaling),
-                child: child!,
-              );
-            }),
+          /// 保证文字大小不受手机系统设置影响 https://www.kikt.top/posts/flutter/layout/dynamic-text/
+          return MediaQuery(
+            data: MediaQuery.of(context)
+                .copyWith(textScaler: TextScaler.noScaling),
+            child: child!,
+          );
+        }),
         restorationScopeId: 'app',
       ),
     );

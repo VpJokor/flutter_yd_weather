@@ -74,7 +74,7 @@ class WeatherPersistentHeaderDelegate extends SliverPersistentHeaderDelegate {
 
   @override
   bool shouldRebuild(covariant WeatherPersistentHeaderDelegate oldDelegate) {
-    final rebuild = weatherItemData != oldDelegate.weatherItemData;
+    final rebuild = this != oldDelegate;
     // Log.e("rebuild = $rebuild");
     return rebuild;
   }

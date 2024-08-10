@@ -212,9 +212,9 @@ abstract class BaseListPageState<T extends StatefulWidget, ITEM,
         ?.jumpTo(_scrollController?.position.maxScrollExtent ?? 0);
   }
 
-  Future<void> animateScrollToBottom({milliseconds = 600}) {
+  Future<void> animateScrollToBottom({double offset = 0, milliseconds = 600}) {
     return _scrollController?.animateTo(
-            _scrollController?.position.maxScrollExtent ?? 0,
+            (_scrollController?.position.maxScrollExtent ?? 0) + offset,
             duration: Duration(milliseconds: milliseconds),
             curve: Curves.linear) ??
         Future.value();

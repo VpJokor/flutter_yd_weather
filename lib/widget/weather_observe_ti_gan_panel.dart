@@ -4,9 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_yd_weather/res/gaps.dart';
 import 'package:flutter_yd_weather/utils/commons_ext.dart';
+import 'package:provider/provider.dart';
 
 import '../config/constants.dart';
 import '../model/weather_item_data.dart';
+import '../pages/provider/weather_provider.dart';
 import '../res/colours.dart';
 import 'blurry_container.dart';
 
@@ -37,6 +39,7 @@ class WeatherObserveTiGanPanel extends StatelessWidget {
         : (tiGanTemp > temp
             ? "比实际温度高${(tiGanTemp - temp).getTemp()}"
             : "比实际温度低${(temp - tiGanTemp).getTemp()}");
+    final isDark = context.read<WeatherProvider>().isDark;
     return AnimatedOpacity(
       opacity: percent,
       duration: Duration.zero,
@@ -51,7 +54,7 @@ class WeatherObserveTiGanPanel extends StatelessWidget {
               width: double.infinity,
               height: double.infinity,
               blur: 5,
-              color: Colours.white.withOpacity(0.1),
+              color: (isDark ? Colours.white : Colours.black).withOpacity(0.1),
               borderRadius: BorderRadius.circular(12.w),
               padding: EdgeInsets.only(
                 top: Constants.itemStickyHeight.w,
@@ -96,7 +99,8 @@ class WeatherObserveTiGanPanel extends StatelessWidget {
             top: shrinkOffset,
             child: Container(
               height: min(Constants.itemStickyHeight.w,
-                  Constants.itemObservePanelHeight.w - shrinkOffset).positiveNumber(),
+                      Constants.itemObservePanelHeight.w - shrinkOffset)
+                  .positiveNumber(),
               padding: EdgeInsets.only(left: 16.w),
               alignment: Alignment.centerLeft,
               child: Text(
