@@ -15,6 +15,7 @@ class Constants {
   static const String currentCityId = 'currentCityId';
   static const String currentCityIdList = 'currentCityIdList';
   static const String currentWeatherCardSort = 'currentWeatherCardSort';
+  static const String currentWeatherObservesCardSort = 'currentWeatherObservesCardSort';
 
   static const int cityDataTypeId = 1;
   static const int simpleWeatherDataTypeId = 2;
@@ -67,5 +68,16 @@ class Constants {
     "${Constants.itemTypeDailyWeather}",
     "${Constants.itemTypeObserve}",
     "${Constants.itemTypeLifeIndex}",
+  ];
+
+  static const defaultWeatherObservesCardSort = [
+    "${Constants.itemTypeObserveUv}",
+    "${Constants.itemTypeObserveShiDu}",
+    "${Constants.itemTypeObserveTiGan}",
+    "${Constants.itemTypeObserveWd}",
+    "${Constants.itemTypeObserveSunriseSunset}",
+    "${Constants.itemTypeObservePressure}",
+    "${Constants.itemTypeObserveVisibility}",
+    "${Constants.itemTypeObserveForecast40}",
   ];
 }

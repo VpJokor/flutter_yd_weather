@@ -64,6 +64,7 @@ class WeatherObserveUvPanel extends StatelessWidget {
               padding: EdgeInsets.only(
                 top: Constants.itemStickyHeight.w,
               ),
+              useBlurry: false,
               child: Stack(
                 children: [
                   Positioned(

@@ -38,6 +38,8 @@ class BlurryContainer extends StatelessWidget {
   /// [borderRadius] of blurry container.
   final BorderRadius borderRadius;
 
+  final bool useBlurry;
+
   const BlurryContainer({
     super.key,
     required this.child,
@@ -50,6 +52,7 @@ class BlurryContainer extends StatelessWidget {
     this.color,
     this.shadowColor,
     this.borderRadius = const BorderRadius.all(Radius.circular(20)),
+    this.useBlurry = true,
   });
 
   /// Creates a blurry container whose [width] and [height] are equal.
@@ -64,6 +67,7 @@ class BlurryContainer extends StatelessWidget {
     this.color,
     this.shadowColor,
     this.borderRadius = const BorderRadius.all(Radius.circular(20)),
+    this.useBlurry = true,
   })  : width = dimension,
         height = dimension;
 
@@ -78,42 +82,44 @@ class BlurryContainer extends StatelessWidget {
     this.color,
     this.shadowColor,
     this.borderRadius = BorderRadius.zero,
+    this.useBlurry = true,
   })  : width = double.infinity,
         height = double.infinity;
 
   @override
   Widget build(BuildContext context) {
-    /*return Padding(
-      padding: margin ?? EdgeInsets.zero,
-      child: Material(
-        elevation: elevation,
-        shadowColor: shadowColor,
-        color: Colors.transparent,
-        borderRadius: borderRadius,
-        clipBehavior: Clip.hardEdge,
-        child: BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: blur, sigmaY: blur),
-          child: Container(
+    return useBlurry
+        ? Padding(
+            padding: margin ?? EdgeInsets.zero,
+            child: Material(
+              elevation: elevation,
+              shadowColor: shadowColor,
+              color: Colors.transparent,
+              borderRadius: borderRadius,
+              clipBehavior: Clip.hardEdge,
+              child: BackdropFilter(
+                filter: ImageFilter.blur(sigmaX: blur, sigmaY: blur),
+                child: Container(
+                  height: height,
+                  width: width,
+                  padding: padding,
+                  color: color,
+                  child: child,
+                ),
+              ),
+            ),
+          )
+        : Container(
             height: height,
             width: width,
             padding: padding,
-            color: color,
+            margin: margin,
+            decoration: BoxDecoration(
+              borderRadius: borderRadius,
+              color: color,
+            ),
+            clipBehavior: Clip.hardEdge,
             child: child,
-          ),
-        ),
-      ),
-    );*/
-    return Container(
-      height: height,
-      width: width,
-      padding: padding,
-      margin: margin,
-      decoration: BoxDecoration(
-        borderRadius: borderRadius,
-        color: color,
-      ),
-      clipBehavior: Clip.hardEdge,
-      child: child,
-    );
+          );
   }
 }

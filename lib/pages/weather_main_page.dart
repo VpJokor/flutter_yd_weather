@@ -59,6 +59,15 @@ class _WeatherMainPageState
       _weatherMainPresenter.obtainWeatherData(
           delayMilliseconds: 200, isAdd: event.isAdd);
     });
+    context.read<MainProvider>().onWeatherCardSortChanged =
+        (currentWeatherCardSort) {
+      provider.reorder(currentWeatherCardSort);
+    };
+    context.read<MainProvider>().onWeatherObservesCardSortChanged =
+        (currentWeatherCardSort, currentWeatherObservesCardSort) {
+      provider.reorderObserves(
+          currentWeatherCardSort, currentWeatherObservesCardSort);
+    };
     _animationController = AnimationController(vsync: this)
       ..duration = const Duration(milliseconds: 300)
       ..addStatusListener((status) {

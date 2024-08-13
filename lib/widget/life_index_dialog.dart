@@ -50,79 +50,75 @@ class LifeIndexDialogState extends State<LifeIndexDialog> {
 
   @override
   Widget build(BuildContext context) {
-    return LayoutBuilder(
-      builder: (_, c) {
-        double marginTop = widget.position.dy - _height + 12.w;
-        return AnimatedOpacity(
-          opacity: _opacity,
-          duration: const Duration(milliseconds: 200),
-          child: Stack(
-            children: [
-              Align(
-                alignment: widget.column == 0
-                    ? Alignment.topLeft
+    double marginTop = widget.position.dy - _height + 12.w;
+    return AnimatedOpacity(
+      opacity: _opacity,
+      duration: const Duration(milliseconds: 200),
+      child: Stack(
+        children: [
+          Align(
+            alignment: widget.column == 0
+                ? Alignment.topLeft
+                : (widget.column == 1
+                ? Alignment.topCenter
+                : Alignment.topRight),
+            child: BubbleBox(
+              shape: BubbleShapeBorder(
+                radius: BorderRadius.circular(12.w),
+                direction: BubbleDirection.bottom,
+                arrowAngle: 6.w,
+                position: widget.column == 0
+                    ? BubblePosition.start(
+                    widget.position.dx - 16.w + widget.size * 0.5 - 6.w)
                     : (widget.column == 1
-                        ? Alignment.topCenter
-                        : Alignment.topRight),
-                child: BubbleBox(
-                  shape: BubbleShapeBorder(
-                    radius: BorderRadius.circular(12.w),
-                    direction: BubbleDirection.bottom,
-                    arrowAngle: 6.w,
-                    position: widget.column == 0
-                        ? BubblePosition.start(
-                            widget.position.dx - 16.w + widget.size * 0.5 - 6.w)
-                        : (widget.column == 1
-                            ? const BubblePosition.center(0)
-                            : BubblePosition.end(ScreenUtil().screenWidth -
-                                widget.position.dx -
-                                16.w -
-                                widget.size * 0.5 -
-                                6.w)),
-                  ),
-                  backgroundColor: Colours.white,
-                  padding: EdgeInsets.zero,
-                  margin: EdgeInsets.only(
-                    left: 16.w,
-                    top: marginTop,
-                    right: 16.w,
-                  ),
-                  child: SingleChildScrollView(
-                    physics: const NeverScrollableScrollPhysics(),
-                    child: Container(
-                      key: _key,
-                      padding: EdgeInsets.all(8.w),
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Text(
-                            widget.data?.name ?? "",
-                            style: TextStyle(
-                              fontSize: 18.sp,
-                              color: Colours.black,
-                              height: 1,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          Gaps.generateGap(height: 8.w),
-                          Text(
-                            widget.data?.desc ?? "",
-                            textAlign: TextAlign.justify,
-                            style: TextStyle(
-                              fontSize: 15.sp,
-                              color: Colours.black,
-                            ),
-                          ),
-                        ],
+                    ? const BubblePosition.center(0)
+                    : BubblePosition.end(ScreenUtil().screenWidth -
+                    widget.position.dx -
+                    16.w -
+                    widget.size * 0.5 -
+                    6.w)),
+              ),
+              backgroundColor: Colours.white,
+              padding: EdgeInsets.zero,
+              margin: EdgeInsets.only(
+                left: 16.w,
+                top: marginTop,
+                right: 16.w,
+              ),
+              child: SingleChildScrollView(
+                physics: const NeverScrollableScrollPhysics(),
+                child: Container(
+                  key: _key,
+                  padding: EdgeInsets.all(8.w),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        widget.data?.name ?? "",
+                        style: TextStyle(
+                          fontSize: 18.sp,
+                          color: Colours.black,
+                          height: 1,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
-                    ),
+                      Gaps.generateGap(height: 8.w),
+                      Text(
+                        widget.data?.desc ?? "",
+                        textAlign: TextAlign.justify,
+                        style: TextStyle(
+                          fontSize: 15.sp,
+                          color: Colours.black,
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ),
-            ],
+            ),
           ),
-        );
-      },
+        ],
+      ),
     );
   }
 }

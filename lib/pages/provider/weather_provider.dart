@@ -20,11 +20,13 @@ class WeatherProvider extends BaseListProvider<WeatherItemData> {
 
   bool get isDark => _isDark;
 
-  void setWeatherData(List<int> currentWeatherSort, WeatherData? weatherData) {
+  void setWeatherData(List<int> currentWeatherSort,
+      List<int> currentWeatherObservesCardSort, WeatherData? weatherData) {
     generateWeatherBg(weatherData);
     final weatherItems = currentWeatherSort.map(
       (itemType) {
-        final itemTypeObserves = _getItemTypeObserves(itemType, weatherData);
+        final itemTypeObserves = _getItemTypeObserves(
+            currentWeatherObservesCardSort, itemType, weatherData);
         final extentInfo = _getPersistentHeaderExtentInfo(
             itemType,
             itemTypeObserves,
@@ -63,6 +65,21 @@ class WeatherProvider extends BaseListProvider<WeatherItemData> {
           removeLifeIndexPanel;
     });
     replace(weatherItems);
+  }
+
+  void reorder(List<int> currentWeatherSort) {
+    final newWeatherItems = <WeatherItemData>[];
+    for (var itemType in currentWeatherSort) {
+      final find = list.singleOrNull((e) => e.itemType == itemType);
+      if (find != null) newWeatherItems.add(find);
+    }
+    replace(newWeatherItems);
+  }
+
+  void reorderObserves(
+      List<int> currentWeatherSort, List<int> currentWeatherObservesCardSort) {
+    setWeatherData(currentWeatherSort, currentWeatherObservesCardSort,
+        list.firstOrNull()?.weatherData);
   }
 
   void generateWeatherBg(WeatherData? weatherData) {
@@ -116,18 +133,11 @@ class WeatherProvider extends BaseListProvider<WeatherItemData> {
     }
   }
 
-  List<int>? _getItemTypeObserves(int itemType, WeatherData? weatherData) {
+  List<int>? _getItemTypeObserves(List<int> currentWeatherObservesCardSort,
+      int itemType, WeatherData? weatherData) {
     if (weatherData != null && itemType == Constants.itemTypeObserve) {
-      final itemTypeObserves = [
-        Constants.itemTypeObserveUv,
-        Constants.itemTypeObserveShiDu,
-        Constants.itemTypeObserveTiGan,
-        Constants.itemTypeObserveWd,
-        Constants.itemTypeObserveSunriseSunset,
-        Constants.itemTypeObservePressure,
-        Constants.itemTypeObserveVisibility,
-        Constants.itemTypeObserveForecast40,
-      ];
+      final itemTypeObserves = <int>[];
+      itemTypeObserves.addAll(currentWeatherObservesCardSort);
       itemTypeObserves.removeWhere((element) {
         final currentWeatherDetailData = weatherData.forecast15?.singleOrNull(
           (element) =>

@@ -27,7 +27,11 @@ class WeatherMainPresenter extends BasePagePresenter<WeatherMainView> {
         url: Api.weatherApi,
         queryParameters: params,
         delayMilliseconds: delayMilliseconds, onSuccess: (data) {
-      (view.baseProvider as WeatherProvider).setWeatherData(mainP.currentWeatherCardSort, data);
+      (view.baseProvider as WeatherProvider).setWeatherData(
+        mainP.currentWeatherCardSort,
+        mainP.currentWeatherObservesCardSort,
+        data,
+      );
       if (mainP.currentCityData != null) {
         mainP.currentCityData!.weatherData =
             SimpleWeatherData.fromWeatherData(data);

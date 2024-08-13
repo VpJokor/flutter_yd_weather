@@ -221,6 +221,12 @@ extension ListExt<E> on List<E>? {
       index++;
     }
   }
+
+  List<T> mapIndexed<T>(T Function(E element, int index) action) {
+    if (this == null) return <T>[];
+    int index = 0;
+    return this!.map((e) => action(e, index++)).toList();
+  }
 }
 
 extension NetExt<E> on void {

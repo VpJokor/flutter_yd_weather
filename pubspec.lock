@@ -431,10 +431,10 @@ packages:
     dependency: "direct main"
     description:
       name: flutter_smart_dialog
-      sha256: aa48bcac76178b29d4d18816c962a91c2553b95d4193325e654e6c90eb722620
+      sha256: "3d376ba47f64391cc657f706815b32dd6ff2e0f80553a5c9f33b812ba7c59462"
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "4.9.7+9"
+    version: "4.9.8"
   flutter_test:
     dependency: "direct dev"
     description: flutter
@@ -929,10 +929,10 @@ packages:
     dependency: "direct main"
     description:
       name: rxdart
-      sha256: "0c7c0cedd93788d996e33041ffecda924cc54389199cde4e6a34b440f50044cb"
+      sha256: "5c3004a4a8dbb94bd4bf5412a4def4acdaa12e12f269737a5751369e12d1a962"
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "0.27.7"
+    version: "0.28.0"
   scrollview_observer:
     dependency: "direct main"
     description:

@@ -53,6 +53,7 @@ class WeatherLifeIndexPanel extends StatelessWidget {
             ),
             color: (isDark ? Colours.white : Colours.black).withOpacity(0.1),
             borderRadius: BorderRadius.circular(12.w),
+            useBlurry: false,
             child: Stack(
               children: [
                 Positioned(

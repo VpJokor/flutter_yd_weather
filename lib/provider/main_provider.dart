@@ -10,6 +10,12 @@ import '../routers/fluro_navigator.dart';
 import '../routers/routers.dart';
 import '../utils/toast_utils.dart';
 
+typedef OnWeatherCardSortChanged = void Function(
+    List<int> currentWeatherCardSort);
+
+typedef OnWeatherObservesCardSortChanged = void Function(
+    List<int> currentWeatherCardSort, List<int> currentWeatherObservesCardSort);
+
 class MainProvider extends ChangeNotifier {
   final _cityDataBox = Hive.box<CityData>(Constants.cityDataBox);
 
@@ -18,6 +24,20 @@ class MainProvider extends ChangeNotifier {
   CityData? _currentCityData;
 
   CityData? get currentCityData => _currentCityData;
+
+  OnWeatherCardSortChanged? _onWeatherCardSortChanged;
+
+  set onWeatherCardSortChanged(
+      OnWeatherCardSortChanged? onWeatherCardSortChanged) {
+    _onWeatherCardSortChanged = onWeatherCardSortChanged;
+  }
+
+  OnWeatherObservesCardSortChanged? _onWeatherObservesCardSortChanged;
+
+  set onWeatherObservesCardSortChanged(
+      OnWeatherObservesCardSortChanged? onWeatherObservesCardSortChanged) {
+    _onWeatherObservesCardSortChanged = onWeatherObservesCardSortChanged;
+  }
 
   List<String> _currentWeatherCardSort = SpUtil.getStringList(
           Constants.currentWeatherCardSort,
@@ -31,7 +51,34 @@ class MainProvider extends ChangeNotifier {
     _currentWeatherCardSort =
         currentWeatherCardSort.map((e) => e.toString()).toList();
     SpUtil.putStringList(
-        Constants.currentWeatherCardSort, _currentWeatherCardSort);
+            Constants.currentWeatherCardSort, _currentWeatherCardSort)
+        ?.then((success) {
+      debugPrint("currentWeatherCardSort success = $success");
+      if (success) {
+        _onWeatherCardSortChanged?.call(currentWeatherCardSort);
+      }
+    });
+  }
+
+  List<String> _currentWeatherObservesCardSort = SpUtil.getStringList(
+          Constants.currentWeatherObservesCardSort,
+          defValue: Constants.defaultWeatherObservesCardSort) ??
+      Constants.defaultWeatherObservesCardSort;
+
+  List<int> get currentWeatherObservesCardSort =>
+      _currentWeatherObservesCardSort.map((e) => int.parse(e)).toList();
+
+  set currentWeatherObservesCardSort(List<int> currentWeatherObservesCardSort) {
+    _currentWeatherObservesCardSort =
+        currentWeatherObservesCardSort.map((e) => e.toString()).toList();
+    SpUtil.putStringList(Constants.currentWeatherObservesCardSort,
+            _currentWeatherObservesCardSort)
+        ?.then((success) {
+      debugPrint("currentWeatherObservesCardSort success = $success");
+      if (success) {
+        _onWeatherObservesCardSortChanged?.call(currentWeatherCardSort, currentWeatherObservesCardSort);
+      }
+    });
   }
 
   set currentCityData(CityData? cityData) {
@@ -77,5 +124,11 @@ class MainProvider extends ChangeNotifier {
         }
       });
     }
+  }
+
+  @override
+  void dispose() {
+    _onWeatherCardSortChanged = null;
+    super.dispose();
   }
 }

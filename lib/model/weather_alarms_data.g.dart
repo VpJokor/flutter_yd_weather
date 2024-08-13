@@ -13,6 +13,7 @@ WeatherAlarmsData _$WeatherAlarmsDataFromJson(Map<String, dynamic> json) =>
       json['desc'] as String?,
       json['details'] as String?,
       json['pub_time'] as String?,
+      json['icon_big'] as String?,
     );
 
 Map<String, dynamic> _$WeatherAlarmsDataToJson(WeatherAlarmsData instance) =>
@@ -22,4 +23,5 @@ Map<String, dynamic> _$WeatherAlarmsDataToJson(WeatherAlarmsData instance) =>
       'desc': instance.desc,
       'details': instance.details,
       'pub_time': instance.pubTime,
+      'icon_big': instance.icon,
     };

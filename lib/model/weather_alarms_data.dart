@@ -11,14 +11,17 @@ class WeatherAlarmsData {
   String? details;
   @JsonKey(name: "pub_time")
   String? pubTime;
+  @JsonKey(name: "icon_big")
+  String? icon;
 
   WeatherAlarmsData(
-      this.degree,
-      this.title,
-      this.desc,
-      this.details,
-      this.pubTime,
-      );
+    this.degree,
+    this.title,
+    this.desc,
+    this.details,
+    this.pubTime,
+    this.icon,
+  );
 
   factory WeatherAlarmsData.fromJson(Map<String, dynamic> json) =>
       _$WeatherAlarmsDataFromJson(json);

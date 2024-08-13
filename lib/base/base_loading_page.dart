@@ -65,7 +65,7 @@ abstract class BaseLoadingPageState<T extends StatefulWidget,
       hideLoading();
     } else {
       showErrorLayout(
-        title: "title",
+        title: "出错啦！",
       );
     }
   }

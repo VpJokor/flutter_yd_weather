@@ -34,6 +34,7 @@ class MyAppBar extends StatelessWidget implements PreferredSizeWidget {
     this.onRightAction1Pressed,
     this.onRightAction2Pressed,
     this.isBack = true,
+    this.isBackEnabled = true,
     this.overlayStyle,
     this.needOverlayStyle = true,
     this.height,
@@ -61,6 +62,7 @@ class MyAppBar extends StatelessWidget implements PreferredSizeWidget {
   final VoidCallback? onRightAction1Pressed;
   final VoidCallback? onRightAction2Pressed;
   final bool isBack;
+  final bool isBackEnabled;
   final SystemUiOverlayStyle? overlayStyle;
   final bool needOverlayStyle;
   final double? height;
@@ -155,19 +157,23 @@ class MyAppBar extends StatelessWidget implements PreferredSizeWidget {
 
     final Widget back = isBack
         ? IconButton(
-            onPressed: onBackPressed ??
-                () async {
-                  FocusManager.instance.primaryFocus?.unfocus();
-                  final isBack = await Navigator.maybePop(context);
-                  if (!isBack) {
-                    await SystemNavigator.pop();
-                  }
-                },
+            onPressed: isBackEnabled
+                ? onBackPressed ??
+                    () async {
+                      FocusManager.instance.primaryFocus?.unfocus();
+                      final isBack = await Navigator.maybePop(context);
+                      if (!isBack) {
+                        await SystemNavigator.pop();
+                      }
+                    }
+                : null,
             tooltip: 'Back',
             padding: EdgeInsets.symmetric(horizontal: 24.w),
             icon: LoadAssetImage(
               backImg,
-              color: backImgColor ?? context.black,
+              color: isBackEnabled
+                  ? (backImgColor ?? context.black)
+                  : ColorUtils.adjustAlpha(backImgColor ?? context.black, 0.2),
               width: 22.w,
               height: 22.w,
             ),
