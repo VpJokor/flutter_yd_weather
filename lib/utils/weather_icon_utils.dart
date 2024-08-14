@@ -9,15 +9,15 @@ class WeatherIconUtils {
           break;
         case 2:
           // 多云
-          weatherIcon = "fifteen_weather_sunny";
+          weatherIcon = "fifteen_weather_mostlycloudy";
           break;
         case 3:
           // 阵雨
-          weatherIcon = "fifteen_weather_sunny";
+          weatherIcon = "fifteen_weather_chancerain";
           break;
         case 4:
           // 雷阵雨
-          weatherIcon = "fifteen_weather_sunny";
+          weatherIcon = "fifteen_weather_chancestorm";
           break;
       }
     } else {

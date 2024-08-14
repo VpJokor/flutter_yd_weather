@@ -176,6 +176,12 @@ class _WeatherMainPageState
               gradient: provider.weatherBg,
             ),
           ),
+          Visibility(
+            visible: context.isDark,
+            child: Container(
+              color: Colours.black.withOpacity(0.2),
+            ),
+          ),
           AnimatedOpacity(
             opacity: opacity2,
             duration: Duration.zero,

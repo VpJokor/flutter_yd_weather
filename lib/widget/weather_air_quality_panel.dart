@@ -44,58 +44,58 @@ class WeatherAirQualityPanel extends StatelessWidget {
     return AnimatedOpacity(
       opacity: percent,
       duration: Duration.zero,
-      child: Stack(
-        children: [
-          BlurryContainer(
-            width: double.infinity,
-            height: double.infinity,
-            blur: 5,
-            margin: EdgeInsets.only(
-              left: 16.w,
-              right: 16.w,
-            ),
-            padding: EdgeInsets.only(
-              top: min(shrinkOffset, Constants.itemStickyHeight.w),
-            ),
-            color: (isDark ? Colours.white : Colours.black).withOpacity(0.1),
-            borderRadius: BorderRadius.circular(12.w),
-            useBlurry: false,
-            child: GestureDetector(
-              onTap: () {
-                showHideWeatherContent?.call(false);
-                final contentPosition =
-                    (_key.currentContext?.findRenderObject() as RenderBox?)
-                            ?.localToGlobal(Offset.zero) ??
-                        Offset.zero;
-                SmartDialog.show(
-                  maskColor: Colours.transparent,
-                  animationTime: const Duration(milliseconds: 200),
-                  clickMaskDismiss: true,
-                  onDismiss: () {
-                    _airQualityDetailPopupKey.currentState?.exit();
-                    Commons.postDelayed(delayMilliseconds: 200, () {
-                      showHideWeatherContent?.call(true);
-                    });
-                  },
-                  animationBuilder: (
-                    controller,
-                    child,
-                    animationParam,
-                  ) {
-                    return child;
-                  },
-                  builder: (_) {
-                    return AirQualityDetailPopup(
-                      key: _airQualityDetailPopupKey,
-                      initPosition: contentPosition,
-                      isDark: isDark,
-                      evn: weatherItemData.weatherData?.evn,
-                    );
-                  },
-                );
-              },
+      child: GestureDetector(
+        onTap: () {
+          showHideWeatherContent?.call(false);
+          final contentPosition =
+              (_key.currentContext?.findRenderObject() as RenderBox?)
+                  ?.localToGlobal(Offset.zero) ??
+                  Offset.zero;
+          SmartDialog.show(
+            maskColor: Colours.transparent,
+            animationTime: const Duration(milliseconds: 200),
+            clickMaskDismiss: true,
+            onDismiss: () {
+              _airQualityDetailPopupKey.currentState?.exit();
+              Commons.postDelayed(delayMilliseconds: 200, () {
+                showHideWeatherContent?.call(true);
+              });
+            },
+            animationBuilder: (
+                controller,
+                child,
+                animationParam,
+                ) {
+              return child;
+            },
+            builder: (_) {
+              return AirQualityDetailPopup(
+                key: _airQualityDetailPopupKey,
+                initPosition: contentPosition,
+                isDark: isDark,
+                evn: weatherItemData.weatherData?.evn,
+              );
+            },
+          );
+        },
+        child: Stack(
+          key: _key,
+          children: [
+            BlurryContainer(
+              width: double.infinity,
+              height: double.infinity,
+              blur: 5,
+              margin: EdgeInsets.only(
+                left: 16.w,
+                right: 16.w,
+              ),
+              padding: EdgeInsets.only(
+                top: min(shrinkOffset, Constants.itemStickyHeight.w),
+              ),
+              color: (isDark ? Colours.white : Colours.black).withOpacity(0.1),
+              borderRadius: BorderRadius.circular(12.w),
+              useBlurry: false,
               child: Stack(
-                key: _key,
                 children: [
                   Positioned(
                     left: 0,
@@ -171,25 +171,25 @@ class WeatherAirQualityPanel extends StatelessWidget {
                 ],
               ),
             ),
-          ),
-          AnimatedOpacity(
-            opacity: 1 - titlePercent,
-            duration: Duration.zero,
-            child: Container(
-              height: Constants.itemStickyHeight.w,
-              margin: EdgeInsets.symmetric(horizontal: 16.w),
-              padding: EdgeInsets.only(left: 16.w),
-              alignment: Alignment.centerLeft,
-              child: Text(
-                "空气质量",
-                style: TextStyle(
-                  fontSize: 12.sp,
-                  color: Colours.white.withOpacity(0.6),
+            AnimatedOpacity(
+              opacity: 1 - titlePercent,
+              duration: Duration.zero,
+              child: Container(
+                height: Constants.itemStickyHeight.w,
+                margin: EdgeInsets.symmetric(horizontal: 16.w),
+                padding: EdgeInsets.only(left: 16.w),
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  "空气质量",
+                  style: TextStyle(
+                    fontSize: 12.sp,
+                    color: Colours.white.withOpacity(0.6),
+                  ),
                 ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

@@ -7,6 +7,7 @@ import 'package:flutter_yd_weather/model/city_manager_data.dart';
 import 'package:flutter_yd_weather/provider/main_provider.dart';
 import 'package:flutter_yd_weather/res/gaps.dart';
 import 'package:flutter_yd_weather/utils/commons_ext.dart';
+import 'package:flutter_yd_weather/utils/theme_utils.dart';
 import 'package:flutter_yd_weather/utils/weather_bg_utils.dart';
 import 'package:flutter_yd_weather/widget/scale_layout.dart';
 import 'package:flutter_yd_weather/widget/yd_reorderable_list.dart';
@@ -98,7 +99,6 @@ class CityManagerItemState extends State<CityManagerItem>
             duration: const Duration(milliseconds: 300),
             width: double.infinity,
             height: 98.w,
-            padding: EdgeInsets.symmetric(horizontal: 16.w),
             alignment: Alignment.center,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(16.w),
@@ -106,151 +106,169 @@ class CityManagerItemState extends State<CityManagerItem>
                   weatherData?.weatherType ?? "",
                   Commons.isNight(DateTime.now())),
             ),
-            child: Row(
+            child: Stack(
               children: [
-                AnimatedVisibility(
-                  visible: widget.isEditMode && !isLocationCity,
-                  enter: fadeIn(),
-                  exit: fadeOut(),
-                  enterDuration: const Duration(milliseconds: 200),
-                  exitDuration: const Duration(milliseconds: 200),
-                  child: ReorderableListener(
-                    child: Container(
-                      height: double.infinity,
-                      margin: EdgeInsets.only(
-                        right: 12.w,
-                      ),
-                      child: LoadAssetImage(
-                        "ic_menu_icon",
-                        width: 24.w,
-                        height: 24.w,
-                      ),
+                Visibility(
+                  visible: context.isDark,
+                  child: Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(16.w),
+                      color: Colours.black.withOpacity(0.2),
                     ),
                   ),
                 ),
-                Expanded(
-                  child: DelayedReorderableListener(
-                    child: Container(
-                      color: Colours.transparent,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Row(
-                                children: [
-                                  Text(
-                                    weatherData?.city ?? "",
-                                    style: TextStyle(
-                                      fontSize: 20.sp,
-                                      color: Colours.white,
-                                      height: 1,
-                                      fontFamily: "RobotoLight",
-                                    ),
-                                  ),
-                                  Visibility(
-                                    visible: isLocationCity,
-                                    child: LoadAssetImage(
-                                      "writing_icon_location1",
-                                      width: 22.w,
-                                      height: 22.w,
-                                      color: Colours.white,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              Gaps.generateGap(height: 4.w),
-                              Text(
-                                "${weatherData?.weatherDesc} ${weatherData?.tempHigh.getTemp()} / ${weatherData?.tempLow.getTemp()}",
-                                style: TextStyle(
-                                  fontSize: 14.sp,
-                                  color: Colours.white,
-                                  fontFamily: "RobotoLight",
-                                  height: 1,
-                                ),
-                              ),
-                            ],
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 16.w),
+                  child: Row(
+                    children: [
+                      AnimatedVisibility(
+                        visible: widget.isEditMode && !isLocationCity,
+                        enter: fadeIn(),
+                        exit: fadeOut(),
+                        enterDuration: const Duration(milliseconds: 200),
+                        exitDuration: const Duration(milliseconds: 200),
+                        child: ReorderableListener(
+                          child: Container(
+                            height: double.infinity,
+                            margin: EdgeInsets.only(
+                              right: 12.w,
+                            ),
+                            child: LoadAssetImage(
+                              "ic_menu_icon",
+                              width: 24.w,
+                              height: 24.w,
+                            ),
                           ),
-                          Row(
-                            children: [
-                              Text(
-                                weatherData?.temp.getTemp() ?? "",
-                                style: TextStyle(
-                                  fontSize: 38.sp,
-                                  color: Colours.white,
-                                  height: 1,
-                                  fontFamily: "RobotoLight",
-                                ),
-                              ),
-                              AnimatedVisibility(
-                                visible: widget.isEditMode && !isLocationCity,
-                                enter: fadeIn(),
-                                exit: fadeOut(),
-                                enterDuration:
-                                    const Duration(milliseconds: 200),
-                                exitDuration: const Duration(milliseconds: 200),
-                                child: Padding(
-                                  padding: EdgeInsets.only(left: 12.w),
-                                  child: Stack(
-                                    children: [
-                                      AnimatedVisibility(
-                                        visible: widget.isEditMode &&
-                                            !widget.isSelected,
-                                        enter: fadeIn(),
-                                        exit: fadeOut(),
-                                        enterDuration:
-                                            const Duration(milliseconds: 20),
-                                        exitDuration:
-                                            const Duration(milliseconds: 20),
-                                        child: LoadAssetImage(
-                                          "ic_check_icon",
-                                          width: 22.w,
-                                          height: 22.w,
+                        ),
+                      ),
+                      Expanded(
+                        child: DelayedReorderableListener(
+                          child: Container(
+                            color: Colours.transparent,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Row(
+                                      children: [
+                                        Text(
+                                          weatherData?.city ?? "",
+                                          style: TextStyle(
+                                            fontSize: 20.sp,
+                                            color: Colours.white,
+                                            height: 1,
+                                            fontFamily: "RobotoLight",
+                                          ),
                                         ),
+                                        Visibility(
+                                          visible: isLocationCity,
+                                          child: LoadAssetImage(
+                                            "writing_icon_location1",
+                                            width: 22.w,
+                                            height: 22.w,
+                                            color: Colours.white,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    Gaps.generateGap(height: 4.w),
+                                    Text(
+                                      "${weatherData?.weatherDesc} ${weatherData?.tempHigh.getTemp()} / ${weatherData?.tempLow.getTemp()}",
+                                      style: TextStyle(
+                                        fontSize: 14.sp,
+                                        color: Colours.white,
+                                        fontFamily: "RobotoLight",
+                                        height: 1,
                                       ),
-                                      AnimatedVisibility(
-                                        visible: widget.isEditMode &&
-                                            widget.isSelected,
-                                        enter: fadeIn(),
-                                        exit: fadeOut(),
-                                        enterDuration:
-                                            const Duration(milliseconds: 20),
-                                        exitDuration:
-                                            const Duration(milliseconds: 20),
+                                    ),
+                                  ],
+                                ),
+                                Row(
+                                  children: [
+                                    Text(
+                                      weatherData?.temp.getTemp() ?? "",
+                                      style: TextStyle(
+                                        fontSize: 38.sp,
+                                        color: Colours.white,
+                                        height: 1,
+                                        fontFamily: "RobotoLight",
+                                      ),
+                                    ),
+                                    AnimatedVisibility(
+                                      visible:
+                                          widget.isEditMode && !isLocationCity,
+                                      enter: fadeIn(),
+                                      exit: fadeOut(),
+                                      enterDuration:
+                                          const Duration(milliseconds: 200),
+                                      exitDuration:
+                                          const Duration(milliseconds: 200),
+                                      child: Padding(
+                                        padding: EdgeInsets.only(left: 12.w),
                                         child: Stack(
                                           children: [
-                                            Container(
-                                              width: 22.w,
-                                              height: 22.w,
-                                              decoration: BoxDecoration(
-                                                borderRadius:
-                                                    BorderRadius.circular(
-                                                        100.w),
-                                                color: widget.isSelected
-                                                    ? Colours.white
-                                                    : Colours.transparent,
+                                            AnimatedVisibility(
+                                              visible: widget.isEditMode &&
+                                                  !widget.isSelected,
+                                              enter: fadeIn(),
+                                              exit: fadeOut(),
+                                              enterDuration: const Duration(
+                                                  milliseconds: 20),
+                                              exitDuration: const Duration(
+                                                  milliseconds: 20),
+                                              child: LoadAssetImage(
+                                                "ic_check_icon",
+                                                width: 22.w,
+                                                height: 22.w,
                                               ),
                                             ),
-                                            LoadAssetImage(
-                                              "ic_checked_icon",
-                                              width: 22.w,
-                                              height: 22.w,
-                                              color: Colours.appMain,
+                                            AnimatedVisibility(
+                                              visible: widget.isEditMode &&
+                                                  widget.isSelected,
+                                              enter: fadeIn(),
+                                              exit: fadeOut(),
+                                              enterDuration: const Duration(
+                                                  milliseconds: 20),
+                                              exitDuration: const Duration(
+                                                  milliseconds: 20),
+                                              child: Stack(
+                                                children: [
+                                                  Container(
+                                                    width: 22.w,
+                                                    height: 22.w,
+                                                    decoration: BoxDecoration(
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              100.w),
+                                                      color: widget.isSelected
+                                                          ? Colours.white
+                                                          : Colours.transparent,
+                                                    ),
+                                                  ),
+                                                  LoadAssetImage(
+                                                    "ic_checked_icon",
+                                                    width: 22.w,
+                                                    height: 22.w,
+                                                    color: Colours.appMain,
+                                                  ),
+                                                ],
+                                              ),
                                             ),
                                           ],
                                         ),
                                       ),
-                                    ],
-                                  ),
+                                    ),
+                                  ],
                                 ),
-                              ),
-                            ],
+                              ],
+                            ),
                           ),
-                        ],
+                        ),
                       ),
-                    ),
+                    ],
                   ),
                 ),
               ],
