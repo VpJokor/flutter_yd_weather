@@ -7,6 +7,7 @@ import 'package:flutter_yd_weather/pages/provider/weather_provider.dart';
 import 'package:flutter_yd_weather/res/gaps.dart';
 import 'package:flutter_yd_weather/utils/commons_ext.dart';
 import 'package:flutter_yd_weather/widget/air_quality_bar.dart';
+import 'package:flutter_yd_weather/widget/air_quality_detail_popup.dart';
 import 'package:flutter_yd_weather/widget/air_quality_query_dialog.dart';
 import 'package:flutter_yd_weather/widget/blurry_container.dart';
 import 'package:flutter_yd_weather/widget/load_asset_image.dart';
@@ -16,16 +17,21 @@ import 'package:provider/provider.dart';
 import '../config/constants.dart';
 import '../model/weather_item_data.dart';
 import '../res/colours.dart';
+import '../utils/commons.dart';
 
 class WeatherAirQualityPanel extends StatelessWidget {
-  const WeatherAirQualityPanel({
+  WeatherAirQualityPanel({
     super.key,
     required this.data,
     required this.shrinkOffset,
+    this.showHideWeatherContent,
   });
 
   final WeatherItemData data;
   final double shrinkOffset;
+  final void Function(bool show)? showHideWeatherContent;
+  final _key = GlobalKey();
+  final _airQualityDetailPopupKey = GlobalKey<AirQualityDetailPopupState>();
 
   @override
   Widget build(BuildContext context) {
@@ -54,80 +60,116 @@ class WeatherAirQualityPanel extends StatelessWidget {
             color: (isDark ? Colours.white : Colours.black).withOpacity(0.1),
             borderRadius: BorderRadius.circular(12.w),
             useBlurry: false,
-            child: Stack(
-              children: [
-                Positioned(
-                  left: 0,
-                  top: -shrinkOffset -
-                      min(shrinkOffset, Constants.itemStickyHeight.w),
-                  right: 0,
-                  bottom: 0,
-                  child: SingleChildScrollView(
-                    physics: const NeverScrollableScrollPhysics(),
-                    padding: EdgeInsets.symmetric(horizontal: 16.w),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Gaps.generateGap(height: 12.w),
-                        AnimatedOpacity(
-                          opacity: titlePercent,
-                          duration: Duration.zero,
-                          child: Row(
-                            children: [
-                              Text(
-                                "${weatherItemData.weatherData?.evn?.aqi} - ${weatherItemData.weatherData?.evn?.aqiLevelName}",
-                                style: TextStyle(
-                                  fontSize: 16.sp,
-                                  color: Colours.white,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                              OpacityLayout(
-                                child: Padding(
-                                  padding: EdgeInsets.symmetric(
-                                    horizontal: 12.w,
-                                    vertical: 4.w,
-                                  ),
-                                  child: LoadAssetImage(
-                                    "ic_query_icon",
-                                    width: 14.w,
-                                    height: 14.w,
+            child: GestureDetector(
+              onTap: () {
+                showHideWeatherContent?.call(false);
+                final contentPosition =
+                    (_key.currentContext?.findRenderObject() as RenderBox?)
+                            ?.localToGlobal(Offset.zero) ??
+                        Offset.zero;
+                SmartDialog.show(
+                  maskColor: Colours.transparent,
+                  animationTime: const Duration(milliseconds: 200),
+                  clickMaskDismiss: true,
+                  onDismiss: () {
+                    _airQualityDetailPopupKey.currentState?.exit();
+                    Commons.postDelayed(delayMilliseconds: 200, () {
+                      showHideWeatherContent?.call(true);
+                    });
+                  },
+                  animationBuilder: (
+                    controller,
+                    child,
+                    animationParam,
+                  ) {
+                    return child;
+                  },
+                  builder: (_) {
+                    return AirQualityDetailPopup(
+                      key: _airQualityDetailPopupKey,
+                      initPosition: contentPosition,
+                      isDark: isDark,
+                      evn: weatherItemData.weatherData?.evn,
+                    );
+                  },
+                );
+              },
+              child: Stack(
+                key: _key,
+                children: [
+                  Positioned(
+                    left: 0,
+                    top: -shrinkOffset -
+                        min(shrinkOffset, Constants.itemStickyHeight.w),
+                    right: 0,
+                    bottom: 0,
+                    child: SingleChildScrollView(
+                      physics: const NeverScrollableScrollPhysics(),
+                      padding: EdgeInsets.symmetric(horizontal: 16.w),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Gaps.generateGap(height: 12.w),
+                          AnimatedOpacity(
+                            opacity: titlePercent,
+                            duration: Duration.zero,
+                            child: Row(
+                              children: [
+                                Text(
+                                  "${weatherItemData.weatherData?.evn?.aqi} - ${weatherItemData.weatherData?.evn?.aqiLevelName}",
+                                  style: TextStyle(
+                                    fontSize: 16.sp,
                                     color: Colours.white,
+                                    fontWeight: FontWeight.bold,
                                   ),
                                 ),
-                                onPressed: () {
-                                  SmartDialog.show(
-                                    tag: "AirQualityQueryDialog",
-                                    maskColor: Colours.transparent,
-                                    alignment: Alignment.bottomCenter,
-                                    builder: (_) {
-                                      return const AirQualityQueryDialog();
-                                    },
-                                  );
-                                },
-                              ),
-                            ],
+                                OpacityLayout(
+                                  child: Padding(
+                                    padding: EdgeInsets.symmetric(
+                                      horizontal: 12.w,
+                                      vertical: 4.w,
+                                    ),
+                                    child: LoadAssetImage(
+                                      "ic_query_icon",
+                                      width: 14.w,
+                                      height: 14.w,
+                                      color: Colours.white,
+                                    ),
+                                  ),
+                                  onPressed: () {
+                                    SmartDialog.show(
+                                      tag: "AirQualityQueryDialog",
+                                      maskColor: Colours.transparent,
+                                      alignment: Alignment.bottomCenter,
+                                      builder: (_) {
+                                        return const AirQualityQueryDialog();
+                                      },
+                                    );
+                                  },
+                                ),
+                              ],
+                            ),
                           ),
-                        ),
-                        Gaps.generateGap(height: 10.w),
-                        AirQualityBar(
-                          width: double.infinity,
-                          height: 4.w,
-                          aqi: weatherItemData.weatherData?.evn?.aqi ?? 0,
-                        ),
-                        Gaps.generateGap(height: 8.w),
-                        Text(
-                          "当前AQI为${weatherItemData.weatherData?.evn?.aqi}",
-                          style: TextStyle(
-                            fontSize: 13.sp,
-                            color: Colours.white,
+                          Gaps.generateGap(height: 10.w),
+                          AirQualityBar(
+                            width: double.infinity,
+                            height: 4.w,
+                            aqi: weatherItemData.weatherData?.evn?.aqi ?? 0,
                           ),
-                        )
-                      ],
+                          Gaps.generateGap(height: 8.w),
+                          Text(
+                            "当前AQI为${weatherItemData.weatherData?.evn?.aqi}",
+                            style: TextStyle(
+                              fontSize: 13.sp,
+                              color: Colours.white,
+                            ),
+                          )
+                        ],
+                      ),
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
           AnimatedOpacity(

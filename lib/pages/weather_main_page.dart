@@ -288,7 +288,8 @@ class _WeatherMainPageState
             pinned: true,
             delegate: WeatherPersistentHeaderDelegate(
                 weatherItemData,
-                weatherItemData.itemType == Constants.itemTypeAlarms
+                weatherItemData.itemType == Constants.itemTypeAlarms ||
+                        weatherItemData.itemType == Constants.itemTypeAirQuality
                     ? (show) {
                         setState(() {
                           _weatherContentOpacity = show ? 1 : 0;
