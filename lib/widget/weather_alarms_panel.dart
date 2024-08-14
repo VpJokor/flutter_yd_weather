@@ -1,5 +1,4 @@
 import 'dart:math';
-
 import 'package:card_swiper/card_swiper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -8,9 +7,10 @@ import 'package:flutter_yd_weather/config/constants.dart';
 import 'package:flutter_yd_weather/model/weather_item_data.dart';
 import 'package:flutter_yd_weather/res/colours.dart';
 import 'package:flutter_yd_weather/res/gaps.dart';
+import 'package:flutter_yd_weather/utils/commons.dart';
 import 'package:flutter_yd_weather/utils/commons_ext.dart';
 import 'package:flutter_yd_weather/widget/blurry_container.dart';
-import 'package:flutter_yd_weather/widget/weather_alarms_detail_dialog.dart';
+import 'package:flutter_yd_weather/widget/weather_alarms_detail_popup.dart';
 import 'package:provider/provider.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
@@ -21,10 +21,12 @@ class WeatherAlarmsPanel extends StatefulWidget {
     super.key,
     required this.data,
     required this.shrinkOffset,
+    this.showHideWeatherContent,
   });
 
   final WeatherItemData data;
   final double shrinkOffset;
+  final void Function(bool show)? showHideWeatherContent;
 
   @override
   State<StatefulWidget> createState() => _WeatherAlarmsPanelState();
@@ -32,8 +34,21 @@ class WeatherAlarmsPanel extends StatefulWidget {
 
 class _WeatherAlarmsPanelState extends State<WeatherAlarmsPanel> {
   final _key = GlobalKey();
-  final _alarmsDetailDialogKey = GlobalKey<WeatherAlarmsDetailDialogState>();
+  final _alarmsDetailPopupKey = GlobalKey<WeatherAlarmsDetailPopupState>();
   int _index = 0;
+  late SwiperController _swiperController;
+
+  @override
+  void initState() {
+    super.initState();
+    _swiperController = SwiperController();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _swiperController.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -49,6 +64,7 @@ class _WeatherAlarmsPanelState extends State<WeatherAlarmsPanel> {
       duration: Duration.zero,
       child: GestureDetector(
         onTap: () {
+          widget.showHideWeatherContent?.call(false);
           final contentPosition =
               (_key.currentContext?.findRenderObject() as RenderBox?)
                       ?.localToGlobal(Offset.zero) ??
@@ -58,10 +74,13 @@ class _WeatherAlarmsPanelState extends State<WeatherAlarmsPanel> {
               "contentPosition = $contentPosition contentHeight = $contentHeight");
           SmartDialog.show(
             maskColor: Colours.transparent,
-            animationTime: const Duration(milliseconds: 400),
+            animationTime: const Duration(milliseconds: 200),
             clickMaskDismiss: true,
             onDismiss: () {
-              _alarmsDetailDialogKey.currentState?.exit();
+              _alarmsDetailPopupKey.currentState?.exit();
+              Commons.postDelayed(delayMilliseconds: 200, () {
+                widget.showHideWeatherContent?.call(true);
+              });
             },
             animationBuilder: (
               controller,
@@ -71,12 +90,16 @@ class _WeatherAlarmsPanelState extends State<WeatherAlarmsPanel> {
               return child;
             },
             builder: (_) {
-              return WeatherAlarmsDetailDialog(
-                key: _alarmsDetailDialogKey,
-                alarms: weatherItemData.weatherData?.alarms,
+              return WeatherAlarmsDetailPopup(
+                key: _alarmsDetailPopupKey,
+                alarms: weatherItemData.weatherData?.alarms ?? [],
                 initPosition: contentPosition,
                 initHeight: contentHeight,
+                index: _index,
                 isDark: isDark,
+                onIndexChanged: (index) {
+                  _swiperController.move(index);
+                },
               );
             },
           );
@@ -112,7 +135,9 @@ class _WeatherAlarmsPanelState extends State<WeatherAlarmsPanel> {
                           false,
                       child: Swiper(
                         key: const Key('alarms_swiper'),
+                        controller: _swiperController,
                         loop: false,
+                        transformer: ScaleAndFadeTransformer(),
                         itemCount:
                             weatherItemData.weatherData?.alarms?.length ?? 0,
                         onIndexChanged: (index) {
@@ -141,6 +166,7 @@ class _WeatherAlarmsPanelState extends State<WeatherAlarmsPanel> {
                             }
                           }
                           return SingleChildScrollView(
+                            physics: const NeverScrollableScrollPhysics(),
                             padding: EdgeInsets.symmetric(horizontal: 16.w),
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,

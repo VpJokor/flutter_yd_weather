@@ -87,6 +87,7 @@ class WeatherObserveSunriseSunsetPanel extends StatelessWidget {
                     right: 0,
                     bottom: 0,
                     child: SingleChildScrollView(
+                      physics: const NeverScrollableScrollPhysics(),
                       padding: EdgeInsets.symmetric(horizontal: 16.w),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,

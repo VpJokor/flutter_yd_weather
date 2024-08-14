@@ -48,6 +48,7 @@ class _WeatherMainPageState
   SystemUiOverlayStyle _systemUiOverlayStyle = SystemUiOverlayStyle.light;
   bool _isShowCityManagerPage = false;
   Rect? _weatherContentRect;
+  double _weatherContentOpacity = 1;
 
   @override
   void initState() {
@@ -178,48 +179,53 @@ class _WeatherMainPageState
           AnimatedOpacity(
             opacity: opacity2,
             duration: Duration.zero,
-            child: Stack(
-              children: [
-                WeatherHeaderWidget(
-                  key: _weatherHeaderKey,
-                  weatherItemData: weatherHeaderItemData,
-                  onRefresh: () {
-                    _weatherMainPresenter.obtainWeatherData(
-                        delayMilliseconds: 400);
-                  },
-                ),
-                Padding(
-                  padding: EdgeInsets.only(
-                    top: ScreenUtil().statusBarHeight +
-                        (weatherHeaderItemData?.minHeight ?? 0),
-                  ),
-                  child: Listener(
-                    onPointerUp: (_) {
-                      _weatherHeaderKey.currentState?.onRelease();
+            child: AnimatedOpacity(
+              opacity: _weatherContentOpacity,
+              duration: const Duration(milliseconds: 200),
+              child: Stack(
+                children: [
+                  WeatherHeaderWidget(
+                    key: _weatherHeaderKey,
+                    weatherItemData: weatherHeaderItemData,
+                    onRefresh: () {
+                      _weatherMainPresenter.obtainWeatherData(
+                          delayMilliseconds: 400);
                     },
-                    child: super.getRoot(provider),
                   ),
-                ),
-                Positioned(
-                  right: 0,
-                  top: ScreenUtil().statusBarHeight,
-                  child: OpacityLayout(
-                    child: Container(
-                      padding: EdgeInsets.all(12.w),
-                      margin: EdgeInsets.all(8.w),
-                      child: LoadAssetImage(
-                        "ic_add",
-                        width: 20.w,
-                        height: 20.w,
-                        color: provider.isDark ? Colours.white : Colours.black,
-                      ),
+                  Padding(
+                    padding: EdgeInsets.only(
+                      top: ScreenUtil().statusBarHeight +
+                          (weatherHeaderItemData?.minHeight ?? 0),
                     ),
-                    onPressed: () {
-                      _showCityManagerPage();
-                    },
+                    child: Listener(
+                      onPointerUp: (_) {
+                        _weatherHeaderKey.currentState?.onRelease();
+                      },
+                      child: super.getRoot(provider),
+                    ),
                   ),
-                ),
-              ],
+                  Positioned(
+                    right: 0,
+                    top: ScreenUtil().statusBarHeight,
+                    child: OpacityLayout(
+                      child: Container(
+                        padding: EdgeInsets.all(12.w),
+                        margin: EdgeInsets.all(8.w),
+                        child: LoadAssetImage(
+                          "ic_add",
+                          width: 20.w,
+                          height: 20.w,
+                          color:
+                              provider.isDark ? Colours.white : Colours.black,
+                        ),
+                      ),
+                      onPressed: () {
+                        _showCityManagerPage();
+                      },
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
         ],
@@ -281,8 +287,14 @@ class _WeatherMainPageState
           SliverPersistentHeader(
             pinned: true,
             delegate: WeatherPersistentHeaderDelegate(
-              weatherItemData,
-            ),
+                weatherItemData,
+                weatherItemData.itemType == Constants.itemTypeAlarms
+                    ? (show) {
+                        setState(() {
+                          _weatherContentOpacity = show ? 1 : 0;
+                        });
+                      }
+                    : null),
           ),
           SliverToBoxAdapter(
             child: Gaps.generateGap(height: 12.w),

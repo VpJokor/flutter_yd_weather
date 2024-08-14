@@ -2,11 +2,15 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:flutter_yd_weather/pages/provider/weather_provider.dart';
 import 'package:flutter_yd_weather/res/gaps.dart';
 import 'package:flutter_yd_weather/utils/commons_ext.dart';
 import 'package:flutter_yd_weather/widget/air_quality_bar.dart';
+import 'package:flutter_yd_weather/widget/air_quality_query_dialog.dart';
 import 'package:flutter_yd_weather/widget/blurry_container.dart';
+import 'package:flutter_yd_weather/widget/load_asset_image.dart';
+import 'package:flutter_yd_weather/widget/opacity_layout.dart';
 import 'package:provider/provider.dart';
 
 import '../config/constants.dart';
@@ -59,6 +63,7 @@ class WeatherAirQualityPanel extends StatelessWidget {
                   right: 0,
                   bottom: 0,
                   child: SingleChildScrollView(
+                    physics: const NeverScrollableScrollPhysics(),
                     padding: EdgeInsets.symmetric(horizontal: 16.w),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -67,13 +72,41 @@ class WeatherAirQualityPanel extends StatelessWidget {
                         AnimatedOpacity(
                           opacity: titlePercent,
                           duration: Duration.zero,
-                          child: Text(
-                            "${weatherItemData.weatherData?.evn?.aqi} - ${weatherItemData.weatherData?.evn?.aqiLevelName}",
-                            style: TextStyle(
-                              fontSize: 16.sp,
-                              color: Colours.white,
-                              fontWeight: FontWeight.bold,
-                            ),
+                          child: Row(
+                            children: [
+                              Text(
+                                "${weatherItemData.weatherData?.evn?.aqi} - ${weatherItemData.weatherData?.evn?.aqiLevelName}",
+                                style: TextStyle(
+                                  fontSize: 16.sp,
+                                  color: Colours.white,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              OpacityLayout(
+                                child: Padding(
+                                  padding: EdgeInsets.symmetric(
+                                    horizontal: 12.w,
+                                    vertical: 4.w,
+                                  ),
+                                  child: LoadAssetImage(
+                                    "ic_query_icon",
+                                    width: 14.w,
+                                    height: 14.w,
+                                    color: Colours.white,
+                                  ),
+                                ),
+                                onPressed: () {
+                                  SmartDialog.show(
+                                    tag: "AirQualityQueryDialog",
+                                    maskColor: Colours.transparent,
+                                    alignment: Alignment.bottomCenter,
+                                    builder: (_) {
+                                      return const AirQualityQueryDialog();
+                                    },
+                                  );
+                                },
+                              ),
+                            ],
                           ),
                         ),
                         Gaps.generateGap(height: 10.w),

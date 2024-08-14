@@ -13,9 +13,11 @@ import 'package:flutter_yd_weather/widget/weather_observe_panel.dart';
 class WeatherPersistentHeaderDelegate extends SliverPersistentHeaderDelegate {
   WeatherPersistentHeaderDelegate(
     this.weatherItemData,
+    this.showHideWeatherContent,
   );
 
   final WeatherItemData weatherItemData;
+  final void Function(bool show)? showHideWeatherContent;
 
   @override
   Widget build(
@@ -25,6 +27,7 @@ class WeatherPersistentHeaderDelegate extends SliverPersistentHeaderDelegate {
         key: ValueKey(weatherItemData.itemType),
         data: weatherItemData,
         shrinkOffset: shrinkOffset,
+        showHideWeatherContent: showHideWeatherContent,
       );
     } else if (weatherItemData.itemType == Constants.itemTypeAirQuality) {
       return WeatherAirQualityPanel(

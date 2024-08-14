@@ -62,6 +62,7 @@ class WeatherObserveForecase40Panel extends StatelessWidget {
                     right: 0,
                     bottom: 0,
                     child: SingleChildScrollView(
+                      physics: const NeverScrollableScrollPhysics(),
                       padding: EdgeInsets.symmetric(horizontal: 16.w),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
