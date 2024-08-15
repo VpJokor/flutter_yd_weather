@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
@@ -29,41 +30,63 @@ class AirQualityDetailPopup extends StatefulWidget {
 }
 
 class AirQualityDetailPopupState extends State<AirQualityDetailPopup> {
+  Alignment _alignment = Alignment.topCenter;
+  double _marginTop = 0;
+  double _panelOpacity = 1;
   double _opacity = 0;
 
   @override
   void initState() {
     super.initState();
+    _panelOpacity = 1;
     _opacity = 0;
+    _alignment = Alignment.topCenter;
+    _marginTop = widget.initPosition.dy;
     Commons.post((_) {
       setState(() {
-        _opacity = 1;
+        _alignment = Alignment.center;
+        _marginTop = 0;
+        Commons.postDelayed(delayMilliseconds: 200, () {
+          setState(() {
+            _opacity = 1;
+          });
+        });
       });
     });
   }
 
   void exit() {
     setState(() {
+      _alignment = Alignment.topCenter;
+      _marginTop = widget.initPosition.dy;
       _opacity = 0;
+      Commons.postDelayed(delayMilliseconds: 200, () {
+        setState(() {
+          _panelOpacity = 0;
+        });
+      });
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    return Align(
-      alignment: Alignment.topCenter,
+    return AnimatedAlign(
+      duration: const Duration(milliseconds: 200),
+      alignment: _alignment,
       child: AnimatedOpacity(
-        opacity: _opacity,
+        opacity: _panelOpacity,
         duration: const Duration(milliseconds: 200),
         child: Column(
+          mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Container(
+            AnimatedContainer(
               width: double.infinity,
               height: 88.w,
+              duration: const Duration(milliseconds: 200),
               margin: EdgeInsets.only(
                 left: 16.w,
-                top: widget.initPosition.dy,
+                top: _marginTop,
                 right: 16.w,
               ),
               padding: EdgeInsets.symmetric(horizontal: 16.w),
@@ -130,19 +153,23 @@ class AirQualityDetailPopupState extends State<AirQualityDetailPopup> {
               ),
             ),
             Gaps.generateGap(height: 12.w),
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: 16.w),
-              child: Wrap(
-                spacing: 12.w,
-                runSpacing: 12.w,
-                children: [
-                  _buildItem("PM2.5", widget.evn?.pm25 ?? 0),
-                  _buildItem("PM10", widget.evn?.pm10 ?? 0),
-                  _buildItem("NO", subscript: "2", widget.evn?.no2 ?? 0),
-                  _buildItem("SO", subscript: "2", widget.evn?.so2 ?? 0),
-                  _buildItem("O", subscript: "3", widget.evn?.o3 ?? 0),
-                  _buildItem("CO", widget.evn?.co ?? 0),
-                ],
+            AnimatedOpacity(
+              opacity: _opacity,
+              duration: const Duration(milliseconds: 200),
+              child: Padding(
+                padding: EdgeInsets.symmetric(horizontal: 16.w),
+                child: Wrap(
+                  spacing: 12.w,
+                  runSpacing: 12.w,
+                  children: [
+                    _buildItem("PM2.5", widget.evn?.pm25 ?? 0),
+                    _buildItem("PM10", widget.evn?.pm10 ?? 0),
+                    _buildItem("NO", subscript: "2", widget.evn?.no2 ?? 0),
+                    _buildItem("SO", subscript: "2", widget.evn?.so2 ?? 0),
+                    _buildItem("O", subscript: "3", widget.evn?.o3 ?? 0),
+                    _buildItem("CO", widget.evn?.co ?? 0),
+                  ],
+                ),
               ),
             ),
           ],

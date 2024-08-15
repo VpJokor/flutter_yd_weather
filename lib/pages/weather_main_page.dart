@@ -14,6 +14,7 @@ import 'package:flutter_yd_weather/provider/main_provider.dart';
 import 'package:flutter_yd_weather/res/gaps.dart';
 import 'package:flutter_yd_weather/routers/app_router.dart';
 import 'package:flutter_yd_weather/routers/fluro_navigator.dart';
+import 'package:flutter_yd_weather/utils/device.dart';
 import 'package:flutter_yd_weather/utils/log.dart';
 import 'package:flutter_yd_weather/utils/theme_utils.dart';
 import 'package:flutter_yd_weather/utils/weather_persistent_header_delegate.dart';
@@ -398,6 +399,12 @@ class _WeatherMainPageState
                         transition: TransitionType.inFromBottom,
                       );
                     },
+                  ),
+                  Visibility(
+                    visible: Device.isIOS,
+                    child: Gaps.generateGap(
+                      height: ScreenUtil().statusBarHeight,
+                    ),
                   ),
                 ],
               ),

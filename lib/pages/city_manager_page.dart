@@ -310,6 +310,10 @@ class CityManagerPageState extends BaseListPageState<
       return false;
     }
     final newPositionIndex = _indexOfKey(newPosition);
+    final newPositionItem = provider.list[newPositionIndex];
+    if (newPositionItem.cityData?.isLocationCity ?? false) {
+      return false;
+    }
     provider.swap(draggingIndex, newPositionIndex, draggedItem);
     Log.e(
         "draggingIndex = $draggingIndex newPositionIndex = $newPositionIndex");
@@ -412,9 +416,12 @@ class CityManagerPageState extends BaseListPageState<
 
   void _toEditMode(CityManagerData? data) {
     if (provider.isEditMode) return;
-    if (provider.list.length <= 1) return;
+    final isLocationCity = data?.cityData?.isLocationCity ?? false;
+    if (provider.list.length <= 1 && isLocationCity) {
+      return;
+    }
     provider.isEditMode = true;
-    if (data != null) {
+    if (data != null && !isLocationCity) {
       provider.selected(data);
     }
   }
@@ -428,7 +435,8 @@ class CityManagerPageState extends BaseListPageState<
       Commons.post((_) {
         final contentHeight = contentKey.currentContext?.size?.height ?? 0;
         final count = ((contentHeight - 72.w) / (98.w + 12.w)).ceil();
-        animateScrollToBottom(offset: provider.list.length > count ? 98.w : 0, milliseconds: 200);
+        animateScrollToBottom(
+            offset: provider.list.length > count ? 98.w : 0, milliseconds: 200);
       });
     } else {
       provider.list.forEachIndexed((e, index) {

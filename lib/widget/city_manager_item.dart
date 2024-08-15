@@ -92,7 +92,7 @@ class CityManagerItemState extends State<CityManagerItem>
           },
           onLongPressed: isLocationCity
               ? () {
-                  widget.toEditMode?.call(null);
+                  widget.toEditMode?.call(widget.cityManagerData);
                 }
               : null,
           child: AnimatedContainer(
@@ -128,6 +128,7 @@ class CityManagerItemState extends State<CityManagerItem>
                         enterDuration: const Duration(milliseconds: 200),
                         exitDuration: const Duration(milliseconds: 200),
                         child: ReorderableListener(
+                          canStart: () => !isLocationCity,
                           child: Container(
                             height: double.infinity,
                             margin: EdgeInsets.only(
@@ -143,6 +144,7 @@ class CityManagerItemState extends State<CityManagerItem>
                       ),
                       Expanded(
                         child: DelayedReorderableListener(
+                          canStart: () => !isLocationCity,
                           child: Container(
                             color: Colours.transparent,
                             child: Row(
@@ -277,14 +279,11 @@ class CityManagerItemState extends State<CityManagerItem>
         ),
       ),
     );
-    return isLocationCity
-        ? content
-        : YdReorderableItem(
+    return YdReorderableItem(
             key: widget.cityManagerData.key, //
             childBuilder: (_, state) {
               if (state == ReorderableItemState.dragProxy) {
-                widget.toEditMode
-                    ?.call(isLocationCity ? null : widget.cityManagerData);
+                widget.toEditMode?.call(widget.cityManagerData);
               }
               return AnimatedOpacity(
                 opacity: state == ReorderableItemState.placeholder ? 0.0 : 1.0,

@@ -1,4 +1,5 @@
 import 'package:card_swiper/card_swiper.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_yd_weather/utils/commons.dart';
@@ -35,6 +36,8 @@ class WeatherAlarmsDetailPopupState extends State<WeatherAlarmsDetailPopup> {
   int _index = 0;
   List<double> _heights = [];
   double _height = 0;
+  Alignment _alignment = Alignment.topCenter;
+  double _marginTop = 0;
   double _opacity = 0;
   late SwiperController _swiperController;
 
@@ -43,6 +46,8 @@ class WeatherAlarmsDetailPopupState extends State<WeatherAlarmsDetailPopup> {
     super.initState();
     _swiperController = SwiperController()..index = widget.index;
     _index = widget.index;
+    _alignment = Alignment.topCenter;
+    _marginTop = widget.initPosition.dy;
     _height = widget.initHeight;
     _opacity = 0;
     _heights = widget.alarms
@@ -61,6 +66,8 @@ class WeatherAlarmsDetailPopupState extends State<WeatherAlarmsDetailPopup> {
     Commons.post((_) {
       setState(() {
         _opacity = 1;
+        _alignment = Alignment.center;
+        _marginTop = 0;
         _height = _heights[widget.index];
       });
     });
@@ -75,14 +82,17 @@ class WeatherAlarmsDetailPopupState extends State<WeatherAlarmsDetailPopup> {
   void exit() {
     setState(() {
       _opacity = 0;
+      _alignment = Alignment.topCenter;
+      _marginTop = widget.initPosition.dy;
       _height = widget.initHeight;
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    return Align(
-      alignment: Alignment.topCenter,
+    return AnimatedAlign(
+      duration: const Duration(milliseconds: 200),
+      alignment: _alignment,
       child: AnimatedOpacity(
         opacity: _opacity,
         duration: const Duration(milliseconds: 200),
@@ -92,7 +102,7 @@ class WeatherAlarmsDetailPopupState extends State<WeatherAlarmsDetailPopup> {
           duration: const Duration(milliseconds: 200),
           margin: EdgeInsets.only(
             left: 16.w,
-            top: widget.initPosition.dy,
+            top: _marginTop,
             right: 16.w,
           ),
           decoration: BoxDecoration(

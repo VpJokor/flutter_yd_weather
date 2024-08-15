@@ -53,11 +53,11 @@ class WeatherAirQualityPanel extends StatelessWidget {
                   Offset.zero;
           SmartDialog.show(
             maskColor: Colours.transparent,
-            animationTime: const Duration(milliseconds: 200),
+            animationTime: const Duration(milliseconds: 400),
             clickMaskDismiss: true,
             onDismiss: () {
               _airQualityDetailPopupKey.currentState?.exit();
-              Commons.postDelayed(delayMilliseconds: 200, () {
+              Commons.postDelayed(delayMilliseconds: 400, () {
                 showHideWeatherContent?.call(true);
               });
             },
