@@ -296,7 +296,9 @@ class _WeatherMainPageState
             delegate: WeatherPersistentHeaderDelegate(
                 weatherItemData,
                 weatherItemData.itemType == Constants.itemTypeAlarms ||
-                        weatherItemData.itemType == Constants.itemTypeAirQuality
+                        weatherItemData.itemType ==
+                            Constants.itemTypeAirQuality ||
+                        weatherItemData.itemType == Constants.itemTypeObserve
                     ? (show) {
                         setState(() {
                           _weatherContentOpacity = show ? 1 : 0;
@@ -403,7 +405,7 @@ class _WeatherMainPageState
                   Visibility(
                     visible: Device.isIOS,
                     child: Gaps.generateGap(
-                      height: ScreenUtil().statusBarHeight,
+                      height: ScreenUtil().bottomBarHeight,
                     ),
                   ),
                 ],

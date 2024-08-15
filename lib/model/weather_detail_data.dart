@@ -50,6 +50,8 @@ class WeatherDetailData {
     this.night,
   );
 
+  WeatherDetailData.date(this.date);
+
   factory WeatherDetailData.fromJson(Map<String, dynamic> json) =>
       _$WeatherDetailDataFromJson(json);
 

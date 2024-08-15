@@ -10,6 +10,8 @@ class WeatherInfoData {
   String? wd;
   String? wp;
   int? type;
+  @JsonKey(name: "third_type")
+  String? weatherType;
   String? notice;
 
   WeatherInfoData(
@@ -19,6 +21,7 @@ class WeatherInfoData {
     this.wd,
     this.wp,
     this.type,
+    this.weatherType,
     this.notice,
   );
 

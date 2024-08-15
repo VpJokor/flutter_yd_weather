@@ -59,6 +59,7 @@ class WeatherPersistentHeaderDelegate extends SliverPersistentHeaderDelegate {
         key: ValueKey(weatherItemData.itemType),
         data: weatherItemData,
         shrinkOffset: shrinkOffset,
+        showHideWeatherContent: showHideWeatherContent,
       );
     } else if (weatherItemData.itemType == Constants.itemTypeLifeIndex) {
       return WeatherLifeIndexPanel(

@@ -18,10 +18,12 @@ class WeatherObservePanel extends StatelessWidget {
     super.key,
     required this.data,
     required this.shrinkOffset,
+    this.showHideWeatherContent,
   });
 
   final WeatherItemData data;
   final double shrinkOffset;
+  final void Function(bool show)? showHideWeatherContent;
 
   @override
   Widget build(BuildContext context) {
@@ -137,6 +139,7 @@ class WeatherObservePanel extends StatelessWidget {
               WeatherObserveForecase40Panel(
                 data: data,
                 shrinkOffset: fixedShrinkOffset,
+                showHideWeatherContent: showHideWeatherContent,
               ),
               index,
             ),

@@ -48,10 +48,12 @@ class Constants {
   static const int itemStickyHeight = 32;
   static const int itemObservePanelHeight = 128;
 
+  static const String dd = "dd";
   static const String yyyymmdd = "yyyyMMdd";
   static const String yyyymmddhh = "yyyyMMddHH";
   static const String hhmm = "HH:mm";
   static const String mmdd = "MM/dd";
+  static const String mm_dd = "MM月dd日";
   static const String yyyy_mm_dd = "yyyy-MM-dd";
   static const String yyyy_mm = "yyyy-MM";
   static const String yyyy_mm_ch = "yyyy年MM月";

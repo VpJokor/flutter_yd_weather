@@ -2,9 +2,6 @@ import 'package:flutter/material.dart';
 
 import '../res/colours.dart';
 
-// 浮尘	DUST	AQI > 150, PM10 > 150，湿度 < 30%，风速 < 6 m/s
-// 沙尘	SAND	AQI > 150, PM10> 150，湿度 < 30%，风速 > 6 m/s
-// 大风	WIND
 class WeatherBgUtils {
   static LinearGradient getWeatherBg(String type, bool isNight) {
     Color color1 = isNight ? Colours.color1A1B30 : Colours.colorF47359;

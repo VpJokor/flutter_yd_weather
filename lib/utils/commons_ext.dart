@@ -147,6 +147,18 @@ extension StringExt on String? {
     // 返回高度
     return textPainter.height;
   }
+
+  bool isRain() {
+    if (isNullOrEmpty()) return false;
+    switch (this!) {
+      case "LIGHT_RAIN":
+      case "MODERATE_RAIN":
+      case "HEAVY_RAIN":
+      case "STORM_RAIN":
+        return true;
+    }
+    return false;
+  }
 }
 
 extension IntExt on int? {

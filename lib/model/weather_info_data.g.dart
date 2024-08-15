@@ -14,6 +14,7 @@ WeatherInfoData _$WeatherInfoDataFromJson(Map<String, dynamic> json) =>
       json['wd'] as String?,
       json['wp'] as String?,
       (json['type'] as num?)?.toInt(),
+      json['third_type'] as String?,
       json['notice'] as String?,
     );
 
@@ -25,5 +26,6 @@ Map<String, dynamic> _$WeatherInfoDataToJson(WeatherInfoData instance) =>
       'wd': instance.wd,
       'wp': instance.wp,
       'type': instance.type,
+      'third_type': instance.weatherType,
       'notice': instance.notice,
     };

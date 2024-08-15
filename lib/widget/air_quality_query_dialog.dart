@@ -35,6 +35,7 @@ class AirQualityQueryDialog extends StatelessWidget {
                       "ic_close_icon1",
                       width: 22.w,
                       height: 22.w,
+                      color: context.black,
                     ),
                   ),
                   onPressed: () {
