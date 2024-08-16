@@ -302,6 +302,7 @@ class WeatherForecase40DetailPageState
                         loop: false,
                         itemCount: _pageData.length,
                         onIndexChanged: (index) {
+                          _swiperController.index = index;
                           setState(() {
                             _index = index;
                           });
