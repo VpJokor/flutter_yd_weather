@@ -289,6 +289,7 @@ class _WeatherCardSortPageState extends State<WeatherCardSortPage> {
                   children: _currentWeatherObserveCardSort
                       .mapIndexed((itemType, index) {
                     return WeatherObserveCardSortItem(
+                      key: ValueKey(itemType),
                       itemType: itemType,
                       index: index,
                     );
