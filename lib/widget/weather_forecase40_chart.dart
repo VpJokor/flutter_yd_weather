@@ -52,7 +52,8 @@ class WeatherForecase40ChartState extends State<WeatherForecase40Chart> {
     final length = forecast40!.length;
     final gaps = 2.5.w;
     final radius = (_rect.width - (length - 1) * gaps) / length / 2;
-    final index = forecast40.indexWhere((e) => e.date == currentSelectedItem?.date);
+    final index =
+        forecast40.indexWhere((e) => e.date == currentSelectedItem?.date);
     setState(() {
       _currentAxisX = 32.w + (2 * radius + gaps) * index + radius;
       _currentSelectedItem = currentSelectedItem;
@@ -270,11 +271,13 @@ class _WeatherForecase40Painter extends BoxPainter {
     ..color = Colours.white
     ..isAntiAlias = true
     ..strokeCap = StrokeCap.round
+    ..strokeJoin = StrokeJoin.round
     ..style = PaintingStyle.fill;
   final _linePaint = Paint()
     ..color = Colours.white
     ..isAntiAlias = true
     ..strokeCap = StrokeCap.round
+    ..strokeJoin = StrokeJoin.round
     ..style = PaintingStyle.stroke;
 
   _WeatherForecase40Painter(
@@ -378,7 +381,7 @@ class _WeatherForecase40Painter extends BoxPainter {
         ),
       ],
     );
-    canvas.drawCircle(currentPoint, 4.w, _paint);
+    canvas.drawCircle(currentPoint, 4.w, _paint..color = Colours.color0DA8FF);
   }
 
   void _drawDashLine(Canvas canvas, Rect rect, double lineY, double radius) {
@@ -417,6 +420,6 @@ class _WeatherForecase40Painter extends BoxPainter {
             path.shift(shadow.offset).transform(m4.storage), shadowPainter);
       }
     }
-    canvas.drawPath(path, _linePaint..color = Colours.white);
+    canvas.drawPath(path, Paint()..color = Colours.white);
   }
 }

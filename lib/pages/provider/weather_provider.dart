@@ -82,8 +82,11 @@ class WeatherProvider extends BaseListProvider<WeatherItemData> {
         list.firstOrNull()?.weatherData);
   }
 
-  void generateWeatherBg(WeatherData? weatherData) {
-    String weatherType = weatherData?.observe?.weatherType ?? "";
+  void generateWeatherBg(
+    WeatherData? weatherData, {
+    String? cacheWeatherType,
+  }) {
+    String weatherType = cacheWeatherType ?? (weatherData?.observe?.weatherType ?? "");
     if (weatherType.isNullOrEmpty()) {
       final currentWeatherDetailData = weatherData?.forecast15?.singleOrNull(
         (element) =>
