@@ -631,7 +631,7 @@ class WeatherForecase40DetailPageState
               ),
             ),
           ),
-          Gaps.generateGap(height: 24.w),
+          Gaps.generateGap(height: 16.w),
           Align(
             alignment: Alignment.topCenter,
             child: RichText(

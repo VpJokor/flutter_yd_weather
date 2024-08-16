@@ -125,7 +125,6 @@ class AirQualityDetailPopupState extends State<AirQualityDetailPopup> {
                         onPressed: () {
                           SmartDialog.show(
                             tag: "AirQualityQueryDialog",
-                            maskColor: Colours.transparent,
                             alignment: Alignment.bottomCenter,
                             builder: (_) {
                               return const AirQualityQueryDialog();

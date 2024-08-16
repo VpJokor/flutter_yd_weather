@@ -139,7 +139,6 @@ class WeatherAirQualityPanel extends StatelessWidget {
                                   onPressed: () {
                                     SmartDialog.show(
                                       tag: "AirQualityQueryDialog",
-                                      maskColor: Colours.transparent,
                                       alignment: Alignment.bottomCenter,
                                       builder: (_) {
                                         return const AirQualityQueryDialog();

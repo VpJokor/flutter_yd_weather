@@ -47,7 +47,14 @@ class WeatherForecase40ChartState extends State<WeatherForecase40Chart> {
   }
 
   set currentSelectedItem(WeatherDetailData? currentSelectedItem) {
+    final forecast40 = widget.forecast40;
+    if (forecast40.isNullOrEmpty()) return;
+    final length = forecast40!.length;
+    final gaps = 2.5.w;
+    final radius = (_rect.width - (length - 1) * gaps) / length / 2;
+    final index = forecast40.indexWhere((e) => e.date == currentSelectedItem?.date);
     setState(() {
+      _currentAxisX = 32.w + (2 * radius + gaps) * index + radius;
       _currentSelectedItem = currentSelectedItem;
     });
   }
@@ -76,7 +83,7 @@ class WeatherForecase40ChartState extends State<WeatherForecase40Chart> {
       children: [
         Container(
           width: double.infinity,
-          height: 32.w,
+          height: 38.w,
           margin: EdgeInsets.symmetric(horizontal: 32.w),
           child: Stack(
             children: [

@@ -82,7 +82,6 @@ class _WeatherCardSortPageState extends State<WeatherCardSortPage> {
             mainP.currentWeatherCardSort = defaultWeatherCardSort;
             mainP.currentWeatherObservesCardSort =
                 currentWeatherObserveCardSort;
-            Toast.show("已恢复默认");
             setState(() {
               _currentWeatherCardSort = defaultWeatherCardSort
                   .where((e) => e != Constants.itemTypeWeatherHeader)
@@ -90,6 +89,7 @@ class _WeatherCardSortPageState extends State<WeatherCardSortPage> {
               _currentWeatherObserveCardSort = currentWeatherObserveCardSort;
             });
           }
+          Toast.show("已恢复默认");
         },
       ),
       body: EasyRefresh.builder(
