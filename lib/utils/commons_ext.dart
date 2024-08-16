@@ -148,6 +148,32 @@ extension StringExt on String? {
     return textPainter.height;
   }
 
+  double getTextContextSizeWidth(
+    TextStyle textStyle, {
+    int? maxLines,
+    TextDirection textDirection = TextDirection.ltr,
+    Locale? locale,
+    double maxWidth = double.infinity,
+  }) {
+    TextPainter textPainter = TextPainter(
+      // 用于选择用户的语言和格式首选项的标识符。
+      locale: locale,
+      // 最大行数
+      maxLines: maxLines,
+      // 文本书写方向l to r 汉字从左到右
+      textDirection: textDirection,
+      // 文本内容以及文本样式 style:可以根据在代码中设置的TextStyle增加字段。
+      text: TextSpan(
+        text: this,
+        style: textStyle,
+      ),
+    );
+    // 最大宽度
+    textPainter.layout(maxWidth: maxWidth);
+    // 返回高度
+    return textPainter.width;
+  }
+
   bool isRain() {
     if (isNullOrEmpty()) return false;
     switch (this!) {

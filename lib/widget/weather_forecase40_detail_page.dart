@@ -11,6 +11,7 @@ import 'package:flutter_yd_weather/res/gaps.dart';
 import 'package:flutter_yd_weather/utils/commons.dart';
 import 'package:flutter_yd_weather/utils/commons_ext.dart';
 import 'package:flutter_yd_weather/utils/weather_icon_utils.dart';
+import 'package:flutter_yd_weather/widget/weather_forecase40_chart.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 import '../model/weather_detail_data.dart';
@@ -46,15 +47,21 @@ class WeatherForecase40DetailPageState
   int _index = 0;
   double _opacity = 0;
   double _opacity1 = 1;
+  double _opacity2 = 0;
   Size _size = Size.zero;
   double _marginTop = 0;
   final List<List<WeatherDetailData>> _pageData = [];
-  WeatherDetailData? _currentSelectedItem = null;
+  WeatherDetailData? _currentSelectedItem;
+  final _weatherForecase40ChartKey = GlobalKey<WeatherForecase40ChartState>();
+  late SwiperController _swiperController;
 
   @override
   void initState() {
     super.initState();
+    _swiperController = SwiperController();
     _opacity = 0;
+    _opacity1 = 1;
+    _opacity2 = 0;
     _size = widget.size;
     _marginTop =
         widget.initPosition.dy - 48.w - 12.w - ScreenUtil().statusBarHeight;
@@ -116,6 +123,7 @@ class WeatherForecase40DetailPageState
         Commons.postDelayed(delayMilliseconds: 200, () {
           setState(() {
             _opacity = 1;
+            _opacity2 = 1;
           });
         });
       });
@@ -124,16 +132,29 @@ class WeatherForecase40DetailPageState
 
   void exit() {
     setState(() {
-      _size = widget.size;
-      _marginTop =
-          widget.initPosition.dy - 48.w - 12.w - ScreenUtil().statusBarHeight;
       _opacity = 0;
       Commons.postDelayed(delayMilliseconds: 200, () {
         setState(() {
-          _opacity1 = 0;
+          _size = widget.size;
+          _marginTop = widget.initPosition.dy -
+              48.w -
+              12.w -
+              ScreenUtil().statusBarHeight;
+          _opacity2 = 0;
+          Commons.postDelayed(delayMilliseconds: 200, () {
+            setState(() {
+              _opacity1 = 0;
+            });
+          });
         });
       });
     });
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _swiperController.dispose();
   }
 
   @override
@@ -215,13 +236,19 @@ class WeatherForecase40DetailPageState
                                   .withOpacity(0.1),
                             ),
                             child: AnimatedOpacity(
-                              opacity: _opacity,
+                              opacity: _opacity2,
                               duration: const Duration(milliseconds: 200),
                               child: _buildWeatherForecase40Calendar(),
                             ),
                           ),
                         ),
                       ),
+                      Gaps.generateGap(height: 12.w),
+                      AnimatedOpacity(
+                        opacity: _opacity,
+                        duration: const Duration(milliseconds: 200),
+                        child: _buildWeatherForecase40Chart(),
+                      )
                     ],
                   ),
                 ),
@@ -246,7 +273,7 @@ class WeatherForecase40DetailPageState
         child: Column(
           children: [
             Padding(
-              padding: EdgeInsets.symmetric(vertical: 8.w),
+              padding: EdgeInsets.symmetric(vertical: 12.w),
               child: Row(
                 children: [
                   _buildWeekTitle("日"),
@@ -271,6 +298,7 @@ class WeatherForecase40DetailPageState
                       ),
                       child: Swiper(
                         key: const Key('weather_forecase40_detail_swiper'),
+                        controller: _swiperController,
                         loop: false,
                         itemCount: _pageData.length,
                         onIndexChanged: (index) {
@@ -322,6 +350,10 @@ class WeatherForecase40DetailPageState
                                           setState(() {
                                             _currentSelectedItem = item;
                                           });
+                                          _weatherForecase40ChartKey
+                                                  .currentState
+                                                  ?.currentSelectedItem =
+                                              _currentSelectedItem;
                                         }
                                       : null,
                                   child: Stack(
@@ -524,7 +556,7 @@ class WeatherForecase40DetailPageState
                             ),
                             Gaps.generateGap(width: 4.w),
                             Text(
-                              "33/26°",
+                              "${_currentSelectedItem?.high}/${_currentSelectedItem?.low}°",
                               style: TextStyle(
                                 fontSize: 18.sp,
                                 color: Colours.white,
@@ -564,8 +596,133 @@ class WeatherForecase40DetailPageState
           style: TextStyle(
             fontSize: 12.sp,
             color: Colours.white,
+            height: 1,
           ),
         ),
+      ),
+    );
+  }
+
+  Widget _buildWeatherForecase40Chart() {
+    final maxTempData = widget.forecast40
+        ?.reduce((e1, e2) => (e1.high ?? 0) > (e2.high ?? 0) ? e1 : e2);
+    final minTempData = widget.forecast40
+        ?.reduce((e1, e2) => (e1.low ?? 0) < (e2.low ?? 0) ? e1 : e2);
+    return Container(
+      width: double.infinity,
+      height: 288.w,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(12.w),
+        color: (widget.isDark ? Colours.white : Colours.black).withOpacity(0.1),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Gaps.generateGap(height: 12.w),
+          Padding(
+            padding: EdgeInsets.only(left: 16.w),
+            child: Text(
+              "40日天气趋势",
+              style: TextStyle(
+                fontSize: 18.sp,
+                color: Colours.white,
+                height: 1,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
+          Gaps.generateGap(height: 24.w),
+          Align(
+            alignment: Alignment.topCenter,
+            child: RichText(
+              text: TextSpan(
+                text: "${widget.forecast40Data?.downDays ?? 0}",
+                style: TextStyle(
+                  fontSize: 18.sp,
+                  color: Colours.white,
+                  height: 1,
+                  fontFamily: "RobotoLight",
+                  fontWeight: FontWeight.bold,
+                ),
+                children: [
+                  TextSpan(
+                    text: "天降温",
+                    style: TextStyle(
+                      fontSize: 13.sp,
+                      color: Colours.white.withOpacity(0.6),
+                      height: 1,
+                      fontFamily: "RobotoLight",
+                    ),
+                  ),
+                  WidgetSpan(child: Gaps.generateGap(width: 4.w)),
+                  TextSpan(
+                    text: "${widget.forecast40Data?.upDays ?? 0}",
+                    style: TextStyle(
+                      fontSize: 18.sp,
+                      color: Colours.white,
+                      height: 1,
+                      fontFamily: "RobotoLight",
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  TextSpan(
+                    text: "天升温",
+                    style: TextStyle(
+                      fontSize: 13.sp,
+                      color: Colours.white.withOpacity(0.6),
+                      height: 1,
+                      fontFamily: "RobotoLight",
+                    ),
+                  ),
+                  WidgetSpan(child: Gaps.generateGap(width: 4.w)),
+                  TextSpan(
+                    text: "${widget.forecast40Data?.rainDays ?? 0}",
+                    style: TextStyle(
+                      fontSize: 18.sp,
+                      color: Colours.white,
+                      height: 1,
+                      fontFamily: "RobotoLight",
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  TextSpan(
+                    text: "天有降水",
+                    style: TextStyle(
+                      fontSize: 13.sp,
+                      color: Colours.white.withOpacity(0.6),
+                      height: 1,
+                      fontFamily: "RobotoLight",
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          Expanded(
+            child: WeatherForecase40Chart(
+              key: _weatherForecase40ChartKey,
+              width: double.infinity,
+              height: double.infinity,
+              initSelectedItem: _currentSelectedItem,
+              forecast40: widget.forecast40,
+              maxTempData: maxTempData,
+              minTempData: minTempData,
+              callback: (currentSelectedItem) {
+                final index = _pageData.indexWhere((e) =>
+                    e.singleOrNull(
+                        (e1) => e1.date == currentSelectedItem?.date) !=
+                    null);
+                if (index >= 0 && _swiperController.index != index) {
+                  _swiperController.index = index;
+                  _swiperController.move(index);
+                }
+                setState(() {
+                  _currentSelectedItem = currentSelectedItem;
+                });
+              },
+            ),
+          ),
+        ],
       ),
     );
   }

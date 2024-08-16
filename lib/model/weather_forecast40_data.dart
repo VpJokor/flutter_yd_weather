@@ -8,6 +8,8 @@ class WeatherForecast40Data {
   int? averageTemp;
   @JsonKey(name: "up_days")
   int? upDays;
+  @JsonKey(name: "down_days")
+  int? downDays;
   @JsonKey(name: "rain_days")
   int? rainDays;
   @JsonKey(name: "temp_icon")
@@ -18,6 +20,7 @@ class WeatherForecast40Data {
   WeatherForecast40Data(
     this.averageTemp,
     this.upDays,
+    this.downDays,
     this.rainDays,
     this.tempIcon,
     this.rainIcon,
