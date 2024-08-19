@@ -196,11 +196,11 @@ class _SelectCityPageState
     if (locationData != null &&
         locationCity != null &&
         locationCity.cityId.isNullOrEmpty()) {
-      searchCity(locationData.addressComponent?.city ?? "", (result) {
+      searchCity(locationData.addressComponent?.district ?? "", (result) {
         if (result.isNotNullOrEmpty()) {
           final province = locationData.addressComponent?.province ?? "";
           final find = result!.singleOrNull((element) =>
-              element.name == locationData.addressComponent?.city &&
+              element.name == locationData.addressComponent?.district &&
               (province.contains(element.prov ?? "") ||
                   (element.prov ?? "").contains(province)));
           if (find != null) {

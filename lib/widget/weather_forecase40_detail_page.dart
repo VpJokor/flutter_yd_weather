@@ -608,7 +608,7 @@ class WeatherForecase40DetailPageState
     final maxTempData = widget.forecast40
         ?.reduce((e1, e2) => (e1.high ?? 0) > (e2.high ?? 0) ? e1 : e2);
     final minTempData = widget.forecast40
-        ?.reduce((e1, e2) => (e1.low ?? 0) < (e2.low ?? 0) ? e1 : e2);
+        ?.reduce((e1, e2) => (e1.high ?? 0) < (e2.high ?? 0) ? e1 : e2);
     return Container(
       width: double.infinity,
       height: 288.w,

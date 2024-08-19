@@ -133,6 +133,28 @@ class NetUtils {
     });
   }
 
+  Future<T?> requestNet<T>(Method method, String url,
+      {NetSuccessCallback<T?>? onSuccess,
+      NetErrorCallback? onError,
+      Object? params,
+      Map<String, dynamic>? queryParameters,
+      CancelToken? cancelToken,
+      Options? options,
+      int delayMilliseconds = 0}) async {
+    try {
+      final result = await _request<T>(method.value, url,
+          data: params,
+          queryParameters: queryParameters,
+          options: options,
+          cancelToken: cancelToken,
+          delayMilliseconds: delayMilliseconds);
+      return Future.value(result.data);
+    } catch (err) {
+      _cancelLogPrint(err, url);
+      return Future.value(null);
+    }
+  }
+
   void _cancelLogPrint(dynamic e, String url) {
     if (e is DioException && CancelToken.isCancel(e)) {
       Log.e('取消请求接口： $url');

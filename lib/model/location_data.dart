@@ -11,9 +11,9 @@ class LocationData {
   AddressComponentData? addressComponent;
 
   LocationData(
-      this.address,
-      this.addressComponent,
-      );
+    this.address,
+    this.addressComponent,
+  );
 
   factory LocationData.fromJson(Map<String, dynamic> json) =>
       _$LocationDataFromJson(json);

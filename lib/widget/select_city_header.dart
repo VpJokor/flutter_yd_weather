@@ -50,7 +50,7 @@ class SelectCityHeader extends StatelessWidget {
                     Text(
                       locationStatus == 0
                           ? "定位中..."
-                          : locationData?.addressComponent?.city ?? "定位失败",
+                          : locationData?.addressComponent?.district ?? "定位失败",
                       style: TextStyle(
                         fontSize: 13.sp,
                         color: context.textColor01,

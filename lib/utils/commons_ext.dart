@@ -315,4 +315,20 @@ extension NetExt<E> on void {
       block.call(null);
     });
   }
+
+  Future<List<CityData>?> searchCityResult(String searchKey,
+      {bool showLoading = true}) async {
+    if (showLoading) {
+      Commons.showLoading();
+    }
+    final Map<String, String> params = <String, String>{};
+    params["keyword"] = searchKey;
+    final result = await NetUtils.instance.requestNet<List<CityData>>(
+        Method.post, Api.searchCityApi,
+        queryParameters: params);
+    if (showLoading) {
+      Commons.hideLoading();
+    }
+    return Future.value(result);
+  }
 }
