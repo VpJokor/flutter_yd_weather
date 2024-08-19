@@ -76,7 +76,7 @@ class _WeatherObserveSunriseSunsetPainter extends BoxPainter {
     final rect = offset & size;
     canvas.saveLayer(rect, _circlePaint);
     final newRect = Rect.fromLTRB(
-        rect.left + 2.w, rect.top + 2.w, rect.right - 2.w, rect.bottom - 2.w);
+        rect.left + 4.w, rect.top + 4.w, rect.right - 4.w, rect.bottom - 4.w);
     _path.reset();
     _path.moveTo(newRect.left, newRect.bottom);
     Point<double> p1 = Point(
