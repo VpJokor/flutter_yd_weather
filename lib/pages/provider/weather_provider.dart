@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_yd_weather/config/constants.dart';
 import 'package:flutter_yd_weather/model/weather_data.dart';
+import 'package:flutter_yd_weather/model/weather_hour_data.dart';
 import 'package:flutter_yd_weather/model/weather_item_data.dart';
 import 'package:flutter_yd_weather/utils/commons_ext.dart';
 
@@ -22,6 +23,7 @@ class WeatherProvider extends BaseListProvider<WeatherItemData> {
 
   void setWeatherData(List<int> currentWeatherSort,
       List<int> currentWeatherObservesCardSort, WeatherData? weatherData) {
+    _generateWeatherHourFc(weatherData);
     generateWeatherBg(weatherData);
     final weatherItems = currentWeatherSort.map(
       (itemType) {
@@ -80,6 +82,37 @@ class WeatherProvider extends BaseListProvider<WeatherItemData> {
       List<int> currentWeatherSort, List<int> currentWeatherObservesCardSort) {
     setWeatherData(currentWeatherSort, currentWeatherObservesCardSort,
         list.firstOrNull()?.weatherData);
+  }
+
+  void _generateWeatherHourFc(WeatherData? weatherData) {
+    if (weatherData == null) return;
+    final hourFc = weatherData.hourFc;
+    if (hourFc == null || hourFc.isEmpty) return;
+    hourFc.removeWhere(
+        (e) => e.sunrise.isNotNullOrEmpty() || e.sunset.isNotNullOrEmpty());
+    final currentWeatherDetailData = weatherData.forecast15?.singleOrNull(
+      (element) =>
+          element.date ==
+          DateUtil.formatDate(DateTime.now(), format: Constants.yyyymmdd),
+    );
+    final sunriseIndex = hourFc.indexWhere((e) =>
+        currentWeatherDetailData?.sunrise.isSunriseOrSunset(e.time) ?? false);
+    if (sunriseIndex >= 0) {
+      hourFc.insert(
+          sunriseIndex + 1,
+          WeatherHourData.sunriseAndSunset(
+            sunrise: currentWeatherDetailData?.sunrise,
+          ));
+    }
+    final sunsetIndex = hourFc.indexWhere((e) =>
+        currentWeatherDetailData?.sunset.isSunriseOrSunset(e.time) ?? false);
+    if (sunsetIndex >= 0) {
+      hourFc.insert(
+          sunsetIndex + 1,
+          WeatherHourData.sunriseAndSunset(
+            sunset: currentWeatherDetailData?.sunset,
+          ));
+    }
   }
 
   void generateWeatherBg(

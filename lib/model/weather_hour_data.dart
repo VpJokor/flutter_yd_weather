@@ -16,6 +16,10 @@ class WeatherHourData {
   String? wp;
   @JsonKey(name: "wthr")
   int? temp;
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  String? sunrise;
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  String? sunset;
 
   WeatherHourData(
     this.time,
@@ -27,6 +31,11 @@ class WeatherHourData {
     this.wp,
     this.temp,
   );
+
+  WeatherHourData.sunriseAndSunset({
+    this.sunrise,
+    this.sunset,
+  });
 
   factory WeatherHourData.fromJson(Map<String, dynamic> json) =>
       _$WeatherHourDataFromJson(json);

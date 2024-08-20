@@ -73,18 +73,18 @@ class WeatherHourPanel extends StatelessWidget {
                       final item =
                           weatherItemData.weatherData?.hourFc.getOrNull(index);
                       final time = item?.time ?? "";
-                      final weatherHourTime = time.getWeatherHourTime();
-                      final isSunrise = currentWeatherDetailData?.sunrise
-                              .isSunriseOrSunset(time) ??
-                          false;
-                      final isSunset = currentWeatherDetailData?.sunset
-                              .isSunriseOrSunset(time) ??
-                          false;
+                      final isSunrise =
+                          item?.sunrise.isNotNullOrEmpty() ?? false;
+                      final isSunset = item?.sunset.isNotNullOrEmpty() ?? false;
                       return Column(
                         children: [
                           Gaps.generateGap(height: 4.w),
                           Text(
-                            weatherHourTime,
+                            isSunrise
+                                ? (item?.sunrise ?? "")
+                                : isSunset
+                                    ? (item?.sunset ?? "")
+                                    : time.getWeatherHourTime(),
                             style: TextStyle(
                               fontSize: 14.sp,
                               color: Colours.white,
