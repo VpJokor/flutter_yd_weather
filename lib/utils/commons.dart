@@ -6,6 +6,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
+import 'package:flutter_yd_weather/utils/commons_ext.dart';
+import 'package:flutter_yd_weather/utils/log.dart';
 
 import '../config/constants.dart';
 import '../res/colours.dart';
@@ -88,8 +90,34 @@ class Commons {
     }
   }
 
-  static bool isNight(DateTime? dateTime) {
+  static bool isNight(
+    DateTime? dateTime, {
+    String? sunrise,
+    String? sunset,
+  }) {
     if (dateTime == null) return false;
+    if (sunrise.isNotNullOrEmpty() &&
+        sunrise!.contains(":") &&
+        sunset.isNotNullOrEmpty() &&
+        sunset!.contains(":")) {
+      return _isNight(dateTime, sunrise, sunset);
+    }
     return dateTime.hour > 18 || (dateTime.hour >= 0 && dateTime.hour < 6);
+  }
+
+  static bool _isNight(DateTime dateTime, String sunrise, String sunset) {
+    final sunriseSplit = sunrise.split(":");
+    final sunsetSplit = sunset.split(":");
+    final sunriseHour = int.tryParse(sunriseSplit[0]) ?? 0;
+    final sunriseMinute = int.tryParse(sunriseSplit[1]) ?? 0;
+    final sunsetHour = int.tryParse(sunsetSplit[0]) ?? 0;
+    final sunsetMinute = int.tryParse(sunsetSplit[1]) ?? 0;
+    final isNight = (dateTime.hour > sunsetHour
+            ? true
+            : dateTime.hour >= sunsetHour && dateTime.minute > sunsetMinute) ||
+        (dateTime.hour < sunriseHour
+            ? true
+            : dateTime.hour <= sunriseHour && dateTime.minute < sunriseMinute);
+    return isNight;
   }
 }

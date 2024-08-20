@@ -45,9 +45,9 @@ class SimpleWeatherDataAdapter extends TypeAdapter<SimpleWeatherData> {
       ..writeByte(5)
       ..write(obj.weatherDesc)
       ..writeByte(6)
-      ..write(obj.dayWeatherCardBg)
+      ..write(obj.sunrise)
       ..writeByte(7)
-      ..write(obj.nightWeatherCardBg);
+      ..write(obj.sunset);
   }
 
   @override

@@ -125,6 +125,7 @@ class _WeatherDailyTempPanelPainter extends BoxPainter {
     final nextData = _weatherDailyTempPanel.nextData;
     if (preData != null && data != null && nextData != null) {
       bool isToday = data.date.isToday();
+      bool isYesterday = data.date.isYesterday();
       double tempYAxis =
           _calTempYAxis(rect, (isHigh ? data.high : data.low) ?? 0);
       final preTempYAxis =
@@ -153,7 +154,7 @@ class _WeatherDailyTempPanelPainter extends BoxPainter {
             extractPath1,
             _linePaint
               ..color =
-                  isToday ? Colours.white.withOpacity(0.3) : Colours.white);
+                  isToday || isYesterday ? Colours.white.withOpacity(0.3) : Colours.white);
         canvas.drawPath(extractPath2, _linePaint..color = Colours.white);
       }
       canvas.drawCircle(Offset(rect.center.dx, (p2.y - p1.y) / 2 + p1.y), 2.5.w,

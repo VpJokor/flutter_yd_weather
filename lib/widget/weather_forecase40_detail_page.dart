@@ -413,6 +413,8 @@ class WeatherForecase40DetailPageState
                                                           .getWeatherIconByType(
                                                               item.day?.type ??
                                                                   -1,
+                                                              item.day?.weatherType ??
+                                                                  "",
                                                               false),
                                                       width: 24.w,
                                                       height: 24.w,

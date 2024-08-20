@@ -86,17 +86,24 @@ class WeatherProvider extends BaseListProvider<WeatherItemData> {
     WeatherData? weatherData, {
     String? cacheWeatherType,
   }) {
-    String weatherType = cacheWeatherType ?? (weatherData?.observe?.weatherType ?? "");
+    String weatherType =
+        cacheWeatherType ?? (weatherData?.observe?.weatherType ?? "");
+    final currentWeatherDetailData = weatherData?.forecast15?.singleOrNull(
+      (element) =>
+          element.date ==
+          DateUtil.formatDate(DateTime.now(), format: Constants.yyyymmdd),
+    );
     if (weatherType.isNullOrEmpty()) {
-      final currentWeatherDetailData = weatherData?.forecast15?.singleOrNull(
-        (element) =>
-            element.date ==
-            DateUtil.formatDate(DateTime.now(), format: Constants.yyyymmdd),
-      );
       weatherType = currentWeatherDetailData?.weatherType ?? "";
     }
     _weatherBg = WeatherBgUtils.getWeatherBg(
-        weatherType, Commons.isNight(DateTime.now()));
+      weatherType,
+      Commons.isNight(
+        DateTime.now(),
+        sunrise: currentWeatherDetailData?.sunrise,
+        sunset: currentWeatherDetailData?.sunset,
+      ),
+    );
     final weatherBgColor = weatherBg?.colors.firstOrNull();
     _isDark = weatherBgColor == null
         ? false

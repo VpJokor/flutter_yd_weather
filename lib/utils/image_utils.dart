@@ -9,5 +9,4 @@ class ImageUtils {
 
 extension ImageExtension on BuildContext {
   String get splash => isDark ? "dark/splash" : "splash";
-  String get weatherBg => isDark ? "dark/ic_weather_bg" : "ic_weather_bg";
 }

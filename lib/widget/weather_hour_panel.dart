@@ -30,6 +30,12 @@ class WeatherHourPanel extends StatelessWidget {
             Constants.itemStickyHeight.w)
         .fixPercent();
     final isDark = context.read<WeatherProvider>().isDark;
+    final currentWeatherDetailData =
+        weatherItemData.weatherData?.forecast15?.singleOrNull(
+      (element) =>
+          element.date ==
+          DateUtil.formatDate(DateTime.now(), format: Constants.yyyymmdd),
+    );
     return AnimatedOpacity(
       opacity: percent,
       duration: Duration.zero,
@@ -59,11 +65,10 @@ class WeatherHourPanel extends StatelessWidget {
                   child: ListView.separated(
                     scrollDirection: Axis.horizontal,
                     padding: EdgeInsets.symmetric(horizontal: 16.w),
-                    itemCount:
-                    weatherItemData.weatherData?.hourFc?.length ?? 0,
+                    itemCount: weatherItemData.weatherData?.hourFc?.length ?? 0,
                     itemBuilder: (_, index) {
-                      final item = weatherItemData.weatherData?.hourFc
-                          .getOrNull(index);
+                      final item =
+                          weatherItemData.weatherData?.hourFc.getOrNull(index);
                       final time = item?.time ?? "";
                       final weatherHourTime = time.getWeatherHourTime();
                       return Column(
@@ -81,7 +86,11 @@ class WeatherHourPanel extends StatelessWidget {
                           LoadAssetImage(
                             WeatherIconUtils.getWeatherIconByType(
                               item?.type ?? -1,
-                              time.isNight(),
+                              item?.weatherType ?? "",
+                              time.isNight(
+                                sunrise: currentWeatherDetailData?.sunrise,
+                                sunset: currentWeatherDetailData?.sunset,
+                              ),
                             ),
                             width: 24.w,
                             height: 24.w,
@@ -99,7 +108,7 @@ class WeatherHourPanel extends StatelessWidget {
                       );
                     },
                     separatorBuilder: (_, index) {
-                      return Gaps.generateGap(width: 16.w);
+                      return Gaps.generateGap(width: 13.w);
                     },
                   ),
                 ),

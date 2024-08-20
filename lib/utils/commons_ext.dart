@@ -116,10 +116,17 @@ extension StringExt on String? {
     return nowTimeStr == dateTimeStr;
   }
 
-  bool isNight() {
+  bool isNight({
+    String? sunrise,
+    String? sunset,
+  }) {
     if (isNullOrEmpty()) return false;
     final dateTime = DateTime.tryParse(this!.getDartDateTimeFormattedString());
-    return Commons.isNight(dateTime);
+    return Commons.isNight(
+      dateTime,
+      sunrise: sunrise,
+      sunset: sunset,
+    );
   }
 
   double getTextContextSizeHeight(

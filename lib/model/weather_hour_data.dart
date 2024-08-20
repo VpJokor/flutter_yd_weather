@@ -8,6 +8,8 @@ class WeatherHourData {
   @JsonKey(name: "shidu")
   String? shiDu;
   int? type;
+  @JsonKey(name: "third_type")
+  String? weatherType;
   @JsonKey(name: "type_desc")
   String? typeDesc;
   String? wd;
@@ -19,6 +21,7 @@ class WeatherHourData {
     this.time,
     this.shiDu,
     this.type,
+    this.weatherType,
     this.typeDesc,
     this.wd,
     this.wp,

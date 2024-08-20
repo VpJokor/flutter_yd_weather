@@ -35,6 +35,7 @@ class WeatherDailyPanel extends StatelessWidget {
     final minTempData = weatherItemData.weatherData?.forecast15
         ?.reduce((e1, e2) => (e1.low ?? 0) < (e2.low ?? 0) ? e1 : e2);
     final isDark = context.read<WeatherProvider>().isDark;
+    final itemWidth = 68.5.w;
     return AnimatedOpacity(
       opacity: percent,
       duration: Duration.zero,
@@ -65,7 +66,7 @@ class WeatherDailyPanel extends StatelessWidget {
                     scrollDirection: Axis.horizontal,
                     itemCount:
                         weatherItemData.weatherData?.forecast15?.length ?? 0,
-                    itemExtent: 60.w,
+                    itemExtent: itemWidth,
                     itemBuilder: (_, index) {
                       final preItem = weatherItemData.weatherData?.forecast15
                           .getOrNull(index - 1);
@@ -77,7 +78,7 @@ class WeatherDailyPanel extends StatelessWidget {
                       final weatherDateTime = date.getWeatherDateTime();
                       final isYesterday = date.isYesterday();
                       return SizedBox(
-                        width: 60.w,
+                        width: itemWidth,
                         child: Column(
                           children: [
                             Gaps.generateGap(height: 4.w),
@@ -120,7 +121,8 @@ class WeatherDailyPanel extends StatelessWidget {
                               duration: Duration.zero,
                               child: LoadAssetImage(
                                 WeatherIconUtils.getWeatherIconByType(
-                                  item?.type ?? -1,
+                                  item?.day?.type ?? -1,
+                                  item?.day?.weatherType ?? "",
                                   false,
                                 ),
                                 width: 24.w,
@@ -128,7 +130,7 @@ class WeatherDailyPanel extends StatelessWidget {
                               ),
                             ),
                             WeatherDailyTempPanel(
-                              width: 60.w,
+                              width: itemWidth,
                               height: 128.w,
                               preData: preItem,
                               data: item,
@@ -141,7 +143,8 @@ class WeatherDailyPanel extends StatelessWidget {
                               duration: Duration.zero,
                               child: LoadAssetImage(
                                 WeatherIconUtils.getWeatherIconByType(
-                                  item?.type ?? -1,
+                                  item?.night?.type ?? -1,
+                                  item?.night?.weatherType ?? "",
                                   true,
                                 ),
                                 width: 24.w,

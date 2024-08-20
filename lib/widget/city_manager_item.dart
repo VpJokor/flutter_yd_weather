@@ -103,8 +103,13 @@ class CityManagerItemState extends State<CityManagerItem>
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(16.w),
               gradient: WeatherBgUtils.getWeatherBg(
-                  weatherData?.weatherType ?? "",
-                  Commons.isNight(DateTime.now())),
+                weatherData?.weatherType ?? "",
+                Commons.isNight(
+                  DateTime.now(),
+                  sunrise: weatherData?.sunrise,
+                  sunset: weatherData?.sunset,
+                ),
+              ),
             ),
             child: Stack(
               children: [
@@ -280,24 +285,24 @@ class CityManagerItemState extends State<CityManagerItem>
       ),
     );
     return YdReorderableItem(
-            key: widget.cityManagerData.key, //
-            childBuilder: (_, state) {
-              if (state == ReorderableItemState.dragProxy) {
-                widget.toEditMode?.call(widget.cityManagerData);
-              }
-              return AnimatedOpacity(
-                opacity: state == ReorderableItemState.placeholder ? 0.0 : 1.0,
-                duration: Duration.zero,
-                child: AnimatedVisibility(
-                  visible: !widget.cityManagerData.removed,
-                  enter: expandVertically(alignment: -1) + fadeIn(),
-                  exit: shrinkVertically(alignment: -1) + fadeOut(),
-                  enterDuration: const Duration(milliseconds: 200),
-                  exitDuration: const Duration(milliseconds: 200),
-                  child: content,
-                ),
-              );
-            },
-          );
+      key: widget.cityManagerData.key, //
+      childBuilder: (_, state) {
+        if (state == ReorderableItemState.dragProxy) {
+          widget.toEditMode?.call(widget.cityManagerData);
+        }
+        return AnimatedOpacity(
+          opacity: state == ReorderableItemState.placeholder ? 0.0 : 1.0,
+          duration: Duration.zero,
+          child: AnimatedVisibility(
+            visible: !widget.cityManagerData.removed,
+            enter: expandVertically(alignment: -1) + fadeIn(),
+            exit: shrinkVertically(alignment: -1) + fadeOut(),
+            enterDuration: const Duration(milliseconds: 200),
+            exitDuration: const Duration(milliseconds: 200),
+            child: content,
+          ),
+        );
+      },
+    );
   }
 }
