@@ -6,12 +6,14 @@ class WeatherIconUtils {
   ) {
     String weatherIcon = "";
     switch (weatherType) {
+      case "CLEAR":
       case "CLEAR_DAY":
       case "CLEAR_NIGHT":
         // 晴天
         weatherIcon =
             isNight ? "fifteen_weather_sunny_n" : "fifteen_weather_sunny";
         break;
+      case "PARTLY_CLOUDY":
       case "PARTLY_CLOUDY_DAY":
       case "PARTLY_CLOUDY_NIGHT":
         // 多云
@@ -75,6 +77,14 @@ class WeatherIconUtils {
     if (weatherIcon.isEmpty) {
       if (!isNight) {
         switch (type) {
+          case 1:
+            // 晴天
+            weatherIcon = "fifteen_weather_sunny";
+            break;
+          case 2:
+            // 多云
+            weatherIcon = "fifteen_weather_sunny";
+            break;
           case 3:
             // 阵雨
             weatherIcon = "fifteen_weather_chancerain";
@@ -86,6 +96,14 @@ class WeatherIconUtils {
         }
       } else {
         switch (type) {
+          case 1:
+            // 晴天
+            weatherIcon = "fifteen_weather_sunny_n";
+            break;
+          case 2:
+            // 多云
+            weatherIcon = "fifteen_weather_mostlycloudy_n";
+            break;
           case 3:
             // 阵雨
             weatherIcon = "fifteen_weather_chancerain_n";
@@ -93,6 +111,22 @@ class WeatherIconUtils {
           case 4:
             // 雷阵雨
             weatherIcon = "fifteen_weather_chancestorm_n";
+            break;
+        }
+      }
+      if (weatherIcon.isEmpty) {
+        switch (type) {
+          case 8: // 小雨
+          case 9: // 小到中雨
+            weatherIcon = "fifteen_weather_lightrain";
+            break;
+          case 10: // 中雨
+          case 11: // 大雨
+          case 13: // 大暴雨
+            weatherIcon = "fifteen_weather_rain";
+            break;
+          case 34: // 阴
+            weatherIcon = "fifteen_weather_cloudy";
             break;
         }
       }

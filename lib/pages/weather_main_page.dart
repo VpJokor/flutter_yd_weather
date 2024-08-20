@@ -423,15 +423,16 @@ class _WeatherMainPageState
   }
 
   @override
-  WeatherProvider generateProvider() => WeatherProvider()
-    ..generateWeatherBg(
-      null,
-      cacheWeatherType: context
-          .read<MainProvider>()
-          .currentCityData
-          ?.weatherData
-          ?.weatherType,
-    );
+  WeatherProvider generateProvider() {
+    final mainP = context.read<MainProvider>();
+    return WeatherProvider()
+      ..generateWeatherBg(
+        null,
+        cacheWeatherType: mainP.currentCityData?.weatherData?.weatherType,
+        cacheSunrise: mainP.currentCityData?.weatherData?.sunrise,
+        cacheSunset: mainP.currentCityData?.weatherData?.sunset,
+      );
+  }
 
   @override
   void obtainWeatherDataCallback(bool isAdd) {

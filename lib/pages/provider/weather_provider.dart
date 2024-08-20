@@ -118,6 +118,8 @@ class WeatherProvider extends BaseListProvider<WeatherItemData> {
   void generateWeatherBg(
     WeatherData? weatherData, {
     String? cacheWeatherType,
+    String? cacheSunrise,
+    String? cacheSunset,
   }) {
     String weatherType =
         cacheWeatherType ?? (weatherData?.observe?.weatherType ?? "");
@@ -133,8 +135,8 @@ class WeatherProvider extends BaseListProvider<WeatherItemData> {
       weatherType,
       Commons.isNight(
         DateTime.now(),
-        sunrise: currentWeatherDetailData?.sunrise,
-        sunset: currentWeatherDetailData?.sunset,
+        sunrise: currentWeatherDetailData?.sunrise ?? cacheSunrise,
+        sunset: currentWeatherDetailData?.sunset ?? cacheSunset,
       ),
     );
     final weatherBgColor = weatherBg?.colors.firstOrNull();

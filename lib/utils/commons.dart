@@ -102,7 +102,7 @@ class Commons {
         sunset!.contains(":")) {
       return _isNight(dateTime, sunrise, sunset);
     }
-    return dateTime.hour > 18 || (dateTime.hour >= 0 && dateTime.hour < 6);
+    return dateTime.hour >= 18 || (dateTime.hour >= 0 && dateTime.hour < 6);
   }
 
   static bool _isNight(DateTime dateTime, String sunrise, String sunset) {
