@@ -36,6 +36,14 @@ class WeatherHourPanel extends StatelessWidget {
           element.date ==
           DateUtil.formatDate(DateTime.now(), format: Constants.yyyymmdd),
     );
+    final itemWidth = "00时".getTextContextSizeWidth(
+      TextStyle(
+        fontSize: 14.sp,
+        color: Colours.white,
+        height: 1,
+      ),
+    );
+    debugPrint("itemWidth = $itemWidth");
     return AnimatedOpacity(
       opacity: percent,
       duration: Duration.zero,
@@ -64,13 +72,22 @@ class WeatherHourPanel extends StatelessWidget {
                   bottom: 0,
                   child: ListView.separated(
                     scrollDirection: Axis.horizontal,
-                    padding: EdgeInsets.symmetric(horizontal: 16.w),
+                    padding: EdgeInsets.only(
+                      left: 16.w,
+                      right: 16.w,
+                    ),
                     itemCount: weatherItemData.weatherData?.hourFc?.length ?? 0,
                     itemBuilder: (_, index) {
                       final item =
                           weatherItemData.weatherData?.hourFc.getOrNull(index);
                       final time = item?.time ?? "";
                       final weatherHourTime = time.getWeatherHourTime();
+                      final isSunrise = currentWeatherDetailData?.sunrise
+                              .isSunriseOrSunset(time) ??
+                          false;
+                      final isSunset = currentWeatherDetailData?.sunset
+                              .isSunriseOrSunset(time) ??
+                          false;
                       return Column(
                         children: [
                           Gaps.generateGap(height: 4.w),
@@ -84,20 +101,30 @@ class WeatherHourPanel extends StatelessWidget {
                           ),
                           Gaps.generateGap(height: 12.w),
                           LoadAssetImage(
-                            WeatherIconUtils.getWeatherIconByType(
-                              item?.type ?? -1,
-                              item?.weatherType ?? "",
-                              time.isNight(
-                                sunrise: currentWeatherDetailData?.sunrise,
-                                sunset: currentWeatherDetailData?.sunset,
-                              ),
-                            ),
+                            isSunrise
+                                ? "ic_sunrise_icon"
+                                : isSunset
+                                    ? "ic_sunset_icon"
+                                    : WeatherIconUtils.getWeatherIconByType(
+                                        item?.type ?? -1,
+                                        item?.weatherType ?? "",
+                                        time.isNight(
+                                          sunrise:
+                                              currentWeatherDetailData?.sunrise,
+                                          sunset:
+                                              currentWeatherDetailData?.sunset,
+                                        ),
+                                      ),
                             width: 24.w,
                             height: 24.w,
                           ),
                           Gaps.generateGap(height: 12.w),
                           Text(
-                            item?.temp.getTemp() ?? "",
+                            isSunrise
+                                ? "日出"
+                                : isSunset
+                                    ? "日落"
+                                    : item?.temp.getTemp() ?? "",
                             style: TextStyle(
                               fontSize: 17.sp,
                               color: Colours.white,
@@ -108,7 +135,7 @@ class WeatherHourPanel extends StatelessWidget {
                       );
                     },
                     separatorBuilder: (_, index) {
-                      return Gaps.generateGap(width: 13.w);
+                      return Gaps.generateGap(width: 28.w);
                     },
                   ),
                 ),

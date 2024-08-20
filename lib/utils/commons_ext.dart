@@ -75,7 +75,15 @@ extension StringExt on String? {
       return "现在";
     }
     return DateUtil.formatDateStr(this!.getDartDateTimeFormattedString(),
-        format: Constants.hhmm);
+        format: "HH时");
+  }
+
+  bool isSunriseOrSunset(String? time) {
+    if (isNullOrEmpty()) return false;
+    if (time.isNullOrEmpty()) return false;
+    return this!.startsWith(DateUtil.formatDateStr(
+        time!.getDartDateTimeFormattedString(),
+        format: "HH"));
   }
 
   String getWeatherDateTime() {
