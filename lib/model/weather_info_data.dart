@@ -12,7 +12,6 @@ class WeatherInfoData {
   int? type;
   @JsonKey(name: "third_type")
   String? weatherType;
-  String? notice;
 
   WeatherInfoData(
     this.bgPic,
@@ -22,7 +21,6 @@ class WeatherInfoData {
     this.wp,
     this.type,
     this.weatherType,
-    this.notice,
   );
 
   factory WeatherInfoData.fromJson(Map<String, dynamic> json) =>

@@ -13,8 +13,6 @@ class WeatherObserveData {
   int? temp;
   @JsonKey(name: "tigan")
   String? tiGan;
-  @JsonKey(name: "up_time")
-  String? upTime;
   String? wthr;
   String? wd;
   String? wp;
@@ -36,7 +34,6 @@ class WeatherObserveData {
     this.weatherType,
     this.temp,
     this.tiGan,
-    this.upTime,
     this.wthr,
     this.wd,
     this.wp,

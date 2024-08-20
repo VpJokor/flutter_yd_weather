@@ -13,8 +13,6 @@ WeatherForecast40Data _$WeatherForecast40DataFromJson(
       (json['up_days'] as num?)?.toInt(),
       (json['down_days'] as num?)?.toInt(),
       (json['rain_days'] as num?)?.toInt(),
-      json['temp_icon'] as String?,
-      json['rain_icon'] as String?,
     );
 
 Map<String, dynamic> _$WeatherForecast40DataToJson(
@@ -24,6 +22,4 @@ Map<String, dynamic> _$WeatherForecast40DataToJson(
       'up_days': instance.upDays,
       'down_days': instance.downDays,
       'rain_days': instance.rainDays,
-      'temp_icon': instance.tempIcon,
-      'rain_icon': instance.rainIcon,
     };

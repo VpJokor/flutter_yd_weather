@@ -12,18 +12,12 @@ class WeatherForecast40Data {
   int? downDays;
   @JsonKey(name: "rain_days")
   int? rainDays;
-  @JsonKey(name: "temp_icon")
-  String? tempIcon;
-  @JsonKey(name: "rain_icon")
-  String? rainIcon;
 
   WeatherForecast40Data(
     this.averageTemp,
     this.upDays,
     this.downDays,
     this.rainDays,
-    this.tempIcon,
-    this.rainIcon,
   );
 
   factory WeatherForecast40Data.fromJson(Map<String, dynamic> json) =>

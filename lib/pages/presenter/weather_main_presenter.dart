@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:flutter_yd_weather/config/constants.dart';
 import 'package:flutter_yd_weather/model/simple_weather_data.dart';
 import 'package:flutter_yd_weather/model/weather_data.dart';
@@ -28,7 +30,39 @@ class WeatherMainPresenter extends BasePagePresenter<WeatherMainView> {
   }) async {
     final mainP = view.getContext().read<MainProvider>();
     final Map<String, String> params = <String, String>{};
-    if (!_hasCheckLocationCity && (mainP.currentCityData?.isLocationCity ?? false)) {
+    final currentCityId = mainP.currentCityData?.cityId ?? "";
+    params["citykey"] = currentCityId;
+    return requestNetwork<WeatherData>(Method.get,
+        url: Api.weatherApi,
+        queryParameters: params,
+        delayMilliseconds: delayMilliseconds, onSuccess: (data) {
+      (view.baseProvider as WeatherProvider).setWeatherData(
+        mainP.currentWeatherCardSort,
+        mainP.currentWeatherObservesCardSort,
+        data,
+      );
+      if (mainP.currentCityData != null) {
+        mainP.currentCityData!.weatherData =
+            SimpleWeatherData.fromWeatherData(data);
+        final isLocationCity = mainP.currentCityData!.isLocationCity ?? false;
+        mainP.cityDataBox.put(
+            isLocationCity ? Constants.locationCityId : currentCityId,
+            mainP.currentCityData!);
+      }
+      _checkLocationCity(mainP).then((reObtainWeatherData) {
+        if (reObtainWeatherData) {
+          obtainWeatherData(delayMilliseconds: delayMilliseconds, isAdd: isAdd);
+        }
+      });
+      view.obtainWeatherDataCallback(isAdd);
+    }, onError: (_) {
+      view.obtainWeatherDataCallback(false);
+    });
+  }
+
+  Future<bool> _checkLocationCity(MainProvider mainP) async {
+    if (!_hasCheckLocationCity &&
+        (mainP.currentCityData?.isLocationCity ?? false)) {
       final position = await startLocation();
       if (position != null) {
         _hasCheckLocationCity = true;
@@ -52,34 +86,13 @@ class WeatherMainPresenter extends BasePagePresenter<WeatherMainView> {
               if (find != null) {
                 find.isLocationCity = true;
                 mainP.currentCityData = find;
+                return Future.value(true);
               }
             }
           }
         }
       }
     }
-    final currentCityId = mainP.currentCityData?.cityId ?? "";
-    params["citykey"] = currentCityId;
-    return requestNetwork<WeatherData>(Method.get,
-        url: Api.weatherApi,
-        queryParameters: params,
-        delayMilliseconds: delayMilliseconds, onSuccess: (data) {
-      (view.baseProvider as WeatherProvider).setWeatherData(
-        mainP.currentWeatherCardSort,
-        mainP.currentWeatherObservesCardSort,
-        data,
-      );
-      if (mainP.currentCityData != null) {
-        mainP.currentCityData!.weatherData =
-            SimpleWeatherData.fromWeatherData(data);
-        final isLocationCity = mainP.currentCityData!.isLocationCity ?? false;
-        mainP.cityDataBox.put(
-            isLocationCity ? Constants.locationCityId : currentCityId,
-            mainP.currentCityData!);
-      }
-      view.obtainWeatherDataCallback(isAdd);
-    }, onError: (_) {
-      view.obtainWeatherDataCallback(false);
-    });
+    return Future.value(false);
   }
 }
