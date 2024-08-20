@@ -36,14 +36,6 @@ class WeatherHourPanel extends StatelessWidget {
           element.date ==
           DateUtil.formatDate(DateTime.now(), format: Constants.yyyymmdd),
     );
-    final itemWidth = "00时".getTextContextSizeWidth(
-      TextStyle(
-        fontSize: 14.sp,
-        color: Colours.white,
-        height: 1,
-      ),
-    );
-    debugPrint("itemWidth = $itemWidth");
     return AnimatedOpacity(
       opacity: percent,
       duration: Duration.zero,
