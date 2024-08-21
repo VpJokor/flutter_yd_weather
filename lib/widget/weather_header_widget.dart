@@ -60,10 +60,11 @@ class WeatherHeaderWidgetState extends State<WeatherHeaderWidget> {
   }
 
   void change(double offset, double percent) {
+    final size = (widget.weatherItemData?.maxHeight ?? 0) -
+        (widget.weatherItemData?.minHeight ?? 0);
+    if (size - offset < 0) return;
     // Log.e("offset = $offset percent = $percent");
-    double newPercent = percent;
-    if (newPercent > 1) newPercent = 1;
-    if (newPercent < 0) newPercent = 0;
+    final newPercent = percent.fixPercent();
     setState(() {
       final marginTop =
           _minMarginTop + (_currentMarginTop - _minMarginTop) * (1 - percent);

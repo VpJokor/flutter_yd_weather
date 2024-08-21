@@ -99,7 +99,7 @@ class _WeatherObserveUvPainter extends BoxPainter {
     canvas.saveLayer(rect, _circlePaint);
     _path.reset();
     final newRect = Rect.fromLTRB(
-        rect.left + 2.w, rect.top + 2.w, rect.right - 2.w, rect.bottom - 2.w);
+        rect.left + 4.w, rect.top + 4.w, rect.right - 4.w, rect.bottom - 4.w);
     _path.arcTo(
       newRect,
       -pi * 1.25,
@@ -133,9 +133,10 @@ class _WeatherObserveUvPainter extends BoxPainter {
           ],
         ),
     );
-    final percent =
+    double percent =
         (_weatherObserveUvChart.uvIndex / _weatherObserveUvChart.uvIndexMax)
             .fixPercent();
+    percent = 0.2;
     final pm = _path.computeMetrics().first;
     final position = pm.getTangentForOffset(pm.length * percent)?.position;
     if (position != null) {
