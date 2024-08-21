@@ -153,17 +153,26 @@ class _WeatherDailyTempPanelPainter extends BoxPainter {
         canvas.drawPath(
             extractPath1,
             _linePaint
+              ..color = isToday || isYesterday
+                  ? Colours.white.withOpacity(0.3)
+                  : Colours.white);
+        canvas.drawPath(
+            extractPath2,
+            _linePaint
               ..color =
-                  isToday || isYesterday ? Colours.white.withOpacity(0.3) : Colours.white);
-        canvas.drawPath(extractPath2, _linePaint..color = Colours.white);
+                  isYesterday ? Colours.white.withOpacity(0.3) : Colours.white);
       }
-      canvas.drawCircle(Offset(rect.center.dx, (p2.y - p1.y) / 2 + p1.y), 2.5.w,
-          _circlePaint..color = Colours.white);
+      canvas.drawCircle(
+          Offset(rect.center.dx, (p2.y - p1.y) / 2 + p1.y),
+          2.5.w,
+          _circlePaint
+            ..color =
+                isYesterday ? Colours.white.withOpacity(0.3) : Colours.white);
       _drawTemp(
         canvas,
         rect,
         (isHigh ? data.high : data.low).getTemp(),
-        Colours.white,
+        isYesterday ? Colours.white.withOpacity(0.3) : Colours.white,
         (p2.y - p1.y) / 2 + p1.y,
         isHigh: isHigh,
       );

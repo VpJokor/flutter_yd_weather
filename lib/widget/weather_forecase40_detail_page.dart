@@ -500,86 +500,92 @@ class WeatherForecase40DetailPageState
             Expanded(
               child: Padding(
                 padding: EdgeInsets.symmetric(horizontal: 16.w),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                child: Stack(
                   children: [
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          currentDateStr,
-                          style: TextStyle(
-                            fontSize: 18.w,
-                            color: Colours.white,
-                            height: 1,
-                            fontFamily: "RobotoThin",
-                            fontWeight: FontWeight.bold,
+                    Align(
+                      alignment: Alignment.centerLeft,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            currentDateStr,
+                            style: TextStyle(
+                              fontSize: 18.w,
+                              color: Colours.white,
+                              height: 1,
+                              fontFamily: "RobotoThin",
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
-                        ),
-                        Gaps.generateGap(height: 8.w),
-                        Text(
-                          currentWeekDay,
-                          style: TextStyle(
-                            fontSize: 15.w,
-                            color: Colours.white,
-                            height: 1,
+                          Gaps.generateGap(height: 8.w),
+                          Text(
+                            currentWeekDay,
+                            style: TextStyle(
+                              fontSize: 15.w,
+                              color: Colours.white,
+                              height: 1,
+                            ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      children: [
-                        Row(
-                          children: [
-                            Visibility(
-                              visible: _currentSelectedItem?.aqiLevelName
-                                      .isNotNullOrEmpty() ??
-                                  false,
-                              child: Container(
-                                padding: EdgeInsets.symmetric(
-                                    horizontal: 8.w, vertical: 2.w),
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(8.w),
-                                  color: _currentSelectedItem?.aqi
-                                      .getAqiColor()
-                                      .withOpacity(0.48),
-                                ),
-                                child: Text(
-                                  _currentSelectedItem?.aqiLevelName ?? "",
-                                  style: TextStyle(
-                                    fontSize: 11.sp,
-                                    color: Colours.white,
-                                    height: 1,
+                    Align(
+                      alignment: Alignment.centerRight,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: [
+                          Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Visibility(
+                                visible: _currentSelectedItem?.aqiLevelName
+                                        .isNotNullOrEmpty() ??
+                                    false,
+                                child: Container(
+                                  padding: EdgeInsets.symmetric(
+                                      horizontal: 8.w, vertical: 2.w),
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(8.w),
+                                    color: _currentSelectedItem?.aqi
+                                        .getAqiColor()
+                                        .withOpacity(0.48),
+                                  ),
+                                  child: Text(
+                                    _currentSelectedItem?.aqiLevelName ?? "",
+                                    style: TextStyle(
+                                      fontSize: 11.sp,
+                                      color: Colours.white,
+                                      height: 1,
+                                    ),
                                   ),
                                 ),
                               ),
-                            ),
-                            Gaps.generateGap(width: 4.w),
-                            Text(
-                              "${_currentSelectedItem?.high}/${_currentSelectedItem?.low}°",
-                              style: TextStyle(
-                                fontSize: 18.sp,
-                                color: Colours.white,
-                                height: 1,
-                                fontFamily: "RobotoThin",
-                                fontWeight: FontWeight.bold,
+                              Gaps.generateGap(width: 4.w),
+                              Text(
+                                "${_currentSelectedItem?.high}/${_currentSelectedItem?.low}°",
+                                style: TextStyle(
+                                  fontSize: 18.sp,
+                                  color: Colours.white,
+                                  height: 1,
+                                  fontFamily: "RobotoThin",
+                                  fontWeight: FontWeight.bold,
+                                ),
                               ),
-                            ),
-                          ],
-                        ),
-                        Gaps.generateGap(height: 8.w),
-                        Text(
-                          "${_currentSelectedItem?.day?.wthr} ${_currentSelectedItem?.day?.wd}${_currentSelectedItem?.day?.wp}",
-                          style: TextStyle(
-                            fontSize: 15.sp,
-                            color: Colours.white,
-                            height: 1,
+                            ],
                           ),
-                        ),
-                      ],
+                          Gaps.generateGap(height: 8.w),
+                          Text(
+                            "${_currentSelectedItem?.day?.wthr} ${_currentSelectedItem?.day?.wd}${_currentSelectedItem?.day?.wp}",
+                            style: TextStyle(
+                              fontSize: 15.sp,
+                              color: Colours.white,
+                              height: 1,
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ],
                 ),
