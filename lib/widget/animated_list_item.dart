@@ -44,14 +44,26 @@ class _AnimatedListItemState extends State<AnimatedListItem>
   Animation<double> itemAnimation(double begin) {
     final length = (widget.startIndex - widget.endIndex).abs() + 1;
     final delay = (length - 1) / ((length + 1) * length);
-    double start = delay * widget.index;
-    double end = 1 - delay * (length - widget.index - 1);
+    double start;
+    double end;
     if (widget.startIndex > widget.endIndex) {
-      start = (widget.index > widget.startIndex || widget.index < widget.endIndex) ? 0 : delay * (length - widget.index - 1);
-      end = (widget.index > widget.startIndex || widget.index < widget.endIndex) ? 0 : 1 - delay * widget.index;
+      final newIndex = widget.index - widget.endIndex;
+      start =
+          (widget.index > widget.startIndex || widget.index < widget.endIndex)
+              ? 0
+              : delay * (length - newIndex - 1);
+      end = (widget.index > widget.startIndex || widget.index < widget.endIndex)
+          ? 0
+          : 1 - delay * newIndex;
     } else {
-      start = (widget.index < widget.startIndex || widget.index > widget.endIndex) ? 0 : delay * widget.index;
-      end = (widget.index < widget.startIndex || widget.index > widget.endIndex) ? 0 : 1 - delay * (length - widget.index - 1);
+      final newIndex = widget.index - widget.startIndex;
+      start =
+          (widget.index < widget.startIndex || widget.index > widget.endIndex)
+              ? 0
+              : delay * newIndex;
+      end = (widget.index < widget.startIndex || widget.index > widget.endIndex)
+          ? 0
+          : 1 - delay * (length - newIndex - 1);
     }
 
     return Tween<double>(begin: begin, end: 1).animate(CurvedAnimation(
