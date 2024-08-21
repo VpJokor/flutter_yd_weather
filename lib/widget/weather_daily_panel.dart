@@ -76,7 +76,7 @@ class WeatherDailyPanel extends StatelessWidget {
                           .getOrNull(index + 1);
                       final date = item?.date ?? "";
                       final weatherDateTime = date.getWeatherDateTime();
-                      final isYesterday = date.isYesterday();
+                      final isBefore = date.isBefore();
                       return SizedBox(
                         width: itemWidth,
                         child: Column(
@@ -86,7 +86,7 @@ class WeatherDailyPanel extends StatelessWidget {
                               weatherDateTime,
                               style: TextStyle(
                                 fontSize: 14.sp,
-                                color: isYesterday
+                                color: isBefore
                                     ? Colours.white.withOpacity(0.5)
                                     : Colours.white,
                                 height: 1,
@@ -98,7 +98,7 @@ class WeatherDailyPanel extends StatelessWidget {
                                   format: Constants.mmdd),
                               style: TextStyle(
                                 fontSize: 12.sp,
-                                color: isYesterday
+                                color: isBefore
                                     ? Colours.white.withOpacity(0.5)
                                     : Colours.white,
                                 height: 1,
@@ -109,7 +109,7 @@ class WeatherDailyPanel extends StatelessWidget {
                               item?.day?.wthr ?? "",
                               style: TextStyle(
                                 fontSize: 14.sp,
-                                color: isYesterday
+                                color: isBefore
                                     ? Colours.white.withOpacity(0.5)
                                     : Colours.white,
                                 height: 1,
@@ -117,7 +117,7 @@ class WeatherDailyPanel extends StatelessWidget {
                             ),
                             Gaps.generateGap(height: 12.w),
                             AnimatedOpacity(
-                              opacity: isYesterday ? 0.5 : 1,
+                              opacity: isBefore ? 0.5 : 1,
                               duration: Duration.zero,
                               child: LoadAssetImage(
                                 WeatherIconUtils.getWeatherIconByType(
@@ -139,7 +139,7 @@ class WeatherDailyPanel extends StatelessWidget {
                               minTemp: minTempData?.low ?? 0,
                             ),
                             AnimatedOpacity(
-                              opacity: isYesterday ? 0.5 : 1,
+                              opacity: isBefore ? 0.5 : 1,
                               duration: Duration.zero,
                               child: LoadAssetImage(
                                 WeatherIconUtils.getWeatherIconByType(
@@ -156,7 +156,7 @@ class WeatherDailyPanel extends StatelessWidget {
                               item?.night?.wthr ?? "",
                               style: TextStyle(
                                 fontSize: 14.sp,
-                                color: isYesterday
+                                color: isBefore
                                     ? Colours.white.withOpacity(0.5)
                                     : Colours.white,
                                 height: 1,
@@ -167,7 +167,7 @@ class WeatherDailyPanel extends StatelessWidget {
                               item?.wd ?? "",
                               style: TextStyle(
                                 fontSize: 14.sp,
-                                color: isYesterday
+                                color: isBefore
                                     ? Colours.white.withOpacity(0.5)
                                     : Colours.white,
                                 height: 1,
@@ -178,7 +178,7 @@ class WeatherDailyPanel extends StatelessWidget {
                               item?.wp ?? "",
                               style: TextStyle(
                                 fontSize: 14.sp,
-                                color: isYesterday
+                                color: isBefore
                                     ? Colours.white.withOpacity(0.5)
                                     : Colours.white,
                                 height: 1,

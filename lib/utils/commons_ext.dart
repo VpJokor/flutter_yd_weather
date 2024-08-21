@@ -113,6 +113,14 @@ extension StringExt on String? {
     return DateUtil.isYesterday(dateTime, DateTime.now());
   }
 
+  bool isBefore() {
+    if (isNullOrEmpty()) return false;
+    final dateTime = DateTime.tryParse(this!);
+    if (dateTime == null) return false;
+    final now = DateTime.now();
+    return dateTime.isBefore(DateTime(now.year, now.month, now.day));
+  }
+
   /// 年月日小时相同
   bool isHourNow() {
     if (isNullOrEmpty()) return false;
