@@ -8,6 +8,7 @@ class WeatherBgUtils {
     Color color2 = isNight ? Colours.color232941 : Colours.colorF49670;
     Color color3 = isNight ? Colours.color2E3C54 : Colours.colorF1AB80;
     switch (type) {
+      case "CLEAR":
       case "CLEAR_DAY":
       case "CLEAR_NIGHT":
         // 晴天
@@ -15,6 +16,7 @@ class WeatherBgUtils {
         color2 = isNight ? Colours.color232941 : Colours.colorF49670;
         color3 = isNight ? Colours.color2E3C54 : Colours.colorF1AB80;
         break;
+      case "PARTLY_CLOUDY":
       case "PARTLY_CLOUDY_DAY":
       case "PARTLY_CLOUDY_NIGHT":
         // 多云
