@@ -1,6 +1,7 @@
 import 'package:common_utils/common_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_yd_weather/model/city_data.dart';
 import 'package:flutter_yd_weather/res/colours.dart';
 import 'package:flutter_yd_weather/utils/commons.dart';
@@ -211,6 +212,19 @@ extension StringExt on String? {
     textPainter.layout(maxWidth: maxWidth);
     // 返回高度
     return textPainter.width;
+  }
+
+  double? getFitTextSize(
+    TextStyle textStyle,
+    double width, {
+    double step = 2,
+  }) {
+    final textWidth = getTextContextSizeWidth(textStyle);
+    final fontSize = textStyle.fontSize ?? 0;
+    if (textWidth > width) {
+      return getFitTextSize(textStyle.copyWith(fontSize: fontSize - step.sp), width, step: step);
+    }
+    return fontSize;
   }
 
   bool isRain() {

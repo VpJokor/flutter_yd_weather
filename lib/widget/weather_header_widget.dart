@@ -6,6 +6,7 @@ import 'package:flutter_yd_weather/model/weather_item_data.dart';
 import 'package:flutter_yd_weather/res/gaps.dart';
 import 'package:flutter_yd_weather/utils/commons.dart';
 import 'package:flutter_yd_weather/utils/commons_ext.dart';
+import 'package:flutter_yd_weather/widget/auto_size_text.dart';
 import 'package:flutter_yd_weather/widget/load_asset_image.dart';
 import 'package:provider/provider.dart';
 
@@ -181,20 +182,26 @@ class WeatherHeaderWidgetState extends State<WeatherHeaderWidget> {
                       ),
                     ),
                   ),
-                  Text(
-                    weatherData?.meta?.city ?? "",
-                    style: TextStyle(
-                      fontSize: 28.sp,
-                      color: (isDark ? Colours.white : Colours.black),
-                      height: 1,
-                      fontFamily: "RobotoThin",
-                      shadows: const [
-                        BoxShadow(
-                          color: Colours.black_3,
-                          offset: Offset(1, 1),
-                          blurRadius: 2,
-                        ),
-                      ],
+                  Container(
+                    width: double.infinity,
+                    margin: EdgeInsets.symmetric(horizontal: 60.w),
+                    alignment: Alignment.center,
+                    child: AutoSizeText(
+                      text: weatherData?.meta?.city ?? "",
+                      textStyle: TextStyle(
+                        fontSize: 28.sp,
+                        color: (isDark ? Colours.white : Colours.black),
+                        height: 1,
+                        fontFamily: "RobotoThin",
+                        shadows: const [
+                          BoxShadow(
+                            color: Colours.black_3,
+                            offset: Offset(1, 1),
+                            blurRadius: 2,
+                          ),
+                        ],
+                      ),
+                      maxWidth: ScreenUtil().screenWidth - 2 * 60.w,
                     ),
                   ),
                   Gaps.generateGap(height: 5.w),

@@ -9,10 +9,10 @@ import 'package:flutter_yd_weather/res/gaps.dart';
 import 'package:flutter_yd_weather/utils/commons_ext.dart';
 import 'package:flutter_yd_weather/utils/theme_utils.dart';
 import 'package:flutter_yd_weather/utils/weather_bg_utils.dart';
+import 'package:flutter_yd_weather/widget/auto_size_text.dart';
 import 'package:flutter_yd_weather/widget/scale_layout.dart';
 import 'package:flutter_yd_weather/widget/yd_reorderable_list.dart';
 import 'package:provider/provider.dart';
-
 import '../res/colours.dart';
 import '../utils/commons.dart';
 import 'city_manager_slidable_action.dart';
@@ -155,43 +155,57 @@ class CityManagerItemState extends State<CityManagerItem>
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Row(
-                                      children: [
-                                        Text(
-                                          weatherData?.city ?? "",
-                                          style: TextStyle(
-                                            fontSize: 20.sp,
-                                            color: Colours.white,
-                                            height: 1,
-                                            fontFamily: "RobotoLight",
-                                          ),
-                                        ),
-                                        Visibility(
-                                          visible: isLocationCity,
-                                          child: LoadAssetImage(
-                                            "writing_icon_location1",
-                                            width: 22.w,
-                                            height: 22.w,
-                                            color: Colours.white,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                    Gaps.generateGap(height: 4.w),
-                                    Text(
-                                      "${weatherData?.weatherDesc} ${weatherData?.tempHigh.getTemp()} / ${weatherData?.tempLow.getTemp()}",
-                                      style: TextStyle(
-                                        fontSize: 14.sp,
-                                        color: Colours.white,
-                                        fontFamily: "RobotoLight",
-                                        height: 1,
+                                Expanded(
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Row(
+                                        children: [
+                                          Expanded(child: LayoutBuilder(
+                                            builder: (_, c) {
+                                              final maxWidth = c.maxWidth;
+                                              return Row(
+                                                children: [
+                                                  AutoSizeText(
+                                                    text:
+                                                        weatherData?.city ?? "",
+                                                    textStyle: TextStyle(
+                                                      fontSize: 20.sp,
+                                                      color: Colours.white,
+                                                      height: 1,
+                                                      fontFamily: "RobotoLight",
+                                                    ),
+                                                    maxWidth: maxWidth - 12.w,
+                                                  ),
+                                                  Visibility(
+                                                    visible: isLocationCity,
+                                                    child: LoadAssetImage(
+                                                      "writing_icon_location1",
+                                                      width: 22.w,
+                                                      height: 22.w,
+                                                      color: Colours.white,
+                                                    ),
+                                                  ),
+                                                ],
+                                              );
+                                            },
+                                          ))
+                                        ],
                                       ),
-                                    ),
-                                  ],
+                                      Gaps.generateGap(height: 4.w),
+                                      Text(
+                                        "${weatherData?.weatherDesc} ${weatherData?.tempHigh.getTemp()} / ${weatherData?.tempLow.getTemp()}",
+                                        style: TextStyle(
+                                          fontSize: 14.sp,
+                                          color: Colours.white,
+                                          fontFamily: "RobotoLight",
+                                          height: 1,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
                                 ),
                                 Row(
                                   children: [
