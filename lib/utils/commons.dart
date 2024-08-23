@@ -120,4 +120,12 @@ class Commons {
             : dateTime.hour <= sunriseHour && dateTime.minute < sunriseMinute);
     return isNight;
   }
+
+  static List<int>? getSunriseOrSunsetHourMinute(String? sunriseOrSunset) {
+    if (sunriseOrSunset.isNullOrEmpty()) return null;
+    final sunriseOrSunsetSplit = sunriseOrSunset!.split(":");
+    final sunriseOrSunsetHour = int.tryParse(sunriseOrSunsetSplit[0]) ?? 0;
+    final sunriseOrSunsetMinute = int.tryParse(sunriseOrSunsetSplit[1]) ?? 0;
+    return [sunriseOrSunsetHour, sunriseOrSunsetMinute];
+  }
 }

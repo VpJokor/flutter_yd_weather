@@ -69,9 +69,25 @@ extension StringExt on String? {
     return "${this!.substring(0, 8)}T${this!.substring(8)}00";
   }
 
-  String getWeatherHourTime() {
+  String getWeatherHourTime({String? sunrise, String? sunset}) {
     final isHourNow = this.isHourNow();
     if (isHourNow) {
+      final sunriseHourMinute = Commons.getSunriseOrSunsetHourMinute(sunrise);
+      final sunsetHourMinute = Commons.getSunriseOrSunsetHourMinute(sunset);
+      if (sunriseHourMinute.isNotNullOrEmpty() &&
+          sunsetHourMinute.isNotNullOrEmpty()) {
+        final now = DateTime.now();
+        final sunriseDateTime = DateTime(now.year, now.month, now.day,
+            sunriseHourMinute![0], sunriseHourMinute[1]);
+        final sunsetDateTime = DateTime(now.year, now.month, now.day,
+            sunsetHourMinute![0], sunsetHourMinute[1]);
+        final isAfterSunrise = now.isAfter(sunriseDateTime);
+        final isAfterSunset = now.isAfter(sunsetDateTime);
+        if (isAfterSunrise || isAfterSunset) {
+          return DateUtil.formatDateStr(this!.getDartDateTimeFormattedString(),
+              format: "HH时");
+        }
+      }
       return "现在";
     }
     return DateUtil.formatDateStr(this!.getDartDateTimeFormattedString(),
