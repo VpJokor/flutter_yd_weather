@@ -84,6 +84,7 @@ extension StringExt on String? {
             sunsetHourMinute![0], sunsetHourMinute[1]);
         final isAfterSunrise = now.isAfter(sunriseDateTime);
         final isAfterSunset = now.isAfter(sunsetDateTime);
+        debugPrint("isAfterSunrise = $isAfterSunrise isAfterSunset = $isAfterSunset");
         if (isAfterSunrise || isAfterSunset) {
           return DateUtil.formatDateStr(this!.getDartDateTimeFormattedString(),
               format: "HH时");

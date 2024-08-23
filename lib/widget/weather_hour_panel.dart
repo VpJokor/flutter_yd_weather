@@ -84,7 +84,12 @@ class WeatherHourPanel extends StatelessWidget {
                                 ? (item?.sunrise ?? "")
                                 : isSunset
                                     ? (item?.sunset ?? "")
-                                    : time.getWeatherHourTime(),
+                                    : time.getWeatherHourTime(
+                                        sunrise:
+                                            currentWeatherDetailData?.sunrise,
+                                        sunset:
+                                            currentWeatherDetailData?.sunset,
+                                      ),
                             style: TextStyle(
                               fontSize: 14.sp,
                               color: Colours.white,
