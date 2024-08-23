@@ -15,4 +15,9 @@ class ColorUtils {
     final b = color1.blue * inverseRatio + color2.blue * ratio;
     return Color.fromARGB(a.toInt(), r.toInt(), g.toInt(), b.toInt());
   }
+
+  static double getDarkness(Color color) {
+    return 1 -
+        (0.299 * color.red + 0.587 * color.green + 0.114 * color.blue) / 255;
+  }
 }
