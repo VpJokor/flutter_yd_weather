@@ -36,9 +36,20 @@ class LifeIndexDialogState extends State<LifeIndexDialog> {
   Offset _position = Offset.zero;
   int _column = 0;
 
+  final _nameTextStyle = TextStyle(
+    fontSize: 18.sp,
+    color: Colours.black,
+    height: 1,
+    fontWeight: FontWeight.bold,
+  );
+  final _descTextStyle = TextStyle(
+    fontSize: 15.sp,
+    color: Colours.black,
+  );
+
   double _opacity = 0;
-  final _key = GlobalKey();
-  double _height = 0;
+  double _contentWidth = 0;
+  double _contentHeight = 0;
 
   @override
   void initState() {
@@ -50,8 +61,7 @@ class LifeIndexDialogState extends State<LifeIndexDialog> {
     Commons.post((_) {
       setState(() {
         _opacity = 1;
-        _height = _key.currentContext?.size?.height ?? 0;
-        debugPrint("_height = $_height");
+        _calContentSize();
       });
     });
   }
@@ -64,7 +74,7 @@ class LifeIndexDialogState extends State<LifeIndexDialog> {
       _column = column;
       Commons.post((_) {
         setState(() {
-          _height = _key.currentContext?.size?.height ?? 0;
+          _calContentSize();
         });
       });
     });
@@ -76,28 +86,21 @@ class LifeIndexDialogState extends State<LifeIndexDialog> {
     });
   }
 
-  @override
-  Widget build(BuildContext context) {
-    final marginTop = _position.dy - _height + 12.w;
+  void _calContentSize() {
     final name = _data?.name ?? "";
     final desc = _data?.desc ?? "";
-    final nameTextStyle = TextStyle(
-      fontSize: 18.sp,
-      color: Colours.black,
-      height: 1,
-      fontWeight: FontWeight.bold,
-    );
-    final descTextStyle = TextStyle(
-      fontSize: 15.sp,
-      color: Colours.black,
-    );
     final maxWidth = ScreenUtil().screenWidth - 2 * 16.w;
-    final nameTextWidth = name.getTextContextSizeWidth(nameTextStyle, maxWidth: maxWidth);
-    final descTextWidth = desc.getTextContextSizeWidth(descTextStyle, maxWidth: maxWidth);
-    final nameTextHeight = name.getTextContextSizeHeight(nameTextStyle, maxWidth: maxWidth);
-    final descTextHeight = desc.getTextContextSizeHeight(descTextStyle, maxWidth: maxWidth);
-    final contentWidth = 2 * 8.w + max(nameTextWidth, descTextWidth);
-    final contentHeight = 3 * 8.w + nameTextHeight + descTextHeight;
+    final nameTextWidth = name.getTextContextSizeWidth(_nameTextStyle, maxWidth: maxWidth);
+    final descTextWidth = desc.getTextContextSizeWidth(_descTextStyle, maxWidth: maxWidth);
+    final nameTextHeight = name.getTextContextSizeHeight(_nameTextStyle, maxWidth: maxWidth);
+    final descTextHeight = desc.getTextContextSizeHeight(_descTextStyle, maxWidth: maxWidth);
+    _contentWidth = 2 * 8.w + max(nameTextWidth, descTextWidth);
+    _contentHeight = 3 * 8.w + nameTextHeight + descTextHeight;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final marginTop = _position.dy - _contentHeight + 12.w;
     final content = Stack(
       children: [
         AnimatedAlign(
@@ -131,10 +134,9 @@ class LifeIndexDialogState extends State<LifeIndexDialog> {
                 right: 16.w,
               ),
               child: AnimatedContainer(
-                key: _key,
                 duration: const Duration(milliseconds: 200),
-                width: contentWidth,
-                height: contentHeight,
+                width: _contentWidth,
+                height: _contentHeight,
                 alignment: Alignment.center,
                 padding: EdgeInsets.symmetric(horizontal: 8.w),
                 child: SingleChildScrollView(
@@ -143,14 +145,14 @@ class LifeIndexDialogState extends State<LifeIndexDialog> {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Text(
-                        name,
-                        style: nameTextStyle,
+                        _data?.name ?? "",
+                        style: _nameTextStyle,
                       ),
                       Gaps.generateGap(height: 8.w),
                       Text(
-                        desc,
+                        _data?.desc ?? "",
                         textAlign: TextAlign.justify,
-                        style: descTextStyle,
+                        style: _descTextStyle,
                       ),
                     ],
                   ),
