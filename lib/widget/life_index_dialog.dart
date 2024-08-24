@@ -1,8 +1,11 @@
+import 'dart:math';
+
 import 'package:bubble_box/bubble_box.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:flutter_yd_weather/model/weather_index_data.dart';
+import 'package:flutter_yd_weather/utils/commons_ext.dart';
 
 import '../res/colours.dart';
 import '../res/gaps.dart';
@@ -76,6 +79,25 @@ class LifeIndexDialogState extends State<LifeIndexDialog> {
   @override
   Widget build(BuildContext context) {
     final marginTop = _position.dy - _height + 12.w;
+    final name = _data?.name ?? "";
+    final desc = _data?.desc ?? "";
+    final nameTextStyle = TextStyle(
+      fontSize: 18.sp,
+      color: Colours.black,
+      height: 1,
+      fontWeight: FontWeight.bold,
+    );
+    final descTextStyle = TextStyle(
+      fontSize: 15.sp,
+      color: Colours.black,
+    );
+    final maxWidth = ScreenUtil().screenWidth - 2 * 16.w;
+    final nameTextWidth = name.getTextContextSizeWidth(nameTextStyle, maxWidth: maxWidth);
+    final descTextWidth = desc.getTextContextSizeWidth(descTextStyle, maxWidth: maxWidth);
+    final nameTextHeight = name.getTextContextSizeHeight(nameTextStyle, maxWidth: maxWidth);
+    final descTextHeight = desc.getTextContextSizeHeight(descTextStyle, maxWidth: maxWidth);
+    final contentWidth = 2 * 8.w + max(nameTextWidth, descTextWidth);
+    final contentHeight = 3 * 8.w + nameTextHeight + descTextHeight;
     final content = Stack(
       children: [
         AnimatedAlign(
@@ -108,31 +130,27 @@ class LifeIndexDialogState extends State<LifeIndexDialog> {
                 left: 16.w,
                 right: 16.w,
               ),
-              child: SingleChildScrollView(
-                physics: const NeverScrollableScrollPhysics(),
-                child: Container(
-                  key: _key,
-                  padding: EdgeInsets.all(8.w),
+              child: AnimatedContainer(
+                key: _key,
+                duration: const Duration(milliseconds: 200),
+                width: contentWidth,
+                height: contentHeight,
+                alignment: Alignment.center,
+                padding: EdgeInsets.symmetric(horizontal: 8.w),
+                child: SingleChildScrollView(
+                  physics: const NeverScrollableScrollPhysics(),
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Text(
-                        _data?.name ?? "",
-                        style: TextStyle(
-                          fontSize: 18.sp,
-                          color: Colours.black,
-                          height: 1,
-                          fontWeight: FontWeight.bold,
-                        ),
+                        name,
+                        style: nameTextStyle,
                       ),
                       Gaps.generateGap(height: 8.w),
                       Text(
-                        _data?.desc ?? "",
+                        desc,
                         textAlign: TextAlign.justify,
-                        style: TextStyle(
-                          fontSize: 15.sp,
-                          color: Colours.black,
-                        ),
+                        style: descTextStyle,
                       ),
                     ],
                   ),
