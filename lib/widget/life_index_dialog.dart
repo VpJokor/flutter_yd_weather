@@ -48,6 +48,7 @@ class LifeIndexDialogState extends State<LifeIndexDialog> {
   );
 
   double _opacity = 0;
+  double _contentOpacity = 0;
   double _contentWidth = 0;
   double _contentHeight = 0;
 
@@ -87,13 +88,18 @@ class LifeIndexDialogState extends State<LifeIndexDialog> {
   }
 
   void _calContentSize() {
+    _contentOpacity = 0;
     final name = _data?.name ?? "";
     final desc = _data?.desc ?? "";
     final maxWidth = ScreenUtil().screenWidth - 2 * 16.w;
-    final nameTextWidth = name.getTextContextSizeWidth(_nameTextStyle, maxWidth: maxWidth);
-    final descTextWidth = desc.getTextContextSizeWidth(_descTextStyle, maxWidth: maxWidth);
-    final nameTextHeight = name.getTextContextSizeHeight(_nameTextStyle, maxWidth: maxWidth);
-    final descTextHeight = desc.getTextContextSizeHeight(_descTextStyle, maxWidth: maxWidth);
+    final nameTextWidth =
+        name.getTextContextSizeWidth(_nameTextStyle, maxWidth: maxWidth);
+    final descTextWidth =
+        desc.getTextContextSizeWidth(_descTextStyle, maxWidth: maxWidth);
+    final nameTextHeight =
+        name.getTextContextSizeHeight(_nameTextStyle, maxWidth: maxWidth);
+    final descTextHeight =
+        desc.getTextContextSizeHeight(_descTextStyle, maxWidth: maxWidth);
     _contentWidth = 2 * 8.w + max(nameTextWidth, descTextWidth);
     _contentHeight = 3 * 8.w + nameTextHeight + descTextHeight;
   }
@@ -139,22 +145,31 @@ class LifeIndexDialogState extends State<LifeIndexDialog> {
                 height: _contentHeight,
                 alignment: Alignment.center,
                 padding: EdgeInsets.symmetric(horizontal: 8.w),
-                child: SingleChildScrollView(
-                  physics: const NeverScrollableScrollPhysics(),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Text(
-                        _data?.name ?? "",
-                        style: _nameTextStyle,
-                      ),
-                      Gaps.generateGap(height: 8.w),
-                      Text(
-                        _data?.desc ?? "",
-                        textAlign: TextAlign.justify,
-                        style: _descTextStyle,
-                      ),
-                    ],
+                onEnd: () {
+                  setState(() {
+                    _contentOpacity = 1;
+                  });
+                },
+                child: AnimatedOpacity(
+                  opacity: _contentOpacity,
+                  duration: const Duration(milliseconds: 200),
+                  child: SingleChildScrollView(
+                    physics: const NeverScrollableScrollPhysics(),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          _data?.name ?? "",
+                          style: _nameTextStyle,
+                        ),
+                        Gaps.generateGap(height: 8.w),
+                        Text(
+                          _data?.desc ?? "",
+                          textAlign: TextAlign.justify,
+                          style: _descTextStyle,
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),
