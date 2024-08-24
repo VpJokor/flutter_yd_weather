@@ -377,8 +377,8 @@ class WeatherForecase40DetailPageState
                                                 BorderRadius.circular(6.w),
                                             color: isSelected
                                                 ? (widget.isDark
-                                                        ? Colours.white
-                                                        : Colours.black)
+                                                        ? Colours.black
+                                                        : Colours.white)
                                                     .withOpacity(0.1)
                                                 : null,
                                           ),
