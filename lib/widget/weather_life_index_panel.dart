@@ -87,7 +87,7 @@ class WeatherLifeIndexPanel extends StatelessWidget {
                             _showLifeIndexDialog(index, item);
                           },
                           onLongPressMoveUpdate: (details) {
-                            _updateLifeIndexDialog(details);
+                            _updateLifeIndexDialog(details.globalPosition);
                           },
                           child: Container(
                             alignment: Alignment.center,
@@ -141,8 +141,7 @@ class WeatherLifeIndexPanel extends StatelessWidget {
     );
   }
 
-  void _updateLifeIndexDialog(LongPressMoveUpdateDetails details) {
-    final position = details.globalPosition;
+  void _updateLifeIndexDialog(Offset position) {
     final contentPosition =
         (_key.currentContext?.findRenderObject() as RenderBox?)
                 ?.localToGlobal(Offset.zero) ??
@@ -199,7 +198,7 @@ class WeatherLifeIndexPanel extends StatelessWidget {
               contentPosition.dy + size * row),
           size: size,
           column: column,
-          onLongPressMoveUpdate: _updateLifeIndexDialog,
+          update: _updateLifeIndexDialog,
         );
       },
     );

@@ -15,15 +15,14 @@ class LifeIndexDialog extends StatefulWidget {
     this.position = Offset.zero,
     this.size = 0,
     this.column = 0,
-    this.onLongPressMoveUpdate,
+    this.update,
   });
 
   final WeatherIndexData? data;
   final Offset position;
   final double size;
   final int column;
-  final void Function(LongPressMoveUpdateDetails details)?
-      onLongPressMoveUpdate;
+  final void Function(Offset position)? update;
 
   @override
   State<StatefulWidget> createState() => LifeIndexDialogState();
@@ -153,7 +152,12 @@ class LifeIndexDialogState extends State<LifeIndexDialog> {
             onTap: () {
               SmartDialog.dismiss(tag: "LifeIndexDialog");
             },
-            onLongPressMoveUpdate: widget.onLongPressMoveUpdate,
+            onLongPressStart: (details) {
+              widget.update?.call(details.globalPosition);
+            },
+            onLongPressMoveUpdate: (details) {
+              widget.update?.call(details.globalPosition);
+            },
             child: Container(
               color: Colours.transparent,
             ),
