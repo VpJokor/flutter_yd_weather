@@ -21,4 +21,16 @@ class WeatherIndexData {
       _$WeatherIndexDataFromJson(json);
 
   Map<String, dynamic> toJson() => _$WeatherIndexDataToJson(this);
+
+  @override
+  bool operator ==(Object other) =>
+      other is WeatherIndexData && name == other.name;
+
+  @override
+  int get hashCode => name.hashCode;
+
+  @override
+  String toString() {
+    return "${toJson()}";
+  }
 }

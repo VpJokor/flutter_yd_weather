@@ -118,7 +118,14 @@ class CityManagerItemState extends State<CityManagerItem>
                   child: Container(
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(16.w),
-                      color: Colours.black.withOpacity(0.2),
+                      gradient: LinearGradient(
+                        colors: [
+                          Colours.black.withOpacity(0.2),
+                          Colours.black.withOpacity(0.1),
+                        ],
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
+                      ),
                     ),
                   ),
                 ),

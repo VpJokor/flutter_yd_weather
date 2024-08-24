@@ -1,6 +1,7 @@
 import 'package:bubble_box/bubble_box.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:flutter_yd_weather/model/weather_index_data.dart';
 
 import '../res/colours.dart';
@@ -14,18 +15,25 @@ class LifeIndexDialog extends StatefulWidget {
     this.position = Offset.zero,
     this.size = 0,
     this.column = 0,
+    this.onLongPressMoveUpdate,
   });
 
   final WeatherIndexData? data;
   final Offset position;
   final double size;
   final int column;
+  final void Function(LongPressMoveUpdateDetails details)?
+      onLongPressMoveUpdate;
 
   @override
   State<StatefulWidget> createState() => LifeIndexDialogState();
 }
 
 class LifeIndexDialogState extends State<LifeIndexDialog> {
+  WeatherIndexData? _data;
+  Offset _position = Offset.zero;
+  int _column = 0;
+
   double _opacity = 0;
   final _key = GlobalKey();
   double _height = 0;
@@ -33,11 +41,29 @@ class LifeIndexDialogState extends State<LifeIndexDialog> {
   @override
   void initState() {
     super.initState();
+    _data = widget.data;
+    _position = widget.position;
+    _column = widget.column;
+    _opacity = 0;
     Commons.post((_) {
       setState(() {
         _opacity = 1;
         _height = _key.currentContext?.size?.height ?? 0;
         debugPrint("_height = $_height");
+      });
+    });
+  }
+
+  void update(WeatherIndexData? data, Offset position, int column) {
+    if (_data == data) return;
+    setState(() {
+      _data = data;
+      _position = position;
+      _column = column;
+      Commons.post((_) {
+        setState(() {
+          _height = _key.currentContext?.size?.height ?? 0;
+        });
       });
     });
   }
@@ -50,39 +76,37 @@ class LifeIndexDialogState extends State<LifeIndexDialog> {
 
   @override
   Widget build(BuildContext context) {
-    double marginTop = widget.position.dy - _height + 12.w;
-    return AnimatedOpacity(
-      opacity: _opacity,
-      duration: const Duration(milliseconds: 200),
-      child: Stack(
-        children: [
-          Align(
-            alignment: widget.column == 0
-                ? Alignment.topLeft
-                : (widget.column == 1
-                ? Alignment.topCenter
-                : Alignment.topRight),
+    final marginTop = _position.dy - _height + 12.w;
+    final content = Stack(
+      children: [
+        AnimatedAlign(
+          duration: const Duration(milliseconds: 200),
+          alignment: _column == 0
+              ? Alignment.topLeft
+              : (_column == 1 ? Alignment.topCenter : Alignment.topRight),
+          child: AnimatedContainer(
+            duration: const Duration(milliseconds: 200),
+            margin: EdgeInsets.only(top: marginTop),
             child: BubbleBox(
               shape: BubbleShapeBorder(
                 radius: BorderRadius.circular(12.w),
                 direction: BubbleDirection.bottom,
                 arrowAngle: 6.w,
-                position: widget.column == 0
+                position: _column == 0
                     ? BubblePosition.start(
-                    widget.position.dx - 16.w + widget.size * 0.5 - 6.w)
-                    : (widget.column == 1
-                    ? const BubblePosition.center(0)
-                    : BubblePosition.end(ScreenUtil().screenWidth -
-                    widget.position.dx -
-                    16.w -
-                    widget.size * 0.5 -
-                    6.w)),
+                        _position.dx - 16.w + widget.size * 0.5 - 6.w)
+                    : (_column == 1
+                        ? const BubblePosition.center(0)
+                        : BubblePosition.end(ScreenUtil().screenWidth -
+                            _position.dx -
+                            16.w -
+                            widget.size * 0.5 -
+                            6.w)),
               ),
               backgroundColor: Colours.white,
               padding: EdgeInsets.zero,
               margin: EdgeInsets.only(
                 left: 16.w,
-                top: marginTop,
                 right: 16.w,
               ),
               child: SingleChildScrollView(
@@ -94,7 +118,7 @@ class LifeIndexDialogState extends State<LifeIndexDialog> {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Text(
-                        widget.data?.name ?? "",
+                        _data?.name ?? "",
                         style: TextStyle(
                           fontSize: 18.sp,
                           color: Colours.black,
@@ -104,7 +128,7 @@ class LifeIndexDialogState extends State<LifeIndexDialog> {
                       ),
                       Gaps.generateGap(height: 8.w),
                       Text(
-                        widget.data?.desc ?? "",
+                        _data?.desc ?? "",
                         textAlign: TextAlign.justify,
                         style: TextStyle(
                           fontSize: 15.sp,
@@ -117,6 +141,24 @@ class LifeIndexDialogState extends State<LifeIndexDialog> {
               ),
             ),
           ),
+        ),
+      ],
+    );
+    return AnimatedOpacity(
+      opacity: _opacity,
+      duration: const Duration(milliseconds: 200),
+      child: Stack(
+        children: [
+          GestureDetector(
+            onTap: () {
+              SmartDialog.dismiss(tag: "LifeIndexDialog");
+            },
+            onLongPressMoveUpdate: widget.onLongPressMoveUpdate,
+            child: Container(
+              color: Colours.transparent,
+            ),
+          ),
+          content,
         ],
       ),
     );

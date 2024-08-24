@@ -2,6 +2,7 @@ import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
+import 'package:flutter_yd_weather/model/weather_index_data.dart';
 import 'package:flutter_yd_weather/res/gaps.dart';
 import 'package:flutter_yd_weather/utils/commons_ext.dart';
 import 'package:flutter_yd_weather/widget/life_index_dialog.dart';
@@ -80,43 +81,13 @@ class WeatherLifeIndexPanel extends StatelessWidget {
                             .getOrNull(index);
                         return ScaleLayout(
                           onPressed: () {
-                            final contentPosition = (_key.currentContext
-                                        ?.findRenderObject() as RenderBox?)
-                                    ?.localToGlobal(Offset.zero) ??
-                                Offset.zero;
-                            final contentWidth =
-                                _key.currentContext?.size?.width ?? 0;
-                            final size = contentWidth / 3;
-                            final row = (index / 3).floor();
-                            final column = index % 3;
-                            debugPrint(
-                                "contentPosition = $contentPosition contentWidth = $contentWidth");
-                            SmartDialog.show(
-                              maskColor: Colours.transparent,
-                              animationTime: const Duration(milliseconds: 200),
-                              clickMaskDismiss: true,
-                              onDismiss: () {
-                                _lifeIndexDialogKey.currentState?.exit();
-                              },
-                              animationBuilder: (
-                                controller,
-                                child,
-                                animationParam,
-                              ) {
-                                return child;
-                              },
-                              builder: (_) {
-                                return LifeIndexDialog(
-                                  key: _lifeIndexDialogKey,
-                                  data: item,
-                                  position: Offset(
-                                      contentPosition.dx + size * column,
-                                      contentPosition.dy + size * row),
-                                  size: size,
-                                  column: column,
-                                );
-                              },
-                            );
+                            _showLifeIndexDialog(index, item);
+                          },
+                          onLongPressed: () {
+                            _showLifeIndexDialog(index, item);
+                          },
+                          onLongPressMoveUpdate: (details) {
+                            _updateLifeIndexDialog(details);
                           },
                           child: Container(
                             alignment: Alignment.center,
@@ -167,6 +138,70 @@ class WeatherLifeIndexPanel extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+
+  void _updateLifeIndexDialog(LongPressMoveUpdateDetails details) {
+    final position = details.globalPosition;
+    final contentPosition =
+        (_key.currentContext?.findRenderObject() as RenderBox?)
+                ?.localToGlobal(Offset.zero) ??
+            Offset.zero;
+    final contentWidth = _key.currentContext?.size?.width ?? 0;
+    final size = contentWidth / 3;
+    final length = data.weatherData?.indexes?.length ?? 0;
+    int row = (position.dy - contentPosition.dy) ~/ size;
+    if (row < 0) row = 0;
+    if (row > length ~/ 3 - 1) row = length ~/ 3 - 1;
+    int column = (position.dx - contentPosition.dx) ~/ size;
+    if (column < 0) column = 0;
+    if (column > 2) column = 2;
+    final index = row * 3 + column;
+    _lifeIndexDialogKey.currentState?.update(
+      data.weatherData?.indexes?.getOrNull(index),
+      Offset(
+          contentPosition.dx + size * column, contentPosition.dy + size * row),
+      column,
+    );
+  }
+
+  void _showLifeIndexDialog(int index, WeatherIndexData? item) {
+    final contentPosition =
+        (_key.currentContext?.findRenderObject() as RenderBox?)
+                ?.localToGlobal(Offset.zero) ??
+            Offset.zero;
+    final contentWidth = _key.currentContext?.size?.width ?? 0;
+    final size = contentWidth / 3;
+    final row = (index / 3).floor();
+    final column = index % 3;
+    debugPrint(
+        "contentPosition = $contentPosition contentWidth = $contentWidth");
+    SmartDialog.show(
+      tag: "LifeIndexDialog",
+      maskColor: Colours.transparent,
+      animationTime: const Duration(milliseconds: 200),
+      clickMaskDismiss: true,
+      onDismiss: () {
+        _lifeIndexDialogKey.currentState?.exit();
+      },
+      animationBuilder: (
+        controller,
+        child,
+        animationParam,
+      ) {
+        return child;
+      },
+      builder: (_) {
+        return LifeIndexDialog(
+          key: _lifeIndexDialogKey,
+          data: item,
+          position: Offset(contentPosition.dx + size * column,
+              contentPosition.dy + size * row),
+          size: size,
+          column: column,
+          onLongPressMoveUpdate: _updateLifeIndexDialog,
+        );
+      },
     );
   }
 }

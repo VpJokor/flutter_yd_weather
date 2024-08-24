@@ -5,6 +5,8 @@ class ScaleLayout extends StatefulWidget {
   final double? scale;
   final VoidCallback? onPressed;
   final VoidCallback? onLongPressed;
+  final void Function(LongPressMoveUpdateDetails details)?
+      onLongPressMoveUpdate;
   final bool canTap;
 
   const ScaleLayout({
@@ -13,6 +15,7 @@ class ScaleLayout extends StatefulWidget {
     this.scale = 1.1,
     this.onPressed,
     this.onLongPressed,
+    this.onLongPressMoveUpdate,
     this.canTap = true,
   });
 
@@ -111,6 +114,7 @@ class _ScaleLayoutState extends State<ScaleLayout>
       onTapCancel: enabled ? _handleTapCancel : null,
       onTap: widget.onPressed,
       onLongPress: widget.onLongPressed,
+      onLongPressMoveUpdate: widget.onLongPressMoveUpdate,
       child: Semantics(
         child: ScaleTransition(
           scale: _scaleAnimation,

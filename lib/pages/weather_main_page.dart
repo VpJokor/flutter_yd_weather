@@ -179,7 +179,16 @@ class _WeatherMainPageState
           Visibility(
             visible: context.isDark,
             child: Container(
-              color: Colours.black.withOpacity(0.2),
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [
+                    Colours.black.withOpacity(0.2),
+                    Colours.black.withOpacity(0.1),
+                  ],
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                ),
+              ),
             ),
           ),
           AnimatedOpacity(
