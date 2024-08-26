@@ -1,5 +1,6 @@
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:flutter_yd_weather/model/weather_index_data.dart';
@@ -175,6 +176,7 @@ class WeatherLifeIndexPanel extends StatelessWidget {
     final column = index % 3;
     debugPrint(
         "contentPosition = $contentPosition contentWidth = $contentWidth");
+    HapticFeedback.lightImpact();
     SmartDialog.show(
       tag: "LifeIndexDialog",
       maskColor: Colours.transparent,

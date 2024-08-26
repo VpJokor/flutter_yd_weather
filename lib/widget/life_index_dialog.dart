@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:bubble_box/bubble_box.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:flutter_yd_weather/model/weather_index_data.dart';
@@ -70,6 +71,7 @@ class LifeIndexDialogState extends State<LifeIndexDialog> {
 
   void update(WeatherIndexData? data, Offset position, int column) {
     if (_data == data) return;
+    HapticFeedback.lightImpact();
     setState(() {
       _contentOpacity = 0;
       _data = data;
