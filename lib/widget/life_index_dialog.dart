@@ -59,10 +59,11 @@ class LifeIndexDialogState extends State<LifeIndexDialog> {
     _position = widget.position;
     _column = widget.column;
     _opacity = 0;
+    _calContentSize();
     Commons.post((_) {
       setState(() {
         _opacity = 1;
-        _calContentSize();
+        _contentOpacity = 1;
       });
     });
   }
@@ -70,12 +71,14 @@ class LifeIndexDialogState extends State<LifeIndexDialog> {
   void update(WeatherIndexData? data, Offset position, int column) {
     if (_data == data) return;
     setState(() {
+      _contentOpacity = 0;
       _data = data;
       _position = position;
       _column = column;
-      Commons.post((_) {
+      _calContentSize();
+      Commons.postDelayed(delayMilliseconds: 200, () {
         setState(() {
-          _calContentSize();
+          _contentOpacity = 1;
         });
       });
     });
@@ -88,7 +91,6 @@ class LifeIndexDialogState extends State<LifeIndexDialog> {
   }
 
   void _calContentSize() {
-    _contentOpacity = 0;
     final name = _data?.name ?? "";
     final desc = _data?.desc ?? "";
     final maxWidth = ScreenUtil().screenWidth - 2 * 16.w;
@@ -145,14 +147,11 @@ class LifeIndexDialogState extends State<LifeIndexDialog> {
                 height: _contentHeight,
                 alignment: Alignment.center,
                 padding: EdgeInsets.symmetric(horizontal: 8.w),
-                onEnd: () {
-                  setState(() {
-                    _contentOpacity = 1;
-                  });
-                },
                 child: AnimatedOpacity(
                   opacity: _contentOpacity,
-                  duration: const Duration(milliseconds: 200),
+                  duration: _contentOpacity == 0
+                      ? Duration.zero
+                      : const Duration(milliseconds: 200),
                   child: SingleChildScrollView(
                     physics: const NeverScrollableScrollPhysics(),
                     child: Column(
