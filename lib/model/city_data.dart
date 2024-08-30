@@ -59,10 +59,16 @@ class CityData {
   Map<String, dynamic> toJson() => _$CityDataToJson(this);
 
   @override
-  bool operator ==(Object other) => other is CityData && cityId == other.cityId;
+  bool operator ==(Object other) =>
+      other is CityData && cityId == other.cityId && name == other.name;
 
   @override
-  int get hashCode => cityId.hashCode;
+  int get hashCode {
+    var result = 17;
+    result = 37 * result + cityId.hashCode;
+    result = 37 * result + name.hashCode;
+    return result;
+  }
 
   @override
   String toString() {

@@ -4,11 +4,9 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:flutter_yd_weather/utils/commons_ext.dart';
 import 'package:flutter_yd_weather/widget/weather_forecase40_detail_page.dart';
-import 'package:provider/provider.dart';
 
 import '../config/constants.dart';
 import '../model/weather_item_data.dart';
-import '../pages/provider/weather_provider.dart';
 import '../res/colours.dart';
 import '../res/gaps.dart';
 import '../utils/commons.dart';
@@ -19,6 +17,7 @@ class WeatherObserveForecase40Panel extends StatelessWidget {
     super.key,
     required this.data,
     required this.shrinkOffset,
+    required this.isDark,
     this.showHideWeatherContent,
   });
 
@@ -28,6 +27,7 @@ class WeatherObserveForecase40Panel extends StatelessWidget {
   final _key = GlobalKey();
   final _forecase40DetailPageKey =
       GlobalKey<WeatherForecase40DetailPageState>();
+  final bool isDark;
 
   @override
   Widget build(BuildContext context) {
@@ -40,7 +40,6 @@ class WeatherObserveForecase40Panel extends StatelessWidget {
     final rainDays = weatherItemData.weatherData?.forecast40Data?.rainDays ?? 0;
     final upDaysDesc = upDays > 0 ? "$upDays天升温" : "预计近期气温平稳";
     final rainDaysDesc = rainDays > 0 ? "$rainDays天有雨" : "预计近期无降雨";
-    final isDark = context.read<WeatherProvider>().isDark;
     return AnimatedOpacity(
       opacity: percent,
       duration: Duration.zero,

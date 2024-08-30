@@ -19,6 +19,7 @@ import 'package:flutter_yd_weather/utils/theme_utils.dart';
 import 'package:flutter_yd_weather/utils/weather_persistent_header_delegate.dart';
 import 'package:flutter_yd_weather/widget/load_asset_image.dart';
 import 'package:flutter_yd_weather/widget/opacity_layout.dart';
+import 'package:flutter_yd_weather/widget/weather_city_selector.dart';
 import 'package:flutter_yd_weather/widget/weather_header_widget.dart';
 import 'package:flutter_yd_weather/widget/weather_main_clipper.dart';
 import 'package:provider/provider.dart';
@@ -43,12 +44,16 @@ class _WeatherMainPageState
   late StreamSubscription<RefreshWeatherDataEvent>
       _refreshWeatherDataEventSubscription;
   final _cityManagerPageKey = GlobalKey<CityManagerPageState>();
+  final _weatherCitySelectorKey = GlobalKey<WeatherCitySelectorState>();
   late AnimationController _animationController;
   late Animation<double> _animation;
   SystemUiOverlayStyle _systemUiOverlayStyle = SystemUiOverlayStyle.light;
   bool _isShowCityManagerPage = false;
+  bool _isShowWeatherCitySelector = false;
   Rect? _weatherContentRect;
   double _weatherContentOpacity = 1;
+  double _scale = 1;
+  BorderRadius _weatherBgBorderRadius = BorderRadius.zero;
 
   @override
   void initState() {
@@ -113,6 +118,10 @@ class _WeatherMainPageState
               key: _cityManagerPageKey,
               hideCityManagerPage: _hideCityManagerPage,
             ),
+            if (_isShowWeatherCitySelector)
+              WeatherCitySelector(
+                key: _weatherCitySelectorKey,
+              ),
             AnimatedBuilder(
               animation: _animationController,
               builder: (_, __) {
@@ -129,7 +138,7 @@ class _WeatherMainPageState
                     radius: 16.w * animValue,
                   ),
                   child: Offstage(
-                    offstage: animValue >= 1,
+                    offstage: _isShowWeatherCitySelector || animValue >= 1,
                     child: super.build(context),
                   ),
                 );
@@ -143,6 +152,10 @@ class _WeatherMainPageState
 
   void _onPopInvoked(bool didPop) {
     if (didPop) return;
+    if (_isShowWeatherCitySelector) {
+      _hideWeatherCitySelector();
+      return;
+    }
     if (_cityManagerPageKey.currentState?.isEditMode ?? false) {
       _cityManagerPageKey.currentState?.closeEditMode();
       return;
@@ -165,7 +178,7 @@ class _WeatherMainPageState
         : 1 - ((animValue - 0.8) / 0.2).fixPercent();
     final weatherHeaderItemData = provider.list.singleOrNull(
         (element) => element.itemType == Constants.itemTypeWeatherHeader);
-    return AnimatedOpacity(
+    final content = AnimatedOpacity(
       opacity: opacity1,
       duration: Duration.zero,
       child: Stack(
@@ -173,6 +186,7 @@ class _WeatherMainPageState
           AnimatedContainer(
             duration: const Duration(milliseconds: 600),
             decoration: BoxDecoration(
+              borderRadius: _weatherBgBorderRadius,
               gradient: provider.weatherBg,
             ),
           ),
@@ -199,14 +213,6 @@ class _WeatherMainPageState
               duration: const Duration(milliseconds: 200),
               child: Stack(
                 children: [
-                  WeatherHeaderWidget(
-                    key: _weatherHeaderKey,
-                    weatherItemData: weatherHeaderItemData,
-                    onRefresh: () {
-                      _weatherMainPresenter.obtainWeatherData(
-                          delayMilliseconds: 400);
-                    },
-                  ),
                   Padding(
                     padding: EdgeInsets.only(
                       top: ScreenUtil().statusBarHeight +
@@ -218,6 +224,14 @@ class _WeatherMainPageState
                       },
                       child: super.getRoot(provider),
                     ),
+                  ),
+                  WeatherHeaderWidget(
+                    key: _weatherHeaderKey,
+                    weatherItemData: weatherHeaderItemData,
+                    onRefresh: () {
+                      _weatherMainPresenter.obtainWeatherData(
+                          delayMilliseconds: 400);
+                    },
                   ),
                   Positioned(
                     right: 0,
@@ -246,6 +260,32 @@ class _WeatherMainPageState
         ],
       ),
     );
+    return GestureDetector(
+      onLongPress: _showWeatherCitySelector,
+      child: AnimatedScale(
+        scale: _scale,
+        duration: const Duration(milliseconds: 600),
+        curve: Curves.easeOutBack,
+        child: content,
+      ),
+    );
+  }
+
+  void _showWeatherCitySelector() {
+    HapticFeedback.lightImpact();
+    setState(() {
+      _scale = 0.6;
+      _weatherBgBorderRadius = BorderRadius.circular(16.w);
+      _isShowWeatherCitySelector = true;
+    });
+  }
+
+  void _hideWeatherCitySelector() {
+    setState(() {
+      _scale = 1;
+      _weatherBgBorderRadius = BorderRadius.zero;
+      _isShowWeatherCitySelector = false;
+    });
   }
 
   void _showCityManagerPage() {

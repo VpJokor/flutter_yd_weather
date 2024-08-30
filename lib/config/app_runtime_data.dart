@@ -1,4 +1,6 @@
+import 'package:flutter_yd_weather/model/weather_data.dart';
 import 'package:package_info_plus/package_info_plus.dart';
+import 'package:sp_util/sp_util.dart';
 
 import '../utils/log.dart';
 
@@ -26,5 +28,25 @@ class AppRuntimeData {
     if (packageInfo == null) return;
     Log.e("packageInfo = $packageInfo");
     _packageInfo = packageInfo;
+  }
+
+  final _weatherDataMap = <String, WeatherData?>{};
+
+  void saveWeatherData(String saveKey, WeatherData? weatherData) {
+    if (weatherData != null) {
+      _weatherDataMap[saveKey] = weatherData;
+      SpUtil.putObject(saveKey, weatherData);
+    }
+  }
+
+  WeatherData? getWeatherData(String key) {
+    final weatherData = _weatherDataMap[key];
+    if (weatherData != null) {
+      return weatherData;
+    }
+    return SpUtil.getObj(
+      key,
+      (map) => WeatherData.fromJson(map as Map<String, dynamic>),
+    );
   }
 }

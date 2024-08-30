@@ -4,11 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_yd_weather/res/gaps.dart';
 import 'package:flutter_yd_weather/utils/commons_ext.dart';
-import 'package:provider/provider.dart';
 
 import '../config/constants.dart';
 import '../model/weather_item_data.dart';
-import '../pages/provider/weather_provider.dart';
 import '../res/colours.dart';
 import 'blurry_container.dart';
 
@@ -17,10 +15,12 @@ class WeatherObserveTiGanPanel extends StatelessWidget {
     super.key,
     required this.data,
     required this.shrinkOffset,
+    required this.isDark,
   });
 
   final WeatherItemData data;
   final double shrinkOffset;
+  final bool isDark;
 
   @override
   Widget build(BuildContext context) {
@@ -39,7 +39,6 @@ class WeatherObserveTiGanPanel extends StatelessWidget {
         : (tiGanTemp > temp
             ? "比实际温度高${(tiGanTemp - temp).getTemp()}"
             : "比实际温度低${(temp - tiGanTemp).getTemp()}");
-    final isDark = context.read<WeatherProvider>().isDark;
     return AnimatedOpacity(
       opacity: percent,
       duration: Duration.zero,

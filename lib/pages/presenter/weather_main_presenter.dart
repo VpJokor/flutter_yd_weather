@@ -1,5 +1,6 @@
 import 'dart:ffi';
 
+import 'package:flutter_yd_weather/config/app_runtime_data.dart';
 import 'package:flutter_yd_weather/config/constants.dart';
 import 'package:flutter_yd_weather/model/simple_weather_data.dart';
 import 'package:flutter_yd_weather/model/weather_data.dart';
@@ -27,16 +28,29 @@ class WeatherMainPresenter extends BasePagePresenter<WeatherMainView> {
   Future<dynamic> obtainWeatherData({
     int delayMilliseconds = 0,
     bool isAdd = false,
-  }) async {
+  }) {
     final mainP = view.getContext().read<MainProvider>();
-    final Map<String, String> params = <String, String>{};
+    final isLocationCity = mainP.currentCityData!.isLocationCity ?? false;
     final currentCityId = mainP.currentCityData?.cityId ?? "";
+    final key = isLocationCity ? Constants.locationCityId : currentCityId;
+    final Map<String, String> params = <String, String>{};
     params["citykey"] = currentCityId;
+    final weatherP = view.baseProvider as WeatherProvider;
+    final weatherData = AppRuntimeData.instance.getWeatherData(key);
+    if (weatherData != null) {
+      weatherP.setWeatherData(
+        mainP.currentWeatherCardSort,
+        mainP.currentWeatherObservesCardSort,
+        weatherData,
+      );
+      view.closeProgress(true);
+    }
     return requestNetwork<WeatherData>(Method.get,
         url: Api.weatherApi,
         queryParameters: params,
         delayMilliseconds: delayMilliseconds, onSuccess: (data) {
-      (view.baseProvider as WeatherProvider).setWeatherData(
+      AppRuntimeData.instance.saveWeatherData(key, data);
+      weatherP.setWeatherData(
         mainP.currentWeatherCardSort,
         mainP.currentWeatherObservesCardSort,
         data,
@@ -44,10 +58,7 @@ class WeatherMainPresenter extends BasePagePresenter<WeatherMainView> {
       if (mainP.currentCityData != null) {
         mainP.currentCityData!.weatherData =
             SimpleWeatherData.fromWeatherData(data);
-        final isLocationCity = mainP.currentCityData!.isLocationCity ?? false;
-        mainP.cityDataBox.put(
-            isLocationCity ? Constants.locationCityId : currentCityId,
-            mainP.currentCityData!);
+        mainP.cityDataBox.put(key, mainP.currentCityData!);
       }
       _checkLocationCity(mainP).then((reObtainWeatherData) {
         if (reObtainWeatherData) {

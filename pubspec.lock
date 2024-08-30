@@ -17,6 +17,14 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "6.4.1"
+  animated_item:
+    dependency: "direct main"
+    description:
+      name: animated_item
+      sha256: "147b32d7f8ec6c3f76bb33d58a760fff5fe67dc6553b43a6a433c4f9cf96a9d3"
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "0.0.1"
   animated_visibility:
     dependency: "direct main"
     description:
