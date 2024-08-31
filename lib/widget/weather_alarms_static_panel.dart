@@ -22,6 +22,7 @@ class WeatherAlarmsStaticPanel extends StatelessWidget {
     this.stackKey,
     this.swiperController,
     this.index = 0,
+    this.physics,
     this.onIndexChanged,
   });
 
@@ -32,6 +33,7 @@ class WeatherAlarmsStaticPanel extends StatelessWidget {
   final GlobalKey? stackKey;
   final SwiperController? swiperController;
   final int index;
+  final ScrollPhysics? physics;
   final ValueChanged<int>? onIndexChanged;
 
   @override
@@ -80,6 +82,7 @@ class WeatherAlarmsStaticPanel extends StatelessWidget {
                         controller: swiperController,
                         loop: false,
                         transformer: ScaleAndFadeTransformer(),
+                        physics: physics,
                         itemCount:
                             weatherItemData.weatherData?.alarms?.length ?? 0,
                         onIndexChanged: onIndexChanged,

@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:scrollview_observer/scrollview_observer.dart';
 
 ///Anchor location for selected item in the list
 enum SelectedItemAnchor { start, middle, end }
@@ -30,9 +31,6 @@ class ScrollSnapList extends StatefulWidget {
   ///Focus to an item when user tap on it. Inactive if the list-item have its own onTap detector (use state-key to help focusing instead).
   final bool focusOnItemTap;
 
-  ///Method to manually trigger focus to an item. Call with help of `GlobalKey<ScrollSnapListState>`.
-  final void Function(int)? focusToItem;
-
   ///Container's margin
   final EdgeInsetsGeometry? margin;
 
@@ -49,14 +47,11 @@ class ScrollSnapList extends StatefulWidget {
   ///- itemSize is `100+5+5 = 110`
   final double itemSize;
 
-  ///Global key that's used to call `focusToItem` method to manually trigger focus event.
-  final Key? key;
-
   ///Global key that passed to child ListView. Can be used for PageStorageKey
   final Key? listViewKey;
 
   ///Callback function when list snaps/focuses to an item
-  final void Function(int) onItemFocus;
+  final void Function(int, bool) onItemFocus;
 
   ///Callback function when user reach end of list.
   ///
@@ -121,8 +116,12 @@ class ScrollSnapList extends StatefulWidget {
 
   final EdgeInsetsGeometry? listViewPadding;
 
+  final VoidCallback? onTap;
+  final void Function(int)? onCurrentTap;
+
   ScrollSnapList(
-      {this.background,
+      {super.key,
+      this.background,
       required this.itemBuilder,
       ScrollController? listController,
       this.curve = Curves.ease,
@@ -130,10 +129,8 @@ class ScrollSnapList extends StatefulWidget {
       this.duration = 500,
       this.endOfListTolerance,
       this.focusOnItemTap = true,
-      this.focusToItem,
       required this.itemCount,
       required this.itemSize,
-      this.key,
       this.listViewKey,
       this.margin,
       required this.onItemFocus,
@@ -142,6 +139,7 @@ class ScrollSnapList extends StatefulWidget {
       this.reverse = false,
       this.updateOnScroll,
       this.initialIndex,
+      Offset? initialOffset,
       this.scrollDirection = Axis.horizontal,
       this.dynamicItemSize = false,
       this.dynamicSizeEquation,
@@ -152,9 +150,16 @@ class ScrollSnapList extends StatefulWidget {
       this.clipBehavior = Clip.hardEdge,
       this.keyboardDismissBehavior = ScrollViewKeyboardDismissBehavior.manual,
       this.dispatchScrollNotifications = false,
+      this.onTap,
+      this.onCurrentTap,
       this.listViewPadding})
-      : listController = listController ?? ScrollController(),
-        super(key: key);
+      : listController = listController ??
+            ScrollController(
+                initialScrollOffset: initialOffset != null
+                    ? (scrollDirection == Axis.horizontal
+                        ? initialOffset.dx
+                        : initialOffset.dy)
+                    : 0);
 
   @override
   ScrollSnapListState createState() => ScrollSnapListState();
@@ -169,6 +174,10 @@ class ScrollSnapListState extends State<ScrollSnapList> {
 
   //Current scroll-position in pixel
   double currentPixel = 0;
+
+  bool isTap = false;
+
+  ScrollNotification? scrollInfo;
 
   @override
   void initState() {
@@ -193,7 +202,7 @@ class ScrollSnapListState extends State<ScrollSnapList> {
   }
 
   ///Scroll list to an offset
-  void _animateScroll(double location) {
+  void animateScroll(double location) {
     Future.delayed(Duration.zero, () {
       widget.listController.animateTo(
         location,
@@ -232,7 +241,6 @@ class ScrollSnapListState extends State<ScrollSnapList> {
     Widget child;
     if (widget.dynamicItemSize) {
       final scale = calculateScale(index);
-      debugPrint("index = $index scale = $scale");
       child = Transform.scale(
         scale: scale,
         child: widget.itemBuilder(context, index),
@@ -247,7 +255,14 @@ class ScrollSnapListState extends State<ScrollSnapList> {
 
     if (widget.focusOnItemTap) {
       return GestureDetector(
-        onTap: () => focusToItem(index),
+        onTap: () {
+          isTap = previousIndex != index;
+          if (previousIndex == index) {
+            widget.onCurrentTap?.call(index);
+          } else {
+            focusToItem(index);
+          }
+        },
         child: child,
       );
     }
@@ -264,8 +279,7 @@ class ScrollSnapListState extends State<ScrollSnapList> {
     //listPadding is not considered as moving pixel by scroll (0.0 is after padding)
     //substracted by itemSize/2 (to center the item)
     //divided by pixels taken by each item
-    int cardIndex =
-        index ?? ((pixel! - itemSize / 2) / itemSize).ceil();
+    int cardIndex = index ?? ((pixel! - itemSize / 2) / itemSize).ceil();
 
     //Avoid index getting out of bounds
     if (cardIndex < 0) {
@@ -277,7 +291,8 @@ class ScrollSnapListState extends State<ScrollSnapList> {
     //trigger onItemFocus
     if (cardIndex != previousIndex) {
       previousIndex = cardIndex;
-      widget.onItemFocus(cardIndex);
+      widget.onItemFocus(cardIndex, isTap);
+      isTap = false;
     }
 
     //target position
@@ -289,12 +304,16 @@ class ScrollSnapListState extends State<ScrollSnapList> {
   void focusToItem(int index) {
     double targetLoc =
         _calcCardLocation(index: index, itemSize: widget.itemSize);
-    _animateScroll(targetLoc);
+    animateScroll(targetLoc);
   }
 
   ///Determine location if initialIndex is set
   void focusToInitialPosition() {
-    widget.listController.jumpTo((widget.initialIndex! * widget.itemSize));
+    widget.listController.animateTo(
+      (widget.initialIndex! * widget.itemSize),
+      duration: const Duration(milliseconds: 300),
+      curve: Curves.decelerate,
+    );
   }
 
   ///Trigger callback on reach end-of-list
@@ -335,13 +354,19 @@ class ScrollSnapListState extends State<ScrollSnapList> {
       margin: widget.margin,
       child: LayoutBuilder(
         builder: (BuildContext ctx, BoxConstraints constraint) {
-          double _listPadding = calculateListPadding(constraint);
+          double listPadding = calculateListPadding(constraint);
 
           return GestureDetector(
             //by catching onTapDown gesture, it's possible to keep animateTo from removing user's scroll listener
             onTapDown: (_) {},
+            onTap: () {
+              if (scrollInfo is ScrollEndNotification || scrollInfo is UserScrollNotification) {
+                widget.onTap?.call();
+              }
+            },
             child: NotificationListener<ScrollNotification>(
               onNotification: (ScrollNotification scrollInfo) {
+                this.scrollInfo = scrollInfo;
                 //Check if the received gestures are coming directly from the ScrollSnapList. If not, skip them
                 //Try to avoid inifinte animation loop caused by multi-level NotificationListener
                 if (scrollInfo.depth > 0) {
@@ -385,7 +410,7 @@ class ScrollSnapListState extends State<ScrollSnapList> {
 
                   //only animate if not yet snapped (tolerance 0.01 pixel)
                   if ((scrollInfo.metrics.pixels - offset).abs() > 0.01) {
-                    _animateScroll(offset);
+                    animateScroll(offset);
                   }
                 } else if (scrollInfo is ScrollUpdateNotification) {
                   //save pixel position for scale-effect
@@ -422,12 +447,12 @@ class ScrollSnapListState extends State<ScrollSnapList> {
                         ? EdgeInsets.symmetric(
                             horizontal: max(
                             0,
-                            _listPadding,
+                              listPadding,
                           ))
                         : EdgeInsets.symmetric(
                             vertical: max(
                               0,
-                              _listPadding,
+                              listPadding,
                             ),
                           )),
                 reverse: widget.reverse,

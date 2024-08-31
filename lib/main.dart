@@ -38,6 +38,16 @@ class RefreshWeatherDataEvent {
   });
 }
 
+class SwitchWeatherCityEvent {
+  final bool refreshWeatherData;
+  final int scrollToTopDelay;
+
+  SwitchWeatherCityEvent({
+    this.refreshWeatherData = false,
+    this.scrollToTopDelay = 0,
+  });
+}
+
 Future<void> main() async {
   /// 异常处理
   handleError(() async {

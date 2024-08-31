@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:common_utils/common_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -36,6 +38,7 @@ class WeatherDailyStaticPanel extends StatelessWidget {
     final minTempData = weatherItemData.weatherData?.forecast15
         ?.reduce((e1, e2) => (e1.low ?? 0) < (e2.low ?? 0) ? e1 : e2);
     final itemWidth = 68.5.w;
+    final length = weatherItemData.weatherData?.forecast15?.length ?? 0;
     return AnimatedOpacity(
       opacity: percent,
       duration: Duration.zero,
@@ -65,8 +68,9 @@ class WeatherDailyStaticPanel extends StatelessWidget {
                   child: ListView.builder(
                     physics: physics,
                     scrollDirection: Axis.horizontal,
-                    itemCount:
-                        weatherItemData.weatherData?.forecast15?.length ?? 0,
+                    itemCount: physics is NeverScrollableScrollPhysics
+                        ? min(5, length)
+                        : length,
                     itemExtent: itemWidth,
                     itemBuilder: (_, index) {
                       final preItem = weatherItemData.weatherData?.forecast15

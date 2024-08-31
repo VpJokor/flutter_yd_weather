@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:common_utils/common_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -36,6 +38,7 @@ class WeatherHourStaticPanel extends StatelessWidget {
           element.date ==
           DateUtil.formatDate(DateTime.now(), format: Constants.yyyymmdd),
     );
+    final length = weatherItemData.weatherData?.hourFc?.length ?? 0;
     return AnimatedOpacity(
       opacity: percent,
       duration: Duration.zero,
@@ -69,7 +72,9 @@ class WeatherHourStaticPanel extends StatelessWidget {
                       left: 16.w,
                       right: 16.w,
                     ),
-                    itemCount: weatherItemData.weatherData?.hourFc?.length ?? 0,
+                    itemCount: physics is NeverScrollableScrollPhysics
+                        ? min(6, length)
+                        : length,
                     itemBuilder: (_, index) {
                       final item =
                           weatherItemData.weatherData?.hourFc.getOrNull(index);

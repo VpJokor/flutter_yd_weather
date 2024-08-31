@@ -1,25 +1,28 @@
 import 'dart:math';
-
-import 'package:animated_item/animated_item.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:flutter_yd_weather/config/app_runtime_data.dart';
+import 'package:flutter_yd_weather/main.dart';
 import 'package:flutter_yd_weather/model/city_data.dart';
-import 'package:flutter_yd_weather/res/colours.dart';
+import 'package:flutter_yd_weather/utils/color_utils.dart';
 import 'package:flutter_yd_weather/utils/commons.dart';
 import 'package:flutter_yd_weather/utils/commons_ext.dart';
 import 'package:flutter_yd_weather/utils/pair.dart';
-import 'package:flutter_yd_weather/utils/theme_utils.dart';
 import 'package:flutter_yd_weather/utils/weather_data_utils.dart';
+import 'package:flutter_yd_weather/widget/blurry_container.dart';
+import 'package:flutter_yd_weather/widget/scale_layout.dart';
 import 'package:flutter_yd_weather/widget/scroll_snap_list.dart';
 import 'package:flutter_yd_weather/widget/weather_city_selector_item.dart';
+import 'package:flutter_yd_weather/widget/weather_city_snapshot.dart';
 import 'package:provider/provider.dart';
 import 'package:sp_util/sp_util.dart';
 
 import '../config/constants.dart';
 import '../model/weather_item_data.dart';
 import '../provider/main_provider.dart';
+import '../res/colours.dart';
 
 class WeatherCitySelector extends StatefulWidget {
   const WeatherCitySelector({super.key});
@@ -28,17 +31,22 @@ class WeatherCitySelector extends StatefulWidget {
   State<StatefulWidget> createState() => WeatherCitySelectorState();
 }
 
-class WeatherCitySelectorState extends State<WeatherCitySelector> {
-  ScrollController? _scrollController;
+class WeatherCitySelectorState extends State<WeatherCitySelector>
+    with SingleTickerProviderStateMixin {
   final _list = <Pair<CityData?, List<WeatherItemData>>>[];
-  double _opacity = 0;
-  double _scale = 1;
+  List<WeatherItemData>? _currentData;
+  late AnimationController _animationController;
+  late Animation<double> _animation;
+  final _listKey = GlobalKey<ScrollSnapListState>();
+  double _scale = 0.6;
+  double _opacity = 1;
 
   @override
   void initState() {
     super.initState();
-    _opacity = 0;
-    _scale = 1;
+    _animationController = AnimationController(vsync: this)
+      ..duration = const Duration(milliseconds: 200);
+    _animation = Tween<double>(begin: 0, end: 1).animate(_animationController);
 
     Commons.post((_) {
       _generateData();
@@ -69,65 +77,164 @@ class WeatherCitySelectorState extends State<WeatherCitySelector> {
       }
     }
     final initIndex = _list.indexWhere((e) => e.first == mainP.currentCityData);
-    _scrollController = ScrollController();
-    setState(() {
-      _opacity = 1;
-      _scale = 0.6;
+    _animationController.forward();
+    Commons.post((_) {
+      _listKey.currentState?.focusToItem(initIndex);
     });
   }
 
   @override
   void dispose() {
-    _scrollController?.dispose();
+    _animationController.dispose();
     super.dispose();
   }
 
   void exit() {
-    setState(() {
-      _opacity = 0;
-      _scale = 1;
-    });
+    _listKey.currentState?.animateScroll(-ScreenUtil().screenWidth);
+    _animationController.reverse();
+  }
+
+  void _dismiss() {
+    SmartDialog.dismiss(tag: "WeatherCitySelector");
   }
 
   @override
   Widget build(BuildContext context) {
-    return AnimatedOpacity(
-      opacity: 1,
-      duration: const Duration(milliseconds: 600),
-      child: Container(
-        width: double.infinity,
-        height: double.infinity,
-        color: context.backgroundColor,
-        child: Stack(
-          children: [
-            Align(
-              alignment: Alignment.center,
-              child: SizedBox(
-                width: double.infinity,
-                height: ScreenUtil().screenHeight * 0.6,
-                child: ScrollSnapList(
-                  scrollPhysics: const BouncingScrollPhysics(),
-                  onItemFocus: (index) {
-                    debugPrint("onItemFocus index = $index");
-                  },
-                  itemSize: ScreenUtil().screenWidth * 0.6,
-                  itemBuilder: (_, index) {
-                    final item = _list[index];
-                    return WeatherCitySelectorItem(
-                      pair: item,
-                    );
-                  },
-                  itemCount: _list.length,
-                  dynamicItemSize: true,
-                  dynamicSizeEquation: (difference) {
-                    return 1 - min(difference.abs() / 1500, 0.6);
-                  }, //optional
+    return AnimatedBuilder(
+      animation: _animationController,
+      builder: (_, __) {
+        final animValue = _animation.value;
+        return GestureDetector(
+          onTap: _dismiss,
+          child: BlurryContainer(
+            width: double.infinity,
+            height: double.infinity,
+            color: ColorUtils.adjustAlpha(
+                Colours.black.withOpacity(0.1), animValue),
+            blur: 15 * animValue,
+            child: Stack(
+              children: [
+                Align(
+                  alignment: Alignment.center,
+                  child: AnimatedOpacity(
+                    opacity: _opacity,
+                    duration: const Duration(milliseconds: 200),
+                    child: SizedBox(
+                      width: double.infinity,
+                      height: ScreenUtil().screenHeight * 0.6,
+                      child: ScrollSnapList(
+                        key: _listKey,
+                        duration: 200,
+                        curve: Curves.decelerate,
+                        scrollPhysics: const BouncingScrollPhysics(),
+                        initialOffset: Offset(-ScreenUtil().screenWidth, 0),
+                        reverse: true,
+                        onItemFocus: (index, isTap) {
+                          debugPrint(
+                              "onItemFocus index = $index isTap = $isTap");
+                          if (isTap) {
+                            _switchWeatherCity(index, 200);
+                          }
+                        },
+                        onCurrentTap: (index) {
+                          _switchWeatherCity(index, 0);
+                        },
+                        onTap: _dismiss,
+                        itemSize: ScreenUtil().screenWidth * 0.6,
+                        itemBuilder: (_, index) {
+                          final item = _list[index];
+                          return WeatherCitySelectorItem(
+                            pair: item,
+                          );
+                        },
+                        itemCount: _list.length,
+                        dynamicItemSize: true,
+                        dynamicSizeEquation: (difference) {
+                          return 1 - min(difference.abs() / 1500, 0.6);
+                        }, //optional
+                      ),
+                    ),
+                  ),
                 ),
-              ),
+                Align(
+                  alignment: Alignment.bottomCenter,
+                  child: AnimatedOpacity(
+                    opacity: animValue,
+                    duration: Duration.zero,
+                    child: ScaleLayout(
+                      scale: 0.95,
+                      child: Container(
+                        width: 148.w,
+                        height: 42.w,
+                        alignment: Alignment.center,
+                        margin: EdgeInsets.only(bottom: 42.w),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(12.w),
+                          color: Colours.black.withOpacity(0.2),
+                          border: Border.all(
+                            width: 0.5.w,
+                            color: Colours.white.withOpacity(0.5),
+                          ),
+                        ),
+                        child: Text(
+                          "更改天气背景",
+                          style: TextStyle(
+                            fontSize: 15.sp,
+                            color: Colours.white,
+                          ),
+                        ),
+                      ),
+                      onPressed: () {},
+                    ),
+                  ),
+                ),
+                Visibility(
+                  visible: _currentData.isNotNullOrEmpty(),
+                  child: AnimatedScale(
+                    scale: _scale,
+                    duration: const Duration(milliseconds: 400),
+                    curve: Curves.decelerate,
+                    onEnd: () {
+                      if (_scale >= 1) {
+                        _dismiss();
+                      }
+                    },
+                    child: WeatherCitySnapshot(
+                      data: _currentData,
+                    ),
+                  ),
+                ),
+              ],
             ),
-          ],
-        ),
-      ),
+          ),
+        );
+      },
     );
+  }
+
+  void _switchWeatherCity(int index, int delay) {
+    Commons.postDelayed(delayMilliseconds: delay, () {
+      setState(() {
+        _currentData = _list[index].second;
+        Commons.postDelayed(delayMilliseconds: 200, () {
+          final mainP = context.read<MainProvider>();
+          final isSame =
+              _list[index].first?.cityId == mainP.currentCityData?.cityId;
+          if (!isSame) {
+            mainP.currentCityData = _list[index].first;
+          }
+          eventBus.fire(
+            SwitchWeatherCityEvent(
+              refreshWeatherData: !isSame,
+              scrollToTopDelay: 200,
+            ),
+          );
+          setState(() {
+            _opacity = 0;
+            _scale = 1;
+          });
+        });
+      });
+    });
   }
 }
