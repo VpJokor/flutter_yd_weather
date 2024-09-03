@@ -36,6 +36,9 @@ class AppRuntimeData {
     if (weatherData != null) {
       _weatherDataMap[saveKey] = weatherData;
       SpUtil.putObject(saveKey, weatherData);
+    } else {
+      _weatherDataMap.remove(saveKey);
+      SpUtil.putString(saveKey, "");
     }
   }
 

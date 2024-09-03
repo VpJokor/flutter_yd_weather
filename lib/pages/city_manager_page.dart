@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:flutter_yd_weather/base/base_list_view.dart';
+import 'package:flutter_yd_weather/config/app_runtime_data.dart';
 import 'package:flutter_yd_weather/model/city_manager_data.dart';
 import 'package:flutter_yd_weather/mvp/power_presenter.dart';
 import 'package:flutter_yd_weather/pages/provider/city_manager_provider.dart';
@@ -458,6 +459,7 @@ class CityManagerPageState extends BaseListPageState<
           SpUtil.getStringList(Constants.currentCityIdList, defValue: []) ?? [];
       currentCityIdList.remove(cityData.cityId);
       SpUtil.putStringList(Constants.currentCityIdList, currentCityIdList);
+      AppRuntimeData.instance.saveWeatherData(cityData.cityId ?? "", null);
       item.removed = true;
       provider.refresh();
       Commons.postDelayed(delayMilliseconds: 200, () {
@@ -479,6 +481,7 @@ class CityManagerPageState extends BaseListPageState<
           resetCurrentCityData = mainP.currentCityData == item.cityData;
         }
         currentCityIdList.remove(item.cityData?.cityId);
+        AppRuntimeData.instance.saveWeatherData(item.cityData?.cityId ?? "", null);
         provider.list.singleOrNull((e) => e == item)?.removed = true;
       }
       SpUtil.putStringList(Constants.currentCityIdList, currentCityIdList);

@@ -20,14 +20,24 @@ class WeatherCitySnapshot extends StatelessWidget {
   const WeatherCitySnapshot({
     super.key,
     required this.data,
+    this.colors,
+    this.needMask = true,
   });
 
   final List<WeatherItemData>? data;
+  final List<Color>? colors;
+  final bool needMask;
 
   @override
   Widget build(BuildContext context) {
-    final weatherData = data?.getOrNull(0)?.weatherData;
-    final weatherBg = WeatherDataUtils.generateWeatherBg(weatherData);
+    final colors = this.colors;
+    final weatherBg = colors == null
+        ? WeatherDataUtils.generateWeatherBg(data?.getOrNull(0)?.weatherData)
+        : LinearGradient(
+            colors: [...colors],
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+          );
     final isDark = WeatherDataUtils.isDark(weatherBg);
     double height = 0;
     final weatherContent = data?.mapIndexed(
@@ -125,7 +135,7 @@ class WeatherCitySnapshot extends StatelessWidget {
           ),
         ),
         Visibility(
-          visible: context.isDark,
+          visible: needMask && context.isDark,
           child: Container(
             decoration: BoxDecoration(
               gradient: LinearGradient(

@@ -309,11 +309,7 @@ class ScrollSnapListState extends State<ScrollSnapList> {
 
   ///Determine location if initialIndex is set
   void focusToInitialPosition() {
-    widget.listController.animateTo(
-      (widget.initialIndex! * widget.itemSize),
-      duration: const Duration(milliseconds: 300),
-      curve: Curves.decelerate,
-    );
+    widget.listController.jumpTo((widget.initialIndex! * widget.itemSize));
   }
 
   ///Trigger callback on reach end-of-list

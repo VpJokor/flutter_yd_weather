@@ -1,4 +1,7 @@
 import 'package:flutter/foundation.dart';
+import 'package:flutter_yd_weather/model/weather_bg_model.dart';
+
+import '../res/colours.dart';
 
 class Constants {
   /// App运行在Release环境时，inProduction为true；当App运行在Debug和Profile环境时，inProduction为false
@@ -15,7 +18,9 @@ class Constants {
   static const String currentCityId = 'currentCityId';
   static const String currentCityIdList = 'currentCityIdList';
   static const String currentWeatherCardSort = 'currentWeatherCardSort';
-  static const String currentWeatherObservesCardSort = 'currentWeatherObservesCardSort';
+  static const String currentWeatherObservesCardSort =
+      'currentWeatherObservesCardSort';
+  static const String currentWeatherBgMap = 'currentWeatherBgMap';
 
   static const int cityDataTypeId = 1;
   static const int simpleWeatherDataTypeId = 2;
@@ -47,6 +52,8 @@ class Constants {
 
   static const int itemStickyHeight = 32;
   static const int itemObservePanelHeight = 128;
+
+  static const int maxWeatherBgCount = 6;
 
   static const String dd = "dd";
   static const String yyyymmdd = "yyyyMMdd";
@@ -82,4 +89,122 @@ class Constants {
     "${Constants.itemTypeObserveVisibility}",
     "${Constants.itemTypeObserveForecast40}",
   ];
+
+  static Map<String, List<WeatherBgModel>> defaultWeatherBgMap = {
+    "CLEAR": [
+      WeatherBgModel(
+        isSelected: true,
+        colors: [
+          Colours.colorF47359.value,
+          Colours.colorF1AB80.value,
+        ],
+        nightColors: [
+          Colours.color1A1B30.value,
+          Colours.color2E3C54.value,
+        ],
+      ),
+    ],
+    "PARTLY_CLOUDY": [
+      WeatherBgModel(
+        isSelected: true,
+        colors: [
+          Colours.colorABB7C4.value,
+          Colours.colorB6C7CD.value,
+        ],
+        nightColors: [
+          Colours.color2E336C.value,
+          Colours.color64648D.value,
+        ],
+      ),
+    ],
+    "CLOUDY": [
+      WeatherBgModel(
+        isSelected: true,
+        colors: [
+          Colours.color58677F.value,
+          Colours.color828D9E.value,
+        ],
+        nightColors: [
+          Colours.color1E2232.value,
+          Colours.color354359.value,
+        ],
+      ),
+    ],
+    "LIGHT_HAZE": [
+      WeatherBgModel(
+        isSelected: true,
+        colors: [
+          Colours.colorBC8E3E.value,
+          Colours.colorE5BB62.value,
+        ],
+      ),
+    ],
+    "HEAVY_HAZE": [
+      WeatherBgModel(
+        isSelected: true,
+        colors: [
+          Colours.colorB77B32.value,
+          Colours.colorF7BA66.value,
+        ],
+      ),
+    ],
+    "LIGHT_RAIN": [
+      WeatherBgModel(
+        isSelected: true,
+        colors: [
+          Colours.color5E738D.value,
+          Colours.color8F9AAD.value,
+        ],
+        nightColors: [
+          Colours.color171A2A.value,
+          Colours.color3C4354.value,
+        ],
+      ),
+    ],
+    "MODERATE_RAIN": [
+      WeatherBgModel(
+        isSelected: true,
+        colors: [
+          Colours.color171A2A.value,
+          Colours.color3C4354.value,
+        ],
+      ),
+    ],
+    "FOG": [
+      WeatherBgModel(
+        isSelected: true,
+        colors: [
+          Colours.colorABB7C4.value,
+          Colours.colorB6C7CD.value,
+        ],
+      ),
+    ],
+    "LIGHT_SNOW": [
+      WeatherBgModel(
+        isSelected: true,
+        colors: [
+          Colours.colorABB7C4.value,
+          Colours.colorB6C7CD.value,
+        ],
+      ),
+    ],
+    "DUST": [
+      WeatherBgModel(
+        isSelected: true,
+        colors: [
+          Colours.colorF7CB6A.value,
+          Colours.colorFDA085.value,
+        ],
+      ),
+    ],
+    "WIND": [
+      WeatherBgModel(
+        isSelected: true,
+        colors: [
+          Colours.color4776B0.value,
+          Colours.colorE9A4B4.value,
+        ],
+      ),
+    ],
+  };
 }

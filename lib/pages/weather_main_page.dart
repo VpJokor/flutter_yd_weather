@@ -79,11 +79,11 @@ class _WeatherMainPageState
         _weatherMainPresenter.obtainWeatherData(delayMilliseconds: 200);
       }
     });
-    context.read<MainProvider>().onWeatherCardSortChanged =
-        (currentWeatherCardSort) {
+    final mainP = context.read<MainProvider>();
+    mainP.onWeatherCardSortChanged = (currentWeatherCardSort) {
       provider.reorder(currentWeatherCardSort);
     };
-    context.read<MainProvider>().onWeatherObservesCardSortChanged =
+    mainP.onWeatherObservesCardSortChanged =
         (currentWeatherCardSort, currentWeatherObservesCardSort) {
       provider.reorderObserves(
           currentWeatherCardSort, currentWeatherObservesCardSort);
@@ -292,6 +292,13 @@ class _WeatherMainPageState
       builder: (_) {
         return WeatherCitySelector(
           key: _weatherCitySelectorKey,
+          changeWeatherBgCallback: () {
+            NavigatorUtils.push(
+              context,
+              AppRouter.weatherBgListPage,
+              transition: TransitionType.inFromBottom,
+            );
+          },
         );
       },
     );

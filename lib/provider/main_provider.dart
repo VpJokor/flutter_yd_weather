@@ -1,11 +1,13 @@
 import 'package:fluro/fluro.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_yd_weather/main.dart';
+import 'package:flutter_yd_weather/utils/commons_ext.dart';
 import 'package:hive/hive.dart';
 import 'package:sp_util/sp_util.dart';
 
 import '../config/constants.dart';
 import '../model/city_data.dart';
+import '../model/weather_bg_model.dart';
 import '../routers/fluro_navigator.dart';
 import '../routers/routers.dart';
 import '../utils/toast_utils.dart';
@@ -76,8 +78,37 @@ class MainProvider extends ChangeNotifier {
         ?.then((success) {
       debugPrint("currentWeatherObservesCardSort success = $success");
       if (success) {
-        _onWeatherObservesCardSortChanged?.call(currentWeatherCardSort, currentWeatherObservesCardSort);
+        _onWeatherObservesCardSortChanged?.call(
+            currentWeatherCardSort, currentWeatherObservesCardSort);
       }
+    });
+  }
+
+  final Map<String, List<WeatherBgModel>> _weatherBgMap = {};
+
+  Map<String, List<WeatherBgModel>> getWeatherBgMap() {
+    if (_weatherBgMap.isEmpty) {
+      final currentWeatherBgMap =
+          SpUtil.getObject(Constants.currentWeatherBgMap)
+              as Map<String, List<WeatherBgModel>>?;
+      _weatherBgMap.addAll(Constants.defaultWeatherBgMap.map((e1, e2) {
+        e2.addAll(currentWeatherBgMap?[e1] ?? []);
+        return MapEntry(e1, e2);
+      }));
+    }
+    return _weatherBgMap;
+  }
+
+  void addWeatherBg(String weatherType, WeatherBgModel weatherBgModel) {
+    final currentWeatherBgMap = (SpUtil.getObject(Constants.currentWeatherBgMap)
+            as Map<String, List<WeatherBgModel>>?) ??
+        {};
+    final list = currentWeatherBgMap[weatherType] ?? [];
+    list.add(weatherBgModel);
+    currentWeatherBgMap[weatherType] = list;
+    SpUtil.putObject(Constants.currentWeatherBgMap, currentWeatherBgMap)
+        ?.then((success) {
+      _weatherBgMap[weatherType]?.add(weatherBgModel);
     });
   }
 

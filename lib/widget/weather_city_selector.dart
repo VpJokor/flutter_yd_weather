@@ -25,7 +25,12 @@ import '../provider/main_provider.dart';
 import '../res/colours.dart';
 
 class WeatherCitySelector extends StatefulWidget {
-  const WeatherCitySelector({super.key});
+  const WeatherCitySelector({
+    super.key,
+    this.changeWeatherBgCallback,
+  });
+
+  final void Function()? changeWeatherBgCallback;
 
   @override
   State<StatefulWidget> createState() => WeatherCitySelectorState();
@@ -94,8 +99,12 @@ class WeatherCitySelectorState extends State<WeatherCitySelector>
     _animationController.reverse();
   }
 
-  void _dismiss() {
-    SmartDialog.dismiss(tag: "WeatherCitySelector");
+  void _dismiss({bool changeWeatherBg = false}) {
+    SmartDialog.dismiss(tag: "WeatherCitySelector").then((_) {
+      if (changeWeatherBg) {
+        widget.changeWeatherBgCallback?.call();
+      }
+    });
   }
 
   @override
@@ -110,8 +119,9 @@ class WeatherCitySelectorState extends State<WeatherCitySelector>
             width: double.infinity,
             height: double.infinity,
             color: ColorUtils.adjustAlpha(
-                Colours.black.withOpacity(0.1), animValue),
-            blur: 15 * animValue,
+                Colours.black.withOpacity(0.15), animValue),
+            blur: 18 * animValue,
+            borderRadius: BorderRadius.zero,
             child: Stack(
               children: [
                 Align(
@@ -164,12 +174,12 @@ class WeatherCitySelectorState extends State<WeatherCitySelector>
                     child: ScaleLayout(
                       scale: 0.95,
                       child: Container(
-                        width: 148.w,
+                        width: 172.w,
                         height: 42.w,
                         alignment: Alignment.center,
                         margin: EdgeInsets.only(bottom: 42.w),
                         decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(12.w),
+                          borderRadius: BorderRadius.circular(100.w),
                           color: Colours.black.withOpacity(0.2),
                           border: Border.all(
                             width: 0.5.w,
@@ -179,12 +189,14 @@ class WeatherCitySelectorState extends State<WeatherCitySelector>
                         child: Text(
                           "更改天气背景",
                           style: TextStyle(
-                            fontSize: 15.sp,
+                            fontSize: 16.sp,
                             color: Colours.white,
                           ),
                         ),
                       ),
-                      onPressed: () {},
+                      onPressed: () {
+                        _dismiss(changeWeatherBg: true);
+                      },
                     ),
                   ),
                 ),
