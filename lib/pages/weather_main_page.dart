@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
+import 'package:flutter_yd_weather/config/app_runtime_data.dart';
 import 'package:flutter_yd_weather/main.dart';
 import 'package:flutter_yd_weather/mvp/power_presenter.dart';
 import 'package:flutter_yd_weather/pages/city_manager_page.dart';
@@ -79,6 +80,10 @@ class _WeatherMainPageState
         _weatherMainPresenter.obtainWeatherData(delayMilliseconds: 200);
       }
     });
+    AppRuntimeData.instance.onWeatherBgChanged = () {
+      provider.onWeatherBgChanged();
+      _refreshStatusBar();
+    };
     final mainP = context.read<MainProvider>();
     mainP.onWeatherCardSortChanged = (currentWeatherCardSort) {
       provider.reorder(currentWeatherCardSort);
@@ -102,11 +107,7 @@ class _WeatherMainPageState
           });
         } else if (status == AnimationStatus.dismissed) {
           _cityManagerPageKey.currentState?.hide(cityId);
-          setState(() {
-            _systemUiOverlayStyle = provider.isDark
-                ? SystemUiOverlayStyle.light
-                : SystemUiOverlayStyle.dark;
-          });
+          _refreshStatusBar();
         }
       });
     _animation = Tween<double>(begin: 0, end: 1).animate(_animationController);
@@ -115,6 +116,7 @@ class _WeatherMainPageState
   @override
   void dispose() {
     super.dispose();
+    AppRuntimeData.instance.dispose();
     _refreshWeatherDataEventSubscription.cancel();
     _switchWeatherCityEventSubscription.cancel();
     _animationController.dispose();
@@ -251,7 +253,7 @@ class _WeatherMainPageState
                           width: 20.w,
                           height: 20.w,
                           color:
-                              provider.isDark ? Colours.white : Colours.black,
+                              provider.isWeatherHeaderDark ? Colours.white : Colours.black,
                         ),
                       ),
                       onPressed: () {
@@ -399,11 +401,7 @@ class _WeatherMainPageState
 
   @override
   Widget? getFooter(WeatherProvider provider) {
-    final weatherBgColor = provider.weatherBg?.colors.firstOrNull();
-    final isDark = weatherBgColor == null
-        ? false
-        : ThemeData.estimateBrightnessForColor(weatherBgColor) ==
-            Brightness.dark;
+    final isDark = provider.isDark;
     final source = provider.list.firstOrNull()?.weatherData?.source?.title;
     return source.isNullOrEmpty()
         ? null
@@ -499,16 +497,20 @@ class _WeatherMainPageState
       );
   }
 
+  void _refreshStatusBar() {
+    setState(() {
+      _systemUiOverlayStyle = provider.isWeatherHeaderDark
+          ? SystemUiOverlayStyle.light
+          : SystemUiOverlayStyle.dark;
+    });
+  }
+
   @override
   void obtainWeatherDataCallback(bool isAdd) {
     _weatherHeaderKey.currentState?.refreshComplete();
     _cityManagerPageKey.currentState?.refresh(isAdd);
     if (!_isShowCityManagerPage) {
-      setState(() {
-        _systemUiOverlayStyle = provider.isDark
-            ? SystemUiOverlayStyle.light
-            : SystemUiOverlayStyle.dark;
-      });
+      _refreshStatusBar();
     }
   }
 }

@@ -19,11 +19,13 @@ class WeatherObservePanel extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isDark = context.read<WeatherProvider>().isDark;
+    final mainP = context.read<WeatherProvider>();
     return WeatherObserveStaticPanel(
       data: data,
       shrinkOffset: shrinkOffset,
-      isDark: isDark,
+      isDark: mainP.isDark,
+      isWeatherHeaderDark: mainP.isWeatherHeaderDark,
+      panelOpacity: mainP.panelOpacity,
       showHideWeatherContent: showHideWeatherContent,
     );
   }

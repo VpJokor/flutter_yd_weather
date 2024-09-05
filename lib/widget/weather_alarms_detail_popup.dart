@@ -18,6 +18,7 @@ class WeatherAlarmsDetailPopup extends StatefulWidget {
     required this.initHeight,
     this.index = 0,
     required this.isDark,
+    required this.panelOpacity,
     this.onIndexChanged,
   });
 
@@ -25,6 +26,7 @@ class WeatherAlarmsDetailPopup extends StatefulWidget {
   final double initHeight;
   final int index;
   final bool isDark;
+  final double panelOpacity;
   final List<WeatherAlarmsData> alarms;
   final ValueChanged<int>? onIndexChanged;
 
@@ -108,7 +110,7 @@ class WeatherAlarmsDetailPopupState extends State<WeatherAlarmsDetailPopup> {
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(12.w),
             color: (widget.isDark ? Colours.white : Colours.black)
-                .withOpacity(0.1),
+                .withOpacity(widget.panelOpacity),
           ),
           child: Stack(
             children: [

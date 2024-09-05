@@ -24,11 +24,13 @@ class WeatherAirQualityPanel extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isDark = context.read<WeatherProvider>().isDark;
+    final mainP = context.read<WeatherProvider>();
+    final isDark = mainP.isDark;
     return WeatherAirQualityStaticPanel(
       weatherItemData: data,
       shrinkOffset: shrinkOffset,
       isDark: isDark,
+      panelOpacity: mainP.panelOpacity,
       stackKey: _key,
       onTap: () {
         showHideWeatherContent?.call(false);
@@ -58,6 +60,7 @@ class WeatherAirQualityPanel extends StatelessWidget {
               key: _airQualityDetailPopupKey,
               initPosition: contentPosition,
               isDark: isDark,
+              panelOpacity: mainP.panelOpacity,
               evn: data.weatherData?.evn,
             );
           },

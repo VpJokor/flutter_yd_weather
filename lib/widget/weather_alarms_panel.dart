@@ -46,11 +46,13 @@ class _WeatherAlarmsPanelState extends State<WeatherAlarmsPanel> {
 
   @override
   Widget build(BuildContext context) {
-    final isDark = context.read<WeatherProvider>().isDark;
+    final mainP = context.read<WeatherProvider>();
+    final isDark = mainP.isDark;
     return WeatherAlarmsStaticPanel(
       weatherItemData: widget.data,
       shrinkOffset: widget.shrinkOffset,
       isDark: isDark,
+      panelOpacity: mainP.panelOpacity,
       stackKey: _key,
       swiperController: _swiperController,
       index: _index,
@@ -93,6 +95,7 @@ class _WeatherAlarmsPanelState extends State<WeatherAlarmsPanel> {
               initHeight: contentHeight,
               index: _index,
               isDark: isDark,
+              panelOpacity: mainP.panelOpacity,
               onIndexChanged: (index) {
                 _swiperController.move(index);
               },

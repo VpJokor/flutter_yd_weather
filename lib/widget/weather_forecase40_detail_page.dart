@@ -26,6 +26,8 @@ class WeatherForecase40DetailPage extends StatefulWidget {
     required this.initPosition,
     required this.size,
     required this.isDark,
+    required this.isWeatherHeaderDark,
+    required this.panelOpacity,
     required this.forecast40,
     required this.forecast40Data,
     required this.meta,
@@ -34,6 +36,8 @@ class WeatherForecase40DetailPage extends StatefulWidget {
   final Offset initPosition;
   final Size size;
   final bool isDark;
+  final bool isWeatherHeaderDark;
+  final double panelOpacity;
   final List<WeatherDetailData>? forecast40;
   final WeatherForecast40Data? forecast40Data;
   final WeatherMetaData? meta;
@@ -180,7 +184,7 @@ class WeatherForecase40DetailPageState
                         "ic_close_icon1",
                         width: 22.w,
                         height: 22.w,
-                        color: widget.isDark ? Colours.white : Colours.black,
+                        color: widget.isWeatherHeaderDark ? Colours.white : Colours.black,
                       ),
                     ),
                     onPressed: () {
@@ -195,7 +199,7 @@ class WeatherForecase40DetailPageState
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       fontSize: 20.sp,
-                      color: widget.isDark ? Colours.white : Colours.black,
+                      color: widget.isWeatherHeaderDark ? Colours.white : Colours.black,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
@@ -233,7 +237,7 @@ class WeatherForecase40DetailPageState
                               color: (widget.isDark
                                       ? Colours.white
                                       : Colours.black)
-                                  .withOpacity(0.1),
+                                  .withOpacity(widget.panelOpacity),
                             ),
                             child: AnimatedOpacity(
                               opacity: _opacity2,
@@ -379,7 +383,7 @@ class WeatherForecase40DetailPageState
                                                 ? (widget.isDark
                                                         ? Colours.black
                                                         : Colours.white)
-                                                    .withOpacity(0.1)
+                                                    .withOpacity(widget.panelOpacity)
                                                 : null,
                                           ),
                                         ),
@@ -622,7 +626,7 @@ class WeatherForecase40DetailPageState
       height: 288.w,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(12.w),
-        color: (widget.isDark ? Colours.white : Colours.black).withOpacity(0.1),
+        color: (widget.isDark ? Colours.white : Colours.black).withOpacity(widget.panelOpacity),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,

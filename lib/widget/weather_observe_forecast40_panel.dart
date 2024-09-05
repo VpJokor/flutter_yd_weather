@@ -18,6 +18,8 @@ class WeatherObserveForecase40Panel extends StatelessWidget {
     required this.data,
     required this.shrinkOffset,
     required this.isDark,
+    required this.isWeatherHeaderDark,
+    required this.panelOpacity,
     this.showHideWeatherContent,
   });
 
@@ -28,6 +30,8 @@ class WeatherObserveForecase40Panel extends StatelessWidget {
   final _forecase40DetailPageKey =
       GlobalKey<WeatherForecase40DetailPageState>();
   final bool isDark;
+  final bool isWeatherHeaderDark;
+  final double panelOpacity;
 
   @override
   Widget build(BuildContext context) {
@@ -75,6 +79,8 @@ class WeatherObserveForecase40Panel extends StatelessWidget {
                 initPosition: contentPosition,
                 size: size,
                 isDark: isDark,
+                isWeatherHeaderDark: isWeatherHeaderDark,
+                panelOpacity: panelOpacity,
                 forecast40Data: weatherItemData.weatherData?.forecast40Data,
                 forecast40: weatherItemData.weatherData?.forecast40,
                 meta: weatherItemData.weatherData?.meta,
@@ -95,7 +101,7 @@ class WeatherObserveForecase40Panel extends StatelessWidget {
                 height: double.infinity,
                 blur: 5,
                 color:
-                    (isDark ? Colours.white : Colours.black).withOpacity(0.1),
+                    (isDark ? Colours.white : Colours.black).withOpacity(panelOpacity),
                 borderRadius: BorderRadius.circular(12.w),
                 padding: EdgeInsets.only(
                   top: Constants.itemStickyHeight.w,

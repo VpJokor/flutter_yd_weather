@@ -15,6 +15,7 @@ import 'package:flutter_yd_weather/widget/yd_reorderable_list.dart';
 import 'package:provider/provider.dart';
 import '../res/colours.dart';
 import '../utils/commons.dart';
+import '../utils/weather_data_utils.dart';
 import 'city_manager_slidable_action.dart';
 import 'load_asset_image.dart';
 
@@ -49,6 +50,15 @@ class CityManagerItemState extends State<CityManagerItem>
     final weatherData = cityData?.weatherData;
     widget.cityManagerData.slidableController ??= SlidableController(this);
     final isLocationCity = cityData?.isLocationCity ?? false;
+    final weatherBg = WeatherBgUtils.generateWeatherBg(
+      weatherData?.weatherType ?? "",
+      Commons.isNight(
+        DateTime.now(),
+        sunrise: weatherData?.sunrise,
+        sunset: weatherData?.sunset,
+      ),
+    );
+    final isDark = WeatherDataUtils.isWeatherHeaderDark(weatherBg);
     final content = Padding(
       padding: EdgeInsets.symmetric(horizontal: 16.w),
       child: Slidable(
@@ -102,14 +112,7 @@ class CityManagerItemState extends State<CityManagerItem>
             alignment: Alignment.center,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(16.w),
-              gradient: WeatherBgUtils.getWeatherBg(
-                weatherData?.weatherType ?? "",
-                Commons.isNight(
-                  DateTime.now(),
-                  sunrise: weatherData?.sunrise,
-                  sunset: weatherData?.sunset,
-                ),
-              ),
+              gradient: weatherBg,
             ),
             child: Stack(
               children: [
@@ -150,6 +153,7 @@ class CityManagerItemState extends State<CityManagerItem>
                               "ic_menu_icon",
                               width: 24.w,
                               height: 24.w,
+                              color: isDark ? Colours.white : Colours.black,
                             ),
                           ),
                         ),
@@ -180,7 +184,7 @@ class CityManagerItemState extends State<CityManagerItem>
                                                         weatherData?.city ?? "",
                                                     textStyle: TextStyle(
                                                       fontSize: 20.sp,
-                                                      color: Colours.white,
+                                                      color: isDark ? Colours.white : Colours.black,
                                                       height: 1,
                                                       fontFamily: "RobotoLight",
                                                     ),
@@ -192,7 +196,7 @@ class CityManagerItemState extends State<CityManagerItem>
                                                       "writing_icon_location1",
                                                       width: 22.w,
                                                       height: 22.w,
-                                                      color: Colours.white,
+                                                      color: isDark ? Colours.white : Colours.black,
                                                     ),
                                                   ),
                                                 ],
@@ -206,7 +210,7 @@ class CityManagerItemState extends State<CityManagerItem>
                                         "${weatherData?.weatherDesc} ${weatherData?.tempHigh.getTemp()} / ${weatherData?.tempLow.getTemp()}",
                                         style: TextStyle(
                                           fontSize: 14.sp,
-                                          color: Colours.white,
+                                          color: isDark ? Colours.white : Colours.black,
                                           fontFamily: "RobotoLight",
                                           height: 1,
                                         ),
@@ -220,7 +224,7 @@ class CityManagerItemState extends State<CityManagerItem>
                                       weatherData?.temp.getTemp() ?? "",
                                       style: TextStyle(
                                         fontSize: 38.sp,
-                                        color: Colours.white,
+                                        color: isDark ? Colours.white : Colours.black,
                                         height: 1,
                                         fontFamily: "RobotoLight",
                                       ),
@@ -251,6 +255,7 @@ class CityManagerItemState extends State<CityManagerItem>
                                                 "ic_check_icon",
                                                 width: 22.w,
                                                 height: 22.w,
+                                                color: isDark ? Colours.white : Colours.black,
                                               ),
                                             ),
                                             AnimatedVisibility(

@@ -18,11 +18,13 @@ class AirQualityDetailPopup extends StatefulWidget {
     super.key,
     required this.initPosition,
     required this.isDark,
+    required this.panelOpacity,
     required this.evn,
   });
 
   final Offset initPosition;
   final bool isDark;
+  final double panelOpacity;
   final WeatherEnvData? evn;
 
   @override
@@ -93,7 +95,7 @@ class AirQualityDetailPopupState extends State<AirQualityDetailPopup> {
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(12.w),
                 color: (widget.isDark ? Colours.white : Colours.black)
-                    .withOpacity(0.1),
+                    .withOpacity(widget.panelOpacity),
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -189,7 +191,7 @@ class AirQualityDetailPopupState extends State<AirQualityDetailPopup> {
       alignment: Alignment.center,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(12.w),
-        color: (widget.isDark ? Colours.white : Colours.black).withOpacity(0.1),
+        color: (widget.isDark ? Colours.white : Colours.black).withOpacity(widget.panelOpacity),
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,

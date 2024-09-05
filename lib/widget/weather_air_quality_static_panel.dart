@@ -21,6 +21,7 @@ class WeatherAirQualityStaticPanel extends StatelessWidget {
     required this.weatherItemData,
     required this.shrinkOffset,
     required this.isDark,
+    required this.panelOpacity,
     this.onTap,
     this.stackKey,
   });
@@ -28,6 +29,7 @@ class WeatherAirQualityStaticPanel extends StatelessWidget {
   final WeatherItemData weatherItemData;
   final double shrinkOffset;
   final bool isDark;
+  final double panelOpacity;
   final VoidCallback? onTap;
   final GlobalKey? stackKey;
 
@@ -56,7 +58,7 @@ class WeatherAirQualityStaticPanel extends StatelessWidget {
               padding: EdgeInsets.only(
                 top: min(shrinkOffset, Constants.itemStickyHeight.w),
               ),
-              color: (isDark ? Colours.white : Colours.black).withOpacity(0.1),
+              color: (isDark ? Colours.white : Colours.black).withOpacity(panelOpacity),
               borderRadius: BorderRadius.circular(12.w),
               useBlurry: false,
               child: Stack(

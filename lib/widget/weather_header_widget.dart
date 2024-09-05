@@ -1,15 +1,11 @@
-import 'package:common_utils/common_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:flutter_yd_weather/config/constants.dart';
 import 'package:flutter_yd_weather/model/weather_item_data.dart';
-import 'package:flutter_yd_weather/res/gaps.dart';
 import 'package:flutter_yd_weather/utils/commons.dart';
 import 'package:flutter_yd_weather/utils/commons_ext.dart';
-import 'package:flutter_yd_weather/widget/auto_size_text.dart';
-import 'package:flutter_yd_weather/widget/load_asset_image.dart';
 import 'package:flutter_yd_weather/widget/weather_header_popup_menu.dart';
 import 'package:flutter_yd_weather/widget/weather_header_static_panel.dart';
 import 'package:provider/provider.dart';
@@ -162,7 +158,7 @@ class WeatherHeaderWidgetState extends State<WeatherHeaderWidget> {
         _refreshStatus == Constants.refreshed) {
       refreshDesc = "刷新完成";
     }
-    final isDark = context.read<WeatherProvider>().isDark;
+    final isDark = context.read<WeatherProvider>().isWeatherHeaderDark;
     return WeatherHeaderStaticPanel(
       isDark: isDark,
       weatherData: weatherData,

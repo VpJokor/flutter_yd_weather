@@ -19,12 +19,14 @@ class WeatherHourStaticPanel extends StatelessWidget {
     required this.weatherItemData,
     required this.shrinkOffset,
     required this.isDark,
+    required this.panelOpacity,
     this.physics,
   });
 
   final WeatherItemData weatherItemData;
   final double shrinkOffset;
   final bool isDark;
+  final double panelOpacity;
   final ScrollPhysics? physics;
 
   @override
@@ -55,7 +57,7 @@ class WeatherHourStaticPanel extends StatelessWidget {
             padding: EdgeInsets.only(
               top: Constants.itemStickyHeight.w,
             ),
-            color: (isDark ? Colours.white : Colours.black).withOpacity(0.1),
+            color: (isDark ? Colours.white : Colours.black).withOpacity(panelOpacity),
             borderRadius: BorderRadius.circular(12.w),
             useBlurry: false,
             child: Stack(

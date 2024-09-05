@@ -17,11 +17,13 @@ class WeatherObserveWdPanel extends StatelessWidget {
     required this.data,
     required this.shrinkOffset,
     required this.isDark,
+    required this.panelOpacity,
   });
 
   final WeatherItemData data;
   final double shrinkOffset;
   final bool isDark;
+  final double panelOpacity;
 
   @override
   Widget build(BuildContext context) {
@@ -44,7 +46,7 @@ class WeatherObserveWdPanel extends StatelessWidget {
               width: double.infinity,
               height: double.infinity,
               blur: 5,
-              color: (isDark ? Colours.white : Colours.black).withOpacity(0.1),
+              color: (isDark ? Colours.white : Colours.black).withOpacity(panelOpacity),
               borderRadius: BorderRadius.circular(12.w),
               padding: EdgeInsets.only(
                 top: Constants.itemStickyHeight.w,

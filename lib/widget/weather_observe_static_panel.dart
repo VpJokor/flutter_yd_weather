@@ -19,12 +19,16 @@ class WeatherObserveStaticPanel extends StatelessWidget {
     required this.data,
     required this.shrinkOffset,
     required this.isDark,
+    required this.isWeatherHeaderDark,
+    required this.panelOpacity,
     this.showHideWeatherContent,
   });
 
   final WeatherItemData data;
   final double shrinkOffset;
   final bool isDark;
+  final bool isWeatherHeaderDark;
+  final double panelOpacity;
   final void Function(bool show)? showHideWeatherContent;
 
   @override
@@ -65,6 +69,7 @@ class WeatherObserveStaticPanel extends StatelessWidget {
                 data: data,
                 shrinkOffset: fixedShrinkOffset,
                 isDark: isDark,
+                panelOpacity: panelOpacity,
               ),
               index,
             ),
@@ -77,6 +82,7 @@ class WeatherObserveStaticPanel extends StatelessWidget {
                 data: data,
                 shrinkOffset: fixedShrinkOffset,
                 isDark: isDark,
+                panelOpacity: panelOpacity,
               ),
               index,
             ),
@@ -89,6 +95,7 @@ class WeatherObserveStaticPanel extends StatelessWidget {
                 data: data,
                 shrinkOffset: fixedShrinkOffset,
                 isDark: isDark,
+                panelOpacity: panelOpacity,
               ),
               index,
             ),
@@ -101,6 +108,7 @@ class WeatherObserveStaticPanel extends StatelessWidget {
                 data: data,
                 shrinkOffset: fixedShrinkOffset,
                 isDark: isDark,
+                panelOpacity: panelOpacity,
               ),
               index,
             ),
@@ -113,6 +121,7 @@ class WeatherObserveStaticPanel extends StatelessWidget {
                 data: data,
                 shrinkOffset: fixedShrinkOffset,
                 isDark: isDark,
+                panelOpacity: panelOpacity,
               ),
               index,
             ),
@@ -125,6 +134,7 @@ class WeatherObserveStaticPanel extends StatelessWidget {
                 data: data,
                 shrinkOffset: fixedShrinkOffset,
                 isDark: isDark,
+                panelOpacity: panelOpacity,
               ),
               index,
             ),
@@ -137,6 +147,7 @@ class WeatherObserveStaticPanel extends StatelessWidget {
                 data: data,
                 shrinkOffset: fixedShrinkOffset,
                 isDark: isDark,
+                panelOpacity: panelOpacity,
               ),
               index,
             ),
@@ -150,6 +161,8 @@ class WeatherObserveStaticPanel extends StatelessWidget {
                 shrinkOffset: fixedShrinkOffset,
                 showHideWeatherContent: showHideWeatherContent,
                 isDark: isDark,
+                isWeatherHeaderDark: isWeatherHeaderDark,
+                panelOpacity: panelOpacity,
               ),
               index,
             ),

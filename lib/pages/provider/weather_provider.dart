@@ -1,31 +1,35 @@
-import 'package:common_utils/common_utils.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_yd_weather/config/constants.dart';
 import 'package:flutter_yd_weather/model/weather_data.dart';
-import 'package:flutter_yd_weather/model/weather_hour_data.dart';
 import 'package:flutter_yd_weather/model/weather_item_data.dart';
+import 'package:flutter_yd_weather/utils/color_utils.dart';
 import 'package:flutter_yd_weather/utils/commons_ext.dart';
 import 'package:flutter_yd_weather/utils/weather_data_utils.dart';
 
 import '../../base/base_list_provider.dart';
-import '../../utils/commons.dart';
-import '../../utils/weather_bg_utils.dart';
 
 class WeatherProvider extends BaseListProvider<WeatherItemData> {
   LinearGradient? _weatherBg;
 
   LinearGradient? get weatherBg => _weatherBg;
 
+  bool _isWeatherHeaderDark = false;
+
+  bool get isWeatherHeaderDark => _isWeatherHeaderDark;
+
   bool _isDark = false;
 
   bool get isDark => _isDark;
 
+  double _panelOpacity = 0.1;
+
+  double get panelOpacity => _panelOpacity;
+
   void setWeatherData(List<int> currentWeatherSort,
       List<int> currentWeatherObservesCardSort, WeatherData? weatherData) {
     _weatherBg = WeatherDataUtils.generateWeatherBg(weatherData);
+    _isWeatherHeaderDark = WeatherDataUtils.isWeatherHeaderDark(_weatherBg);
     _isDark = WeatherDataUtils.isDark(_weatherBg);
+    _panelOpacity = WeatherDataUtils.calPanelOpacity(_weatherBg);
     final weatherItems = WeatherDataUtils.generateWeatherItems(
         currentWeatherSort, currentWeatherObservesCardSort, weatherData);
     replace(weatherItems);
@@ -46,6 +50,15 @@ class WeatherProvider extends BaseListProvider<WeatherItemData> {
         list.firstOrNull()?.weatherData);
   }
 
+  void onWeatherBgChanged() {
+    _weatherBg =
+        WeatherDataUtils.generateWeatherBg(list.firstOrNull()?.weatherData);
+    _isWeatherHeaderDark = WeatherDataUtils.isWeatherHeaderDark(_weatherBg);
+    _isDark = WeatherDataUtils.isDark(_weatherBg);
+    _panelOpacity = WeatherDataUtils.calPanelOpacity(_weatherBg);
+    notifyListeners();
+  }
+
   void generateWeatherBg(
     WeatherData? weatherData, {
     String? cacheWeatherType,
@@ -58,7 +71,8 @@ class WeatherProvider extends BaseListProvider<WeatherItemData> {
       cacheSunrise: cacheSunrise,
       cacheSunset: cacheSunset,
     );
+    _isWeatherHeaderDark = WeatherDataUtils.isWeatherHeaderDark(_weatherBg);
     _isDark = WeatherDataUtils.isDark(_weatherBg);
+    _panelOpacity = WeatherDataUtils.calPanelOpacity(_weatherBg);
   }
-
 }

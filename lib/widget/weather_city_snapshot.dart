@@ -39,6 +39,7 @@ class WeatherCitySnapshot extends StatelessWidget {
             end: Alignment.bottomCenter,
           );
     final isDark = WeatherDataUtils.isDark(weatherBg);
+    final panelOpacity = WeatherDataUtils.calPanelOpacity(weatherBg);
     double height = 0;
     final weatherContent = data?.mapIndexed(
           (item, index) {
@@ -50,7 +51,7 @@ class WeatherCitySnapshot extends StatelessWidget {
             final marginTop = index > 1 ? 12.w : 0.w;
             if (itemType == Constants.itemTypeWeatherHeader) {
               return WeatherHeaderStaticPanel(
-                isDark: isDark,
+                isDark: WeatherDataUtils.isWeatherHeaderDark(weatherBg),
                 weatherData: item.weatherData,
                 marginTopContainerHeight: 44.w,
                 height: item.maxHeight,
@@ -63,6 +64,7 @@ class WeatherCitySnapshot extends StatelessWidget {
                   weatherItemData: item,
                   shrinkOffset: 0,
                   isDark: isDark,
+                  panelOpacity: panelOpacity,
                   physics: const NeverScrollableScrollPhysics(),
                 ),
               );
@@ -74,6 +76,7 @@ class WeatherCitySnapshot extends StatelessWidget {
                   weatherItemData: item,
                   shrinkOffset: 0,
                   isDark: isDark,
+                  panelOpacity: panelOpacity,
                 ),
               );
             } else if (itemType == Constants.itemTypeHourWeather) {
@@ -84,6 +87,7 @@ class WeatherCitySnapshot extends StatelessWidget {
                   weatherItemData: item,
                   shrinkOffset: 0,
                   isDark: isDark,
+                  panelOpacity: panelOpacity,
                   physics: const NeverScrollableScrollPhysics(),
                 ),
               );
@@ -95,6 +99,7 @@ class WeatherCitySnapshot extends StatelessWidget {
                   weatherItemData: item,
                   shrinkOffset: 0,
                   isDark: isDark,
+                  panelOpacity: panelOpacity,
                   physics: const NeverScrollableScrollPhysics(),
                 ),
               );
@@ -106,6 +111,8 @@ class WeatherCitySnapshot extends StatelessWidget {
                   data: item,
                   shrinkOffset: 0,
                   isDark: isDark,
+                  isWeatherHeaderDark: WeatherDataUtils.isWeatherHeaderDark(weatherBg),
+                  panelOpacity: panelOpacity,
                 ),
               );
             } else if (itemType == Constants.itemTypeLifeIndex) {
@@ -116,6 +123,7 @@ class WeatherCitySnapshot extends StatelessWidget {
                   weatherItemData: item,
                   shrinkOffset: 0,
                   isDark: isDark,
+                  panelOpacity: panelOpacity,
                 ),
               );
             }

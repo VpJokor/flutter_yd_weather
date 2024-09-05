@@ -1,6 +1,7 @@
 import 'package:common_utils/common_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_yd_weather/utils/color_utils.dart';
 import 'package:flutter_yd_weather/utils/commons_ext.dart';
 import 'package:flutter_yd_weather/utils/weather_bg_utils.dart';
 
@@ -93,7 +94,8 @@ class WeatherDataUtils {
     }
   }
 
-  static LinearGradient generateWeatherBg(WeatherData? weatherData, {
+  static LinearGradient generateWeatherBg(
+    WeatherData? weatherData, {
     String? cacheWeatherType,
     String? cacheSunrise,
     String? cacheSunset,
@@ -108,7 +110,7 @@ class WeatherDataUtils {
     if (weatherType.isNullOrEmpty()) {
       weatherType = currentWeatherDetailData?.weatherType ?? "";
     }
-    return WeatherBgUtils.getWeatherBg(
+    return WeatherBgUtils.generateWeatherBg(
       weatherType,
       Commons.isNight(
         DateTime.now(),
@@ -118,12 +120,44 @@ class WeatherDataUtils {
     );
   }
 
-  static bool isDark(LinearGradient? weatherBg) {
-    final weatherBgColor = weatherBg?.colors.firstOrNull();
+  static bool isWeatherHeaderDark(LinearGradient? weatherBg) {
+    final weatherBgColor = weatherBg?.colors.getOrNull(0);
     return weatherBgColor == null
         ? false
         : ThemeData.estimateBrightnessForColor(weatherBgColor) ==
             Brightness.dark;
+  }
+
+  static bool isDark(LinearGradient? weatherBg) {
+    final weatherBgColor = weatherBg?.colors.getOrNull(1);
+    return weatherBgColor == null
+        ? false
+        : ThemeData.estimateBrightnessForColor(weatherBgColor) ==
+            Brightness.dark;
+  }
+
+  static double calPanelOpacity(LinearGradient? weatherBg) {
+    final color = weatherBg?.colors.getOrNull(1);
+    if (color == null) {
+      return 0.1;
+    } else {
+      final darkness = ColorUtils.getDarkness(color);
+      double panelOpacity =
+          double.tryParse((0.4 - darkness).abs().toStringAsFixed(1)) ?? 0.1;
+      if (panelOpacity < 0.1) panelOpacity = 0.1;
+      if (panelOpacity > 0.4) panelOpacity = 0.4;
+      debugPrint("darkness = $darkness panelOpacity = $panelOpacity");
+      return panelOpacity;
+    }
+  }
+
+  static double getDarkness(LinearGradient? weatherBg) {
+    final weatherBgColor1 = weatherBg?.colors.firstOrNull();
+    final weatherBgColor2 = weatherBg?.colors.getOrNull(1);
+    return weatherBgColor1 == null || weatherBgColor2 == null
+        ? 0
+        : ColorUtils.getDarkness(
+            ColorUtils.blendColors(weatherBgColor1, weatherBgColor2, 0.5));
   }
 
   static List<int>? _getItemTypeObserves(

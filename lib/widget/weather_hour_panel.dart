@@ -17,11 +17,12 @@ class WeatherHourPanel extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isDark = context.read<WeatherProvider>().isDark;
+    final mainP = context.read<WeatherProvider>();
     return WeatherHourStaticPanel(
       weatherItemData: data,
       shrinkOffset: shrinkOffset,
-      isDark: isDark,
+      isDark: mainP.isDark,
+      panelOpacity: mainP.panelOpacity,
     );
   }
 }

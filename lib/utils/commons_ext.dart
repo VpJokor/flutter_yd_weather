@@ -6,7 +6,6 @@ import 'package:flutter_yd_weather/model/city_data.dart';
 import 'package:flutter_yd_weather/res/colours.dart';
 import 'package:flutter_yd_weather/utils/commons.dart';
 import 'package:flutter_yd_weather/utils/theme_utils.dart';
-
 import '../config/constants.dart';
 import '../net/api.dart';
 import '../net/net_utils.dart';
@@ -225,7 +224,9 @@ extension StringExt on String? {
     final textWidth = getTextContextSizeWidth(textStyle);
     final fontSize = textStyle.fontSize ?? 0;
     if (textWidth > width) {
-      return getFitTextSize(textStyle.copyWith(fontSize: fontSize - step.sp), width, step: step);
+      return getFitTextSize(
+          textStyle.copyWith(fontSize: fontSize - step.sp), width,
+          step: step);
     }
     return fontSize;
   }
@@ -246,6 +247,11 @@ extension StringExt on String? {
 extension IntExt on int? {
   String getTemp() {
     return this == null ? "" : "$this°";
+  }
+
+  Color getColor({Color defColor = Colours.white}) {
+    if (this == null) return defColor;
+    return Color(this!);
   }
 
   Color getAqiColor() {
