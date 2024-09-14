@@ -143,9 +143,9 @@ class WeatherDataUtils {
     } else {
       final darkness = ColorUtils.getDarkness(color);
       double panelOpacity =
-          double.tryParse((0.4 - darkness).abs().toStringAsFixed(1)) ?? 0.1;
+          double.tryParse((0.3 - darkness).abs().toStringAsFixed(1)) ?? 0.1;
       if (panelOpacity < 0.1) panelOpacity = 0.1;
-      if (panelOpacity > 0.4) panelOpacity = 0.4;
+      if (panelOpacity > 0.3) panelOpacity = 0.3;
       debugPrint("darkness = $darkness panelOpacity = $panelOpacity");
       return panelOpacity;
     }
