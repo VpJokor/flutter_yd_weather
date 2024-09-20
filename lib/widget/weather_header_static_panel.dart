@@ -1,6 +1,7 @@
 import 'package:common_utils/common_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_yd_weather/model/city_data.dart';
 import 'package:flutter_yd_weather/model/weather_data.dart';
 import 'package:flutter_yd_weather/utils/commons_ext.dart';
 
@@ -15,6 +16,7 @@ class WeatherHeaderStaticPanel extends StatelessWidget {
     super.key,
     required this.isDark,
     required this.weatherData,
+    required this.cityData,
     required this.height,
     this.marginTopContainerHeight,
     this.refreshOpacity = 0,
@@ -28,6 +30,7 @@ class WeatherHeaderStaticPanel extends StatelessWidget {
 
   final bool isDark;
   final WeatherData? weatherData;
+  final CityData? cityData;
   final double? height;
   final double? marginTopContainerHeight;
   final double refreshOpacity;
@@ -45,6 +48,10 @@ class WeatherHeaderStaticPanel extends StatelessWidget {
           element.date ==
           DateUtil.formatDate(DateTime.now(), format: Constants.yyyymmdd),
     );
+    final isLocationCity = cityData?.isLocationCity ?? false;
+    final street = cityData?.street ?? "";
+    final city = weatherData?.meta?.city ?? "";
+    final title = !isLocationCity || street.isNullOrEmpty() ? city : "$city $street";
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -96,7 +103,7 @@ class WeatherHeaderStaticPanel extends StatelessWidget {
                     margin: EdgeInsets.symmetric(horizontal: 60.w),
                     alignment: Alignment.center,
                     child: AutoSizeText(
-                      text: weatherData?.meta?.city ?? "",
+                      text: title,
                       textStyle: TextStyle(
                         fontSize: 28.sp,
                         color: (isDark ? Colours.white : Colours.black),

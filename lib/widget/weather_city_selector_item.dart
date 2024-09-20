@@ -27,6 +27,7 @@ class WeatherCitySelectorItem extends StatelessWidget {
           alignment: Alignment.topLeft,
           scale: 0.6,
           child: WeatherCitySnapshot(
+            cityData: pair?.first,
             data: pair?.second,
           ),
         ),

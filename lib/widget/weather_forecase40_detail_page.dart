@@ -3,6 +3,7 @@ import 'package:card_swiper/card_swiper.dart';
 import 'package:common_utils/common_utils.dart';
 import 'package:easy_refresh/easy_refresh.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:flutter_yd_weather/config/constants.dart';
@@ -721,6 +722,9 @@ class WeatherForecase40DetailPageState
               maxTempData: maxTempData,
               minTempData: minTempData,
               callback: (currentSelectedItem) {
+                if (_currentSelectedItem != currentSelectedItem) {
+                  HapticFeedback.lightImpact();
+                }
                 final index = _pageData.indexWhere((e) =>
                     e.singleOrNull(
                         (e1) => e1.date == currentSelectedItem?.date) !=

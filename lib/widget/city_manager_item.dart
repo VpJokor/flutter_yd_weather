@@ -1,5 +1,6 @@
 import 'package:animated_visibility/animated_visibility.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:flutter_yd_weather/main.dart';
@@ -14,6 +15,7 @@ import 'package:flutter_yd_weather/widget/scale_layout.dart';
 import 'package:flutter_yd_weather/widget/yd_reorderable_list.dart';
 import 'package:provider/provider.dart';
 import '../res/colours.dart';
+import '../utils/color_utils.dart';
 import '../utils/commons.dart';
 import '../utils/weather_data_utils.dart';
 import 'city_manager_slidable_action.dart';
@@ -47,9 +49,12 @@ class CityManagerItemState extends State<CityManagerItem>
   Widget build(BuildContext context) {
     final mainP = context.read<MainProvider>();
     final cityData = widget.cityManagerData.cityData;
-    final weatherData = cityData?.weatherData;
-    widget.cityManagerData.slidableController ??= SlidableController(this);
     final isLocationCity = cityData?.isLocationCity ?? false;
+    final weatherData = cityData?.weatherData;
+    final street = cityData?.street ?? "";
+    final city = weatherData?.city ?? "";
+    final title = !isLocationCity || street.isNullOrEmpty() ? city : "$city $street";
+    widget.cityManagerData.slidableController ??= SlidableController(this);
     final weatherBg = WeatherBgUtils.generateWeatherBg(
       weatherData?.weatherType ?? "",
       Commons.isNight(
@@ -58,6 +63,12 @@ class CityManagerItemState extends State<CityManagerItem>
         sunset: weatherData?.sunset,
       ),
     );
+    final color1 = weatherBg.colors.getOrNull(0) ?? Colours.white;
+    final color2 = weatherBg.colors.getOrNull(1) ?? Colours.white;
+    final similarity1 =
+        ColorUtils.calSimilarity(context.backgroundColor, color1);
+    final similarity2 =
+        ColorUtils.calSimilarity(context.backgroundColor, color2);
     final isDark = WeatherDataUtils.isWeatherHeaderDark(weatherBg);
     final content = Padding(
       padding: EdgeInsets.symmetric(horizontal: 16.w),
@@ -102,6 +113,7 @@ class CityManagerItemState extends State<CityManagerItem>
           },
           onLongPressed: isLocationCity
               ? () {
+                  HapticFeedback.lightImpact();
                   widget.toEditMode?.call(widget.cityManagerData);
                 }
               : null,
@@ -113,6 +125,12 @@ class CityManagerItemState extends State<CityManagerItem>
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(16.w),
               gradient: weatherBg,
+              border: similarity1 > 0.95 && similarity2 > 0.95
+                  ? Border.all(
+                      width: 1.w,
+                      color: context.black,
+                    )
+                  : null,
             ),
             child: Stack(
               children: [
@@ -180,11 +198,12 @@ class CityManagerItemState extends State<CityManagerItem>
                                               return Row(
                                                 children: [
                                                   AutoSizeText(
-                                                    text:
-                                                        weatherData?.city ?? "",
+                                                    text: title,
                                                     textStyle: TextStyle(
                                                       fontSize: 20.sp,
-                                                      color: isDark ? Colours.white : Colours.black,
+                                                      color: isDark
+                                                          ? Colours.white
+                                                          : Colours.black,
                                                       height: 1,
                                                       fontFamily: "RobotoLight",
                                                     ),
@@ -196,7 +215,9 @@ class CityManagerItemState extends State<CityManagerItem>
                                                       "writing_icon_location1",
                                                       width: 22.w,
                                                       height: 22.w,
-                                                      color: isDark ? Colours.white : Colours.black,
+                                                      color: isDark
+                                                          ? Colours.white
+                                                          : Colours.black,
                                                     ),
                                                   ),
                                                 ],
@@ -210,7 +231,9 @@ class CityManagerItemState extends State<CityManagerItem>
                                         "${weatherData?.weatherDesc} ${weatherData?.tempHigh.getTemp()} / ${weatherData?.tempLow.getTemp()}",
                                         style: TextStyle(
                                           fontSize: 14.sp,
-                                          color: isDark ? Colours.white : Colours.black,
+                                          color: isDark
+                                              ? Colours.white
+                                              : Colours.black,
                                           fontFamily: "RobotoLight",
                                           height: 1,
                                         ),
@@ -224,7 +247,9 @@ class CityManagerItemState extends State<CityManagerItem>
                                       weatherData?.temp.getTemp() ?? "",
                                       style: TextStyle(
                                         fontSize: 38.sp,
-                                        color: isDark ? Colours.white : Colours.black,
+                                        color: isDark
+                                            ? Colours.white
+                                            : Colours.black,
                                         height: 1,
                                         fontFamily: "RobotoLight",
                                       ),
@@ -255,7 +280,9 @@ class CityManagerItemState extends State<CityManagerItem>
                                                 "ic_check_icon",
                                                 width: 22.w,
                                                 height: 22.w,
-                                                color: isDark ? Colours.white : Colours.black,
+                                                color: isDark
+                                                    ? Colours.white
+                                                    : Colours.black,
                                               ),
                                             ),
                                             AnimatedVisibility(

@@ -14,26 +14,28 @@ class CityData {
   @HiveField(1)
   String? name;
   @HiveField(2)
-  String? country;
+  String? street;
   @HiveField(3)
-  String? upper;
+  String? country;
   @HiveField(4)
-  String? prov;
+  String? upper;
   @HiveField(5)
-  int? type;
+  String? prov;
   @HiveField(6)
+  int? type;
+  @HiveField(7)
   @JsonKey(name: "prov_en")
   String? provEn;
-  @HiveField(7)
+  @HiveField(8)
   @JsonKey(name: "cityid")
   String? cityId;
-  @HiveField(8)
+  @HiveField(9)
   @JsonKey(name: "city_level_id")
   String? cityLevelId;
-  @HiveField(9)
+  @HiveField(10)
   @JsonKey(includeFromJson: false, includeToJson: false)
   bool? isLocationCity;
-  @HiveField(10)
+  @HiveField(11)
   @JsonKey(includeFromJson: false, includeToJson: false)
   SimpleWeatherData? weatherData;
 

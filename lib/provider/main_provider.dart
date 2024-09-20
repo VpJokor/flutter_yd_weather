@@ -103,6 +103,20 @@ class MainProvider extends ChangeNotifier {
     }
   }
 
+  void updateCity(CityData? cityData) {
+    if (cityData == null) {
+      Toast.show("数据异常，请稍后再试");
+      return;
+    }
+    final isLocationCity = cityData.isLocationCity ?? false;
+    cityDataBox
+        .put(isLocationCity ? Constants.locationCityId : cityData.cityId,
+            cityData)
+        .then((_) {
+      currentCityData = cityData;
+    });
+  }
+
   void addCity(BuildContext context, bool hasAdded, CityData? cityData) {
     if (cityData == null) {
       Toast.show("数据异常，请稍后再试");

@@ -32,6 +32,9 @@ import '../model/weather_item_data.dart';
 import '../res/colours.dart';
 import 'package:flutter_yd_weather/utils/commons_ext.dart';
 
+import '../utils/color_utils.dart';
+import '../utils/weather_main_painter.dart';
+
 class WeatherMainPage extends StatefulWidget {
   const WeatherMainPage({super.key});
 
@@ -142,17 +145,66 @@ class _WeatherMainPageState
                 final clipRectAnimValue = _isShowCityManagerPage
                     ? (animValue * 1.25).fixPercent()
                     : 1 - animValue;
+                final clipper = WeatherMainClipper(
+                  fromRect: _isShowCityManagerPage ? null : _weatherContentRect,
+                  toRect: _isShowCityManagerPage ? _weatherContentRect : null,
+                  animValue: clipRectAnimValue,
+                  radius: 16.w * animValue,
+                );
+                final opacity = 1 - ((animValue - 0.8) / 0.2).fixPercent();
+                final color1 =
+                    provider.weatherBg?.colors.getOrNull(0) ?? Colours.white;
+                final color2 =
+                    provider.weatherBg?.colors.getOrNull(1) ?? Colours.white;
+                final similarity1 =
+                    ColorUtils.calSimilarity(context.backgroundColor, color1);
+                final similarity2 =
+                    ColorUtils.calSimilarity(context.backgroundColor, color2);
                 return ClipPath(
-                  clipper: WeatherMainClipper(
-                    fromRect:
-                        _isShowCityManagerPage ? null : _weatherContentRect,
-                    toRect: _isShowCityManagerPage ? _weatherContentRect : null,
-                    animValue: clipRectAnimValue,
-                    radius: 16.w * animValue,
-                  ),
+                  clipper: clipper,
                   child: Offstage(
                     offstage: animValue >= 1,
-                    child: super.build(context),
+                    child: AnimatedOpacity(
+                      opacity: opacity,
+                      duration: Duration.zero,
+                      child: Stack(
+                        children: [
+                          AnimatedContainer(
+                            duration: const Duration(milliseconds: 600),
+                            decoration: BoxDecoration(
+                              gradient: provider.weatherBg,
+                            ),
+                          ),
+                          Visibility(
+                            visible: context.isDark,
+                            child: Container(
+                              decoration: BoxDecoration(
+                                gradient: LinearGradient(
+                                  colors: [
+                                    Colours.black.withOpacity(0.2),
+                                    Colours.black.withOpacity(0.1),
+                                  ],
+                                  begin: Alignment.topCenter,
+                                  end: Alignment.bottomCenter,
+                                ),
+                              ),
+                            ),
+                          ),
+                          CustomPaint(
+                            size: Size.infinite,
+                            painter: similarity1 > 0.95 && similarity2 > 0.95
+                                ? WeatherMainPainter(
+                                    weatherMainClipper: clipper,
+                                    borderWidth: 1.w * animValue,
+                                    borderColor:
+                                        context.black.withOpacity(animValue),
+                                  )
+                                : null,
+                            child: super.build(context),
+                          ),
+                        ],
+                      ),
+                    ),
                   ),
                 );
               },
@@ -181,91 +233,61 @@ class _WeatherMainPageState
   @override
   Widget getRoot(WeatherProvider provider) {
     final animValue = _animation.value;
-    final opacity1 = 1 - ((animValue - 0.8) / 0.2).fixPercent();
-    final opacity2 = _isShowCityManagerPage
+    final opacity = _isShowCityManagerPage
         ? ((0.2 - animValue) / 0.2).fixPercent()
         : 1 - ((animValue - 0.8) / 0.2).fixPercent();
     final weatherHeaderItemData = provider.list.singleOrNull(
         (element) => element.itemType == Constants.itemTypeWeatherHeader);
     final content = AnimatedOpacity(
-      opacity: opacity1,
+      opacity: opacity,
       duration: Duration.zero,
-      child: Stack(
-        children: [
-          AnimatedContainer(
-            duration: const Duration(milliseconds: 600),
-            decoration: BoxDecoration(
-              gradient: provider.weatherBg,
+      child: AnimatedOpacity(
+        opacity: _weatherContentOpacity,
+        duration: const Duration(milliseconds: 200),
+        child: Stack(
+          children: [
+            Padding(
+              padding: EdgeInsets.only(
+                top: ScreenUtil().statusBarHeight +
+                    (weatherHeaderItemData?.minHeight ?? 0),
+              ),
+              child: Listener(
+                onPointerUp: (_) {
+                  _weatherHeaderKey.currentState?.onRelease();
+                },
+                child: super.getRoot(provider),
+              ),
             ),
-          ),
-          Visibility(
-            visible: context.isDark,
-            child: Container(
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  colors: [
-                    Colours.black.withOpacity(0.2),
-                    Colours.black.withOpacity(0.1),
-                  ],
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
+            WeatherHeaderWidget(
+              key: _weatherHeaderKey,
+              weatherItemData: weatherHeaderItemData,
+              onRefresh: () {
+                _weatherMainPresenter.obtainWeatherData(delayMilliseconds: 400);
+              },
+            ),
+            Positioned(
+              right: 0,
+              top: ScreenUtil().statusBarHeight,
+              child: OpacityLayout(
+                child: Container(
+                  padding: EdgeInsets.all(12.w),
+                  margin: EdgeInsets.all(8.w),
+                  child: LoadAssetImage(
+                    "ic_add",
+                    width: 20.w,
+                    height: 20.w,
+                    color: provider.isWeatherHeaderDark
+                        ? Colours.white
+                        : Colours.black,
+                  ),
                 ),
+                onPressed: () {
+                  _showCityManagerPage();
+                },
               ),
             ),
-          ),
-          AnimatedOpacity(
-            opacity: opacity2,
-            duration: Duration.zero,
-            child: AnimatedOpacity(
-              opacity: _weatherContentOpacity,
-              duration: const Duration(milliseconds: 200),
-              child: Stack(
-                children: [
-                  Padding(
-                    padding: EdgeInsets.only(
-                      top: ScreenUtil().statusBarHeight +
-                          (weatherHeaderItemData?.minHeight ?? 0),
-                    ),
-                    child: Listener(
-                      onPointerUp: (_) {
-                        _weatherHeaderKey.currentState?.onRelease();
-                      },
-                      child: super.getRoot(provider),
-                    ),
-                  ),
-                  WeatherHeaderWidget(
-                    key: _weatherHeaderKey,
-                    weatherItemData: weatherHeaderItemData,
-                    onRefresh: () {
-                      _weatherMainPresenter.obtainWeatherData(
-                          delayMilliseconds: 400);
-                    },
-                  ),
-                  Positioned(
-                    right: 0,
-                    top: ScreenUtil().statusBarHeight,
-                    child: OpacityLayout(
-                      child: Container(
-                        padding: EdgeInsets.all(12.w),
-                        margin: EdgeInsets.all(8.w),
-                        child: LoadAssetImage(
-                          "ic_add",
-                          width: 20.w,
-                          height: 20.w,
-                          color:
-                              provider.isWeatherHeaderDark ? Colours.white : Colours.black,
-                        ),
-                      ),
-                      onPressed: () {
-                        _showCityManagerPage();
-                      },
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
     return GestureDetector(
@@ -506,7 +528,7 @@ class _WeatherMainPageState
   }
 
   @override
-  void obtainWeatherDataCallback(bool isAdd) {
+  void obtainWeatherDataCallback(bool isAdd, reObtainWeatherData) {
     _weatherHeaderKey.currentState?.refreshComplete();
     _cityManagerPageKey.currentState?.refresh(isAdd);
     if (!_isShowCityManagerPage) {

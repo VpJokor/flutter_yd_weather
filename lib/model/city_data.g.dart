@@ -19,43 +19,46 @@ class CityDataAdapter extends TypeAdapter<CityData> {
     return CityData(
       fields[0] as String?,
       fields[1] as String?,
-      fields[2] as String?,
       fields[3] as String?,
       fields[4] as String?,
-      fields[5] as int?,
-      fields[6] as String?,
+      fields[5] as String?,
+      fields[6] as int?,
       fields[7] as String?,
       fields[8] as String?,
+      fields[9] as String?,
     )
-      ..isLocationCity = fields[9] as bool?
-      ..weatherData = fields[10] as SimpleWeatherData?;
+      ..street = fields[2] as String?
+      ..isLocationCity = fields[10] as bool?
+      ..weatherData = fields[11] as SimpleWeatherData?;
   }
 
   @override
   void write(BinaryWriter writer, CityData obj) {
     writer
-      ..writeByte(11)
+      ..writeByte(12)
       ..writeByte(0)
       ..write(obj.cityLevelName)
       ..writeByte(1)
       ..write(obj.name)
       ..writeByte(2)
-      ..write(obj.country)
+      ..write(obj.street)
       ..writeByte(3)
-      ..write(obj.upper)
+      ..write(obj.country)
       ..writeByte(4)
-      ..write(obj.prov)
+      ..write(obj.upper)
       ..writeByte(5)
-      ..write(obj.type)
+      ..write(obj.prov)
       ..writeByte(6)
-      ..write(obj.provEn)
+      ..write(obj.type)
       ..writeByte(7)
-      ..write(obj.cityId)
+      ..write(obj.provEn)
       ..writeByte(8)
-      ..write(obj.cityLevelId)
+      ..write(obj.cityId)
       ..writeByte(9)
-      ..write(obj.isLocationCity)
+      ..write(obj.cityLevelId)
       ..writeByte(10)
+      ..write(obj.isLocationCity)
+      ..writeByte(11)
       ..write(obj.weatherData);
   }
 
@@ -84,11 +87,12 @@ CityData _$CityDataFromJson(Map<String, dynamic> json) => CityData(
       json['prov_en'] as String?,
       json['cityid'] as String?,
       json['city_level_id'] as String?,
-    );
+    )..street = json['street'] as String?;
 
 Map<String, dynamic> _$CityDataToJson(CityData instance) => <String, dynamic>{
       'city_level_name': instance.cityLevelName,
       'name': instance.name,
+      'street': instance.street,
       'country': instance.country,
       'upper': instance.upper,
       'prov': instance.prov,

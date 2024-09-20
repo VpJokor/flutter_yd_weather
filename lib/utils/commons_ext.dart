@@ -170,12 +170,14 @@ extension StringExt on String? {
     TextDirection textDirection = TextDirection.ltr,
     Locale? locale,
     double maxWidth = double.infinity,
+    TextAlign textAlign = TextAlign.start,
   }) {
     TextPainter textPainter = TextPainter(
       // 用于选择用户的语言和格式首选项的标识符。
       locale: locale,
       // 最大行数
       maxLines: maxLines,
+      textAlign: textAlign,
       // 文本书写方向l to r 汉字从左到右
       textDirection: textDirection,
       // 文本内容以及文本样式 style:可以根据在代码中设置的TextStyle增加字段。
@@ -196,12 +198,14 @@ extension StringExt on String? {
     TextDirection textDirection = TextDirection.ltr,
     Locale? locale,
     double maxWidth = double.infinity,
+    TextAlign textAlign = TextAlign.start,
   }) {
     TextPainter textPainter = TextPainter(
       // 用于选择用户的语言和格式首选项的标识符。
       locale: locale,
       // 最大行数
       maxLines: maxLines,
+      textAlign: textAlign,
       // 文本书写方向l to r 汉字从左到右
       textDirection: textDirection,
       // 文本内容以及文本样式 style:可以根据在代码中设置的TextStyle增加字段。

@@ -1,17 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:flutter_yd_weather/config/constants.dart';
 import 'package:flutter_yd_weather/model/weather_item_data.dart';
+import 'package:flutter_yd_weather/provider/main_provider.dart';
 import 'package:flutter_yd_weather/utils/commons.dart';
 import 'package:flutter_yd_weather/utils/commons_ext.dart';
-import 'package:flutter_yd_weather/widget/weather_header_popup_menu.dart';
 import 'package:flutter_yd_weather/widget/weather_header_static_panel.dart';
 import 'package:provider/provider.dart';
-
 import '../pages/provider/weather_provider.dart';
-import '../res/colours.dart';
 import '../utils/log.dart';
 
 class WeatherHeaderWidget extends StatefulWidget {
@@ -41,8 +37,6 @@ class WeatherHeaderWidgetState extends State<WeatherHeaderWidget> {
   double _opacity4 = 0;
   double _refreshOpacity = 0;
   int _refreshStatus = Constants.refreshNone;
-
-  final _weatherHeaderPopupMenuKey = GlobalKey<WeatherHeaderPopupMenuState>();
 
   @override
   void initState() {
@@ -121,33 +115,6 @@ class WeatherHeaderWidgetState extends State<WeatherHeaderWidget> {
     }
   }
 
-  void _showWeatherHeaderPopupMenu(LongPressStartDetails details) {
-    final initPosition = details.globalPosition;
-    HapticFeedback.lightImpact();
-    SmartDialog.show(
-      tag: "WeatherHeaderPopupMenu",
-      maskColor: Colours.transparent,
-      animationTime: const Duration(milliseconds: 200),
-      clickMaskDismiss: true,
-      onDismiss: () {
-        _weatherHeaderPopupMenuKey.currentState?.exit();
-      },
-      animationBuilder: (
-        controller,
-        child,
-        animationParam,
-      ) {
-        return child;
-      },
-      builder: (_) {
-        return WeatherHeaderPopupMenu(
-          key: _weatherHeaderPopupMenuKey,
-          initPosition: initPosition,
-        );
-      },
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     final weatherData = widget.weatherItemData?.weatherData;
@@ -162,6 +129,7 @@ class WeatherHeaderWidgetState extends State<WeatherHeaderWidget> {
     return WeatherHeaderStaticPanel(
       isDark: isDark,
       weatherData: weatherData,
+      cityData: context.read<MainProvider>().currentCityData,
       height: _currentHeight,
       marginTopContainerHeight: _marginTop,
       refreshOpacity: _refreshOpacity,

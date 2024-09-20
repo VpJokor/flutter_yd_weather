@@ -1,5 +1,3 @@
-import 'dart:ffi';
-
 import 'package:flutter_yd_weather/config/app_runtime_data.dart';
 import 'package:flutter_yd_weather/config/constants.dart';
 import 'package:flutter_yd_weather/model/simple_weather_data.dart';
@@ -28,6 +26,7 @@ class WeatherMainPresenter extends BasePagePresenter<WeatherMainView> {
   Future<dynamic> obtainWeatherData({
     int delayMilliseconds = 0,
     bool isAdd = false,
+    bool reObtainWeatherData = false,
   }) {
     final mainP = view.getContext().read<MainProvider>();
     final isLocationCity = mainP.currentCityData!.isLocationCity ?? false;
@@ -62,12 +61,15 @@ class WeatherMainPresenter extends BasePagePresenter<WeatherMainView> {
       }
       _checkLocationCity(mainP).then((reObtainWeatherData) {
         if (reObtainWeatherData) {
-          obtainWeatherData(delayMilliseconds: delayMilliseconds, isAdd: isAdd);
+          obtainWeatherData(
+              delayMilliseconds: delayMilliseconds,
+              isAdd: isAdd,
+              reObtainWeatherData: true);
         }
       });
-      view.obtainWeatherDataCallback(isAdd);
+      view.obtainWeatherDataCallback(isAdd, reObtainWeatherData);
     }, onError: (_) {
-      view.obtainWeatherDataCallback(false);
+      view.obtainWeatherDataCallback(false, reObtainWeatherData);
     });
   }
 
@@ -82,6 +84,8 @@ class WeatherMainPresenter extends BasePagePresenter<WeatherMainView> {
           final province = locationData.addressComponent?.province ?? "";
           if (mainP.currentCityData?.name ==
                   locationData.addressComponent?.district &&
+              mainP.currentCityData?.street ==
+                  locationData.addressComponent?.street &&
               (province.contains(mainP.currentCityData?.prov ?? "") ||
                   (mainP.currentCityData?.prov ?? "").contains(province))) {
             /// 定位位置相同
@@ -96,7 +100,8 @@ class WeatherMainPresenter extends BasePagePresenter<WeatherMainView> {
                       (element.prov ?? "").contains(province)));
               if (find != null) {
                 find.isLocationCity = true;
-                mainP.currentCityData = find;
+                find.street = locationData.addressComponent?.street;
+                mainP.updateCity(find);
                 return Future.value(true);
               }
             }

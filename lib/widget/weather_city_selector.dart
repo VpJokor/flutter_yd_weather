@@ -39,6 +39,7 @@ class WeatherCitySelector extends StatefulWidget {
 class WeatherCitySelectorState extends State<WeatherCitySelector>
     with SingleTickerProviderStateMixin {
   final _list = <Pair<CityData?, List<WeatherItemData>>>[];
+  CityData? _currentCityData;
   List<WeatherItemData>? _currentData;
   late AnimationController _animationController;
   late Animation<double> _animation;
@@ -59,6 +60,7 @@ class WeatherCitySelectorState extends State<WeatherCitySelector>
   }
 
   Future<void> _generateData() async {
+    _list.clear();
     final mainP = context.read<MainProvider>();
     final currentCityIdList =
         SpUtil.getStringList(Constants.currentCityIdList) ?? [];
@@ -120,7 +122,7 @@ class WeatherCitySelectorState extends State<WeatherCitySelector>
             height: double.infinity,
             color: ColorUtils.adjustAlpha(
                 Colours.black.withOpacity(0.15), animValue),
-            blur: 18 * animValue,
+            blur: 25 * animValue,
             borderRadius: BorderRadius.zero,
             child: Stack(
               children: [
@@ -212,6 +214,7 @@ class WeatherCitySelectorState extends State<WeatherCitySelector>
                       }
                     },
                     child: WeatherCitySnapshot(
+                      cityData: _currentCityData,
                       data: _currentData,
                     ),
                   ),
@@ -227,6 +230,7 @@ class WeatherCitySelectorState extends State<WeatherCitySelector>
   void _switchWeatherCity(int index, int delay) {
     Commons.postDelayed(delayMilliseconds: delay, () {
       setState(() {
+        _currentCityData = _list[index].first;
         _currentData = _list[index].second;
         Commons.postDelayed(delayMilliseconds: 200, () {
           final mainP = context.read<MainProvider>();

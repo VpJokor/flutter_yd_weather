@@ -95,15 +95,15 @@ class LifeIndexDialogState extends State<LifeIndexDialog> {
   void _calContentSize() {
     final name = _data?.name ?? "";
     final desc = _data?.desc ?? "";
-    final maxWidth = ScreenUtil().screenWidth - 2 * 16.w;
+    final maxWidth = ScreenUtil().screenWidth - 2 * 16.w - 2 * 8.w;
     final nameTextWidth =
-        name.getTextContextSizeWidth(_nameTextStyle, maxWidth: maxWidth);
+    name.getTextContextSizeWidth(_nameTextStyle, maxWidth: maxWidth);
     final descTextWidth =
-        desc.getTextContextSizeWidth(_descTextStyle, maxWidth: maxWidth);
+    desc.getTextContextSizeWidth(_descTextStyle, maxWidth: maxWidth, textAlign: TextAlign.justify);
     final nameTextHeight =
-        name.getTextContextSizeHeight(_nameTextStyle, maxWidth: maxWidth);
+    name.getTextContextSizeHeight(_nameTextStyle, maxWidth: maxWidth);
     final descTextHeight =
-        desc.getTextContextSizeHeight(_descTextStyle, maxWidth: maxWidth);
+    desc.getTextContextSizeHeight(_descTextStyle, maxWidth: maxWidth, textAlign: TextAlign.justify);
     _contentWidth = 2 * 8.w + max(nameTextWidth, descTextWidth);
     _contentHeight = 3 * 8.w + nameTextHeight + descTextHeight;
   }
@@ -128,14 +128,14 @@ class LifeIndexDialogState extends State<LifeIndexDialog> {
                 arrowAngle: 6.w,
                 position: _column == 0
                     ? BubblePosition.start(
-                        _position.dx - 16.w + widget.size * 0.5 - 6.w)
+                    _position.dx - 16.w + widget.size * 0.5 - 6.w)
                     : (_column == 1
-                        ? const BubblePosition.center(0)
-                        : BubblePosition.end(ScreenUtil().screenWidth -
-                            _position.dx -
-                            16.w -
-                            widget.size * 0.5 -
-                            6.w)),
+                    ? const BubblePosition.center(0)
+                    : BubblePosition.end(ScreenUtil().screenWidth -
+                    _position.dx -
+                    16.w -
+                    widget.size * 0.5 -
+                    6.w)),
               ),
               backgroundColor: Colours.white,
               padding: EdgeInsets.zero,

@@ -205,6 +205,7 @@ class _SelectCityPageState
                   (element.prov ?? "").contains(province)));
           if (find != null) {
             find.isLocationCity = true;
+            find.street = locationData.addressComponent?.street;
             mainP.addCity(context, false, find);
           }
         }

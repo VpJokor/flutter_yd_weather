@@ -441,7 +441,9 @@ class CityManagerPageState extends BaseListPageState<
       });
     } else {
       provider.list.forEachIndexed((e, index) {
-        if (e.cityData == mainP.currentCityData) {
+        if (e.cityData == mainP.currentCityData ||
+            (e.cityData?.isLocationCity == true &&
+                mainP.currentCityData?.isLocationCity == true)) {
           e.cityData = mainP.currentCityData;
           provider.set(index, e, refresh: false);
         }
@@ -481,7 +483,8 @@ class CityManagerPageState extends BaseListPageState<
           resetCurrentCityData = mainP.currentCityData == item.cityData;
         }
         currentCityIdList.remove(item.cityData?.cityId);
-        AppRuntimeData.instance.saveWeatherData(item.cityData?.cityId ?? "", null);
+        AppRuntimeData.instance
+            .saveWeatherData(item.cityData?.cityId ?? "", null);
         provider.list.singleOrNull((e) => e == item)?.removed = true;
       }
       SpUtil.putStringList(Constants.currentCityIdList, currentCityIdList);

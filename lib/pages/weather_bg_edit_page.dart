@@ -176,6 +176,7 @@ class _WeatherBgEditPageState extends State<WeatherBgEditPage>
                             alignment: Alignment.topCenter,
                             scale: scale,
                             child: WeatherCitySnapshot(
+                              cityData: mainP.currentCityData,
                               data: data,
                               needMask: false,
                               colors: (_isNight ? _nightColors : _colors)

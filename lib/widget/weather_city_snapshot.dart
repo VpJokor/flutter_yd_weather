@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_yd_weather/model/city_data.dart';
 import 'package:flutter_yd_weather/utils/commons_ext.dart';
 import 'package:flutter_yd_weather/utils/theme_utils.dart';
 import 'package:flutter_yd_weather/widget/weather_air_quality_static_panel.dart';
@@ -19,11 +20,13 @@ import '../utils/weather_data_utils.dart';
 class WeatherCitySnapshot extends StatelessWidget {
   const WeatherCitySnapshot({
     super.key,
+    required this.cityData,
     required this.data,
     this.colors,
     this.needMask = true,
   });
 
+  final CityData? cityData;
   final List<WeatherItemData>? data;
   final List<Color>? colors;
   final bool needMask;
@@ -53,6 +56,7 @@ class WeatherCitySnapshot extends StatelessWidget {
               return WeatherHeaderStaticPanel(
                 isDark: WeatherDataUtils.isWeatherHeaderDark(weatherBg),
                 weatherData: item.weatherData,
+                cityData: cityData,
                 marginTopContainerHeight: 44.w,
                 height: item.maxHeight,
               );
