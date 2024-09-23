@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_yd_weather/res/colours.dart';
 import 'package:flutter_yd_weather/utils/commons.dart';
@@ -53,6 +54,9 @@ class WeatherBgColorSelectorState extends State<WeatherBgColorSelector> {
         double marginLeft = (constraints.maxWidth - widget.height) * percent;
         return GestureDetector(
           onPanUpdate: (details) {
+            if (details.delta.dx.abs() > 0.2) {
+              HapticFeedback.lightImpact();
+            }
             final position = details.localPosition;
             final movePercent =
                 (position.dx / constraints.maxWidth).fixPercent();

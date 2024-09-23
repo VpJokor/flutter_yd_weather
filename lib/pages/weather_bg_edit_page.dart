@@ -1,6 +1,8 @@
 import 'package:bubble_box/bubble_box.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:flutter_yd_weather/config/app_runtime_data.dart';
 import 'package:flutter_yd_weather/config/constants.dart';
 import 'package:flutter_yd_weather/provider/main_provider.dart';
@@ -10,6 +12,7 @@ import 'package:flutter_yd_weather/routers/fluro_navigator.dart';
 import 'package:flutter_yd_weather/utils/commons.dart';
 import 'package:flutter_yd_weather/utils/commons_ext.dart';
 import 'package:flutter_yd_weather/utils/theme_utils.dart';
+import 'package:flutter_yd_weather/widget/color_input_dialog.dart';
 import 'package:flutter_yd_weather/widget/opacity_layout.dart';
 import 'package:flutter_yd_weather/widget/scale_layout.dart';
 import 'package:flutter_yd_weather/widget/weather_bg_color_selector.dart';
@@ -44,11 +47,13 @@ class _WeatherBgEditPageState extends State<WeatherBgEditPage>
   final _hColorSelectorKey = GlobalKey<WeatherBgColorSelectorState>();
   final _sColorSelectorKey = GlobalKey<WeatherBgColorSelectorState>();
   final _vColorSelectorKey = GlobalKey<WeatherBgColorSelectorState>();
+  final _colorInputDialogKey = GlobalKey<ColorInputDialogState>();
   List<Color> _colors = [];
   List<Color> _nightColors = [];
   List<HSVColor> _hsvColors = [];
   List<HSVColor> _hsvNightColors = [];
   bool _isStartSelected = true;
+  SystemUiOverlayStyle? _systemUiOverlayStyle;
 
   @override
   void initState() {
@@ -80,9 +85,10 @@ class _WeatherBgEditPageState extends State<WeatherBgEditPage>
       weatherData,
     );
     return AnnotatedRegion(
-      value: context.systemUiOverlayStyle,
+      value: _systemUiOverlayStyle ?? context.systemUiOverlayStyle,
       child: Scaffold(
         backgroundColor: context.backgroundColor,
+        resizeToAvoidBottomInset: false,
         body: Column(
           children: [
             Gaps.generateGap(height: ScreenUtil().statusBarHeight),
@@ -211,6 +217,8 @@ class _WeatherBgEditPageState extends State<WeatherBgEditPage>
                                       _isStartSelected = true;
                                       _changeColorSelectorValue();
                                       setState(() {});
+                                    } else {
+                                      _showColorInputDialog();
                                     }
                                   },
                                   direction: BubbleDirection.bottom,
@@ -226,6 +234,8 @@ class _WeatherBgEditPageState extends State<WeatherBgEditPage>
                                       _isStartSelected = false;
                                       _changeColorSelectorValue();
                                       setState(() {});
+                                    } else {
+                                      _showColorInputDialog();
                                     }
                                   },
                                   direction: BubbleDirection.top,
@@ -495,5 +505,49 @@ class _WeatherBgEditPageState extends State<WeatherBgEditPage>
     _hColorSelectorKey.currentState?.changeValue(hsvColor.hue);
     _sColorSelectorKey.currentState?.changeValue(hsvColor.saturation);
     _vColorSelectorKey.currentState?.changeValue(hsvColor.value);
+  }
+
+  void _showColorInputDialog() {
+    setState(() {
+      _systemUiOverlayStyle = SystemUiOverlayStyle.light;
+    });
+    SmartDialog.show(
+      tag: "ColorInputDialog",
+      clickMaskDismiss: true,
+      onDismiss: () {
+        setState(() {
+          _systemUiOverlayStyle = null;
+        });
+        _colorInputDialogKey.currentState?.exit();
+      },
+      animationTime: const Duration(milliseconds: 400),
+      animationBuilder: (
+        controller,
+        child,
+        animationParam,
+      ) {
+        return child;
+      },
+      builder: (_) {
+        return ColorInputDialog(
+          key: _colorInputDialogKey,
+          completed: (color) {
+            if (color != null) {
+              setState(() {
+                _isNight
+                    ? _nightColors[_isStartSelected ? 0 : 1] = color
+                    : _colors[_isStartSelected ? 0 : 1] = color;
+                _isNight
+                    ? _hsvNightColors[_isStartSelected ? 0 : 1] =
+                        HSVColor.fromColor(color)
+                    : _hsvColors[_isStartSelected ? 0 : 1] =
+                        HSVColor.fromColor(color);
+                _changeColorSelectorValue();
+              });
+            }
+          },
+        );
+      },
+    );
   }
 }

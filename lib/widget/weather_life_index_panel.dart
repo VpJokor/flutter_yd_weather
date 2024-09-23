@@ -61,7 +61,8 @@ class WeatherLifeIndexPanel extends StatelessWidget {
     );
   }
 
-  void _showLifeIndexDialog(int index, WeatherIndexData? item, bool lightImpact) {
+  void _showLifeIndexDialog(
+      int index, WeatherIndexData? item, bool lightImpact) {
     final contentPosition =
         (_key.currentContext?.findRenderObject() as RenderBox?)
                 ?.localToGlobal(Offset.zero) ??

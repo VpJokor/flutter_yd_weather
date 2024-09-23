@@ -1,6 +1,8 @@
 import 'dart:ui';
 import 'dart:math' as math;
 
+import 'package:flutter_yd_weather/res/colours.dart';
+
 class ColorUtils {
   /// 颜色检测只保存 #RRGGBB格式 FF透明度
   /// [color] 格式可能是材料风/十六进制/string字符串
@@ -18,6 +20,24 @@ class ColorUtils {
     String temp = color.value.toRadixString(16);
     final result = "#${temp.substring(2, 8)}";
     return toUpperCase ? result.toUpperCase() : result;
+  }
+
+  static Color? getColorFromHex(String? hexColor, {Color? defColor}) {
+    if (hexColor == null || hexColor.isEmpty) return defColor;
+    if (hexColor.length != 6 && hexColor.length != 8) return defColor;
+    if (hexColor.startsWith("#")) {
+      hexColor = hexColor.toUpperCase().replaceAll("#", "");
+    } else {
+      hexColor = hexColor.toUpperCase();
+    }
+    if (hexColor.length == 6) {
+      hexColor = "FF$hexColor";
+    }
+    try {
+      return Color(int.parse(hexColor, radix: 16));
+    } catch (err) {
+      return defColor;
+    }
   }
 
   static Color adjustAlpha(Color color, double factor) {
