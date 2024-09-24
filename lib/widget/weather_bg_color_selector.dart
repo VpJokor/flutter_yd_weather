@@ -54,10 +54,12 @@ class WeatherBgColorSelectorState extends State<WeatherBgColorSelector> {
         double marginLeft = (constraints.maxWidth - widget.height) * percent;
         return GestureDetector(
           onPanUpdate: (details) {
-            if (details.delta.dx.abs() > 0.2) {
+            final position = details.localPosition;
+            if (position.dx > 0 &&
+                position.dx < constraints.maxWidth &&
+                details.delta.dx.abs() > 0.2) {
               HapticFeedback.lightImpact();
             }
-            final position = details.localPosition;
             final movePercent =
                 (position.dx / constraints.maxWidth).fixPercent();
             debugPrint("movePercent = $movePercent");
