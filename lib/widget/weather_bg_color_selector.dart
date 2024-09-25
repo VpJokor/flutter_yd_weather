@@ -53,6 +53,9 @@ class WeatherBgColorSelectorState extends State<WeatherBgColorSelector> {
         final percent = _currentValue / widget.max;
         double marginLeft = (constraints.maxWidth - widget.height) * percent;
         return GestureDetector(
+          onPanDown: (details) {
+            _handle(details.localPosition, constraints);
+          },
           onPanUpdate: (details) {
             final position = details.localPosition;
             if (position.dx > 0 &&
@@ -60,15 +63,7 @@ class WeatherBgColorSelectorState extends State<WeatherBgColorSelector> {
                 details.delta.dx.abs() > 0.2) {
               HapticFeedback.lightImpact();
             }
-            final movePercent =
-                (position.dx / constraints.maxWidth).fixPercent();
-            debugPrint("movePercent = $movePercent");
-            setState(() {
-              _currentValue = widget.max * movePercent;
-              Commons.post((_) {
-                widget.onValueChanged?.call(_currentValue);
-              });
-            });
+            _handle(details.localPosition, constraints);
           },
           child: Stack(
             children: [
@@ -103,5 +98,17 @@ class WeatherBgColorSelectorState extends State<WeatherBgColorSelector> {
         );
       },
     );
+  }
+
+  void _handle(Offset position, BoxConstraints constraints) {
+    final movePercent =
+    (position.dx / constraints.maxWidth).fixPercent();
+    debugPrint("movePercent = $movePercent");
+    setState(() {
+      _currentValue = widget.max * movePercent;
+      Commons.post((_) {
+        widget.onValueChanged?.call(_currentValue);
+      });
+    });
   }
 }
