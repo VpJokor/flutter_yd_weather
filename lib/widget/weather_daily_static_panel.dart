@@ -323,14 +323,28 @@ class WeatherDailyStaticPanel extends StatelessWidget {
             Expanded(
               child: Row(
                 children: [
-                  Text(
-                    weatherDateTime,
-                    style: TextStyle(
-                      fontSize: 18.sp,
-                      color: Colours.white,
-                      height: 1,
-                      fontWeight: FontWeight.w600,
-                    ),
+                  Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        weatherDateTime,
+                        style: TextStyle(
+                          fontSize: 18.sp,
+                          color: Colours.white,
+                          height: 1,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      Gaps.generateGap(height: 4.w),
+                      Text(
+                        DateUtil.formatDateStr(date, format: Constants.mmdd),
+                        style: TextStyle(
+                          fontSize: 12.sp,
+                          color: Colours.white,
+                          height: 1,
+                        ),
+                      ),
+                    ],
                   ),
                   Gaps.generateGap(width: 38.w),
                   LoadAssetImage(
