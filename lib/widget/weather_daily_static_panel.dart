@@ -350,7 +350,7 @@ class WeatherDailyStaticPanel extends StatelessWidget {
                       (item?.low ?? 0).getTemp(),
                       style: TextStyle(
                         fontSize: 18.sp,
-                        color: Colours.white.withOpacity(0.5),
+                        color: Colours.white.withOpacity(isBefore ? 1 : 0.5),
                         height: 1,
                       ),
                     ),
