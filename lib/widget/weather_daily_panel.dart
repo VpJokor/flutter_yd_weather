@@ -9,10 +9,22 @@ class WeatherDailyPanel extends StatelessWidget {
     super.key,
     required this.data,
     required this.shrinkOffset,
+    this.currentDailyWeatherType,
+    this.changeLineChartDailyWeather,
+    this.changeListDailyWeather,
+    this.showHideWeatherContent,
+    this.lookMore,
+    this.isExpand,
   });
 
   final WeatherItemData data;
   final double shrinkOffset;
+  final String? currentDailyWeatherType;
+  final VoidCallback? changeLineChartDailyWeather;
+  final VoidCallback? changeListDailyWeather;
+  final void Function(bool show)? showHideWeatherContent;
+  final VoidCallback? lookMore;
+  final bool? isExpand;
 
   @override
   Widget build(BuildContext context) {
@@ -22,6 +34,11 @@ class WeatherDailyPanel extends StatelessWidget {
       shrinkOffset: shrinkOffset,
       isDark: mainP.isDark,
       panelOpacity: mainP.panelOpacity,
+      currentDailyWeatherType: currentDailyWeatherType,
+      changeLineChartDailyWeather: changeLineChartDailyWeather,
+      changeListDailyWeather: changeListDailyWeather,
+      lookMore: lookMore,
+      isExpand: isExpand,
     );
   }
 }

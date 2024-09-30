@@ -57,7 +57,8 @@ class WeatherHourStaticPanel extends StatelessWidget {
             padding: EdgeInsets.only(
               top: Constants.itemStickyHeight.w,
             ),
-            color: (isDark ? Colours.white : Colours.black).withOpacity(panelOpacity),
+            color: (isDark ? Colours.white : Colours.black)
+                .withOpacity(panelOpacity),
             borderRadius: BorderRadius.circular(12.w),
             useBlurry: false,
             child: Stack(
@@ -67,81 +68,95 @@ class WeatherHourStaticPanel extends StatelessWidget {
                   top: -shrinkOffset,
                   right: 0,
                   bottom: 0,
-                  child: ListView.separated(
-                    physics: physics,
-                    scrollDirection: Axis.horizontal,
-                    padding: EdgeInsets.only(
-                      left: 16.w,
-                      right: 16.w,
-                    ),
-                    itemCount: physics is NeverScrollableScrollPhysics
-                        ? min(6, length)
-                        : length,
-                    itemBuilder: (_, index) {
-                      final item =
-                          weatherItemData.weatherData?.hourFc.getOrNull(index);
-                      final time = item?.time ?? "";
-                      final isSunrise =
-                          item?.sunrise.isNotNullOrEmpty() ?? false;
-                      final isSunset = item?.sunset.isNotNullOrEmpty() ?? false;
-                      return Column(
-                        children: [
-                          Gaps.generateGap(height: 4.w),
-                          Text(
-                            isSunrise
-                                ? (item?.sunrise ?? "")
-                                : isSunset
-                                    ? (item?.sunset ?? "")
-                                    : time.getWeatherHourTime(
-                                        sunrise:
-                                            currentWeatherDetailData?.sunrise,
-                                        sunset:
-                                            currentWeatherDetailData?.sunset,
-                                      ),
-                            style: TextStyle(
-                              fontSize: 14.sp,
-                              color: Colours.white,
-                              height: 1,
-                            ),
+                  child: Column(
+                    children: [
+                      Container(
+                        width: double.infinity,
+                        height: 0.5.w,
+                        color: Colours.white.withOpacity(0.2),
+                      ),
+                      Expanded(
+                        child: ListView.separated(
+                          physics: physics,
+                          scrollDirection: Axis.horizontal,
+                          padding: EdgeInsets.only(
+                            left: 16.w,
+                            right: 16.w,
                           ),
-                          Gaps.generateGap(height: 12.w),
-                          LoadAssetImage(
-                            isSunrise
-                                ? "ic_sunrise_icon"
-                                : isSunset
-                                    ? "ic_sunset_icon"
-                                    : WeatherIconUtils.getWeatherIconByType(
-                                        item?.type ?? -1,
-                                        item?.weatherType ?? "",
-                                        time.isNight(
-                                          sunrise:
-                                              currentWeatherDetailData?.sunrise,
-                                          sunset:
-                                              currentWeatherDetailData?.sunset,
-                                        ),
-                                      ),
-                            width: 24.w,
-                            height: 24.w,
-                          ),
-                          Gaps.generateGap(height: 12.w),
-                          Text(
-                            isSunrise
-                                ? "日出"
-                                : isSunset
-                                    ? "日落"
-                                    : item?.temp.getTemp() ?? "",
-                            style: TextStyle(
-                              fontSize: 17.sp,
-                              color: Colours.white,
-                              height: 1,
-                            ),
-                          ),
-                        ],
-                      );
-                    },
-                    separatorBuilder: (_, index) {
-                      return Gaps.generateGap(width: 28.w);
-                    },
+                          itemCount: physics is NeverScrollableScrollPhysics
+                              ? min(6, length)
+                              : length,
+                          itemBuilder: (_, index) {
+                            final item = weatherItemData.weatherData?.hourFc
+                                .getOrNull(index);
+                            final time = item?.time ?? "";
+                            final isSunrise =
+                                item?.sunrise.isNotNullOrEmpty() ?? false;
+                            final isSunset =
+                                item?.sunset.isNotNullOrEmpty() ?? false;
+                            return Column(
+                              children: [
+                                Gaps.generateGap(height: 12.w),
+                                Text(
+                                  isSunrise
+                                      ? (item?.sunrise ?? "")
+                                      : isSunset
+                                          ? (item?.sunset ?? "")
+                                          : time.getWeatherHourTime(
+                                              sunrise: currentWeatherDetailData
+                                                  ?.sunrise,
+                                              sunset: currentWeatherDetailData
+                                                  ?.sunset,
+                                            ),
+                                  style: TextStyle(
+                                    fontSize: 14.sp,
+                                    color: Colours.white,
+                                    height: 1,
+                                  ),
+                                ),
+                                Gaps.generateGap(height: 12.w),
+                                LoadAssetImage(
+                                  isSunrise
+                                      ? "ic_sunrise_icon"
+                                      : isSunset
+                                          ? "ic_sunset_icon"
+                                          : WeatherIconUtils
+                                              .getWeatherIconByType(
+                                              item?.type ?? -1,
+                                              item?.weatherType ?? "",
+                                              time.isNight(
+                                                sunrise:
+                                                    currentWeatherDetailData
+                                                        ?.sunrise,
+                                                sunset: currentWeatherDetailData
+                                                    ?.sunset,
+                                              ),
+                                            ),
+                                  width: 24.w,
+                                  height: 24.w,
+                                ),
+                                Gaps.generateGap(height: 12.w),
+                                Text(
+                                  isSunrise
+                                      ? "日出"
+                                      : isSunset
+                                          ? "日落"
+                                          : item?.temp.getTemp() ?? "",
+                                  style: TextStyle(
+                                    fontSize: 17.sp,
+                                    color: Colours.white,
+                                    height: 1,
+                                  ),
+                                ),
+                              ],
+                            );
+                          },
+                          separatorBuilder: (_, index) {
+                            return Gaps.generateGap(width: 28.w);
+                          },
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ],

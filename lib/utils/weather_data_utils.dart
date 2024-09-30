@@ -1,9 +1,12 @@
+import 'dart:math';
+
 import 'package:common_utils/common_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_yd_weather/utils/color_utils.dart';
 import 'package:flutter_yd_weather/utils/commons_ext.dart';
 import 'package:flutter_yd_weather/utils/weather_bg_utils.dart';
+import 'package:sp_util/sp_util.dart';
 
 import '../config/constants.dart';
 import '../model/weather_data.dart';
@@ -35,6 +38,7 @@ class WeatherDataUtils {
           itemTypeObserves: itemTypeObserves,
           maxHeight: extentInfo[0],
           minHeight: extentInfo[1],
+          animMaxHeight: extentInfo.getOrNull(2),
         );
       },
     ).toList();
@@ -222,11 +226,35 @@ class WeatherDataUtils {
       int itemType, List<int>? itemTypeObserves, WeatherData? weatherData) {
     switch (itemType) {
       case Constants.itemTypeHourWeather:
-        return [124.w, 0];
+        return [132.w, 0];
       case Constants.itemTypeDailyWeather:
+        final currentDailyWeatherType = SpUtil.getString(
+                Constants.currentDailyWeatherType,
+                defValue: Constants.listDailyWeather) ??
+            Constants.listDailyWeather;
+        final listDailyWeatherMaxHeight = Constants.itemStickyHeight.w +
+            Constants.dailyWeatherItemHeight.w *
+                min(
+                    Constants.dailyWeatherItemCount,
+                    weatherData?.forecast15?.length ??
+                        Constants.dailyWeatherItemCount) +
+            Constants.dailyWeatherBottomHeight.w;
         final find = weatherData?.forecast15?.singleOrNull(
             (element) => element.aqiLevelName.isNotNullOrEmpty());
-        return [find != null ? 394.w : 374.w, 0];
+        final lineChartDailyWeatherMaxHeight = find != null ? 402.w : 382.w;
+        if (currentDailyWeatherType == Constants.listDailyWeather) {
+          return [
+            listDailyWeatherMaxHeight,
+            0,
+            lineChartDailyWeatherMaxHeight,
+          ];
+        } else {
+          return [
+            lineChartDailyWeatherMaxHeight,
+            0,
+            listDailyWeatherMaxHeight,
+          ];
+        }
       case Constants.itemTypeAirQuality:
         return [88.w, 0];
       case Constants.itemTypeLifeIndex:

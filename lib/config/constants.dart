@@ -21,6 +21,9 @@ class Constants {
   static const String currentWeatherObservesCardSort =
       'currentWeatherObservesCardSort';
   static const String currentWeatherBgMap = 'currentWeatherBgMap';
+  static const String currentDailyWeatherType = 'currentDailyWeatherType';
+  static const String lineChartDailyWeather = 'lineChartDailyWeather';
+  static const String listDailyWeather = 'listDailyWeather';
 
   static const int cityDataTypeId = 1;
   static const int simpleWeatherDataTypeId = 2;
@@ -52,6 +55,9 @@ class Constants {
 
   static const int itemStickyHeight = 32;
   static const int itemObservePanelHeight = 128;
+  static const int dailyWeatherItemHeight = 48;
+  static const int dailyWeatherItemCount = 10;
+  static const int dailyWeatherBottomHeight = 32;
 
   static const int maxWeatherBgCount = 6;
 

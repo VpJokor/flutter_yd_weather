@@ -68,8 +68,6 @@ class _WeatherAlarmsPanelState extends State<WeatherAlarmsPanel> {
                     ?.localToGlobal(Offset.zero) ??
                 Offset.zero;
         final contentHeight = _key.currentContext?.size?.height ?? 0;
-        debugPrint(
-            "contentPosition = $contentPosition contentHeight = $contentHeight");
         SmartDialog.show(
           maskColor: Colours.transparent,
           animationTime: const Duration(milliseconds: 200),

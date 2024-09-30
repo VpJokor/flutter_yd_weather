@@ -13,10 +13,22 @@ class WeatherPersistentHeaderDelegate extends SliverPersistentHeaderDelegate {
   WeatherPersistentHeaderDelegate(
     this.weatherItemData,
     this.showHideWeatherContent,
+    this.maxPanelExtent,
+    this.currentDailyWeatherType,
+    this.changeLineChartDailyWeather,
+    this.changeListDailyWeather,
+    this.lookMore,
+    this.isExpand,
   );
 
   final WeatherItemData weatherItemData;
   final void Function(bool show)? showHideWeatherContent;
+  final double? maxPanelExtent;
+  final String? currentDailyWeatherType;
+  final VoidCallback? changeLineChartDailyWeather;
+  final VoidCallback? changeListDailyWeather;
+  final VoidCallback? lookMore;
+  final bool? isExpand;
 
   @override
   Widget build(
@@ -46,6 +58,12 @@ class WeatherPersistentHeaderDelegate extends SliverPersistentHeaderDelegate {
         key: ValueKey(weatherItemData.itemType),
         data: weatherItemData,
         shrinkOffset: shrinkOffset,
+        currentDailyWeatherType: currentDailyWeatherType,
+        changeLineChartDailyWeather: changeLineChartDailyWeather,
+        changeListDailyWeather: changeListDailyWeather,
+        showHideWeatherContent: showHideWeatherContent,
+        lookMore: lookMore,
+        isExpand: isExpand,
       );
     } else if (weatherItemData.itemType == Constants.itemTypeObserve) {
       return WeatherObservePanel(
@@ -65,7 +83,7 @@ class WeatherPersistentHeaderDelegate extends SliverPersistentHeaderDelegate {
   }
 
   @override
-  double get maxExtent => weatherItemData.maxHeight;
+  double get maxExtent => maxPanelExtent ?? weatherItemData.maxHeight;
 
   @override
   double get minExtent => weatherItemData.minHeight;

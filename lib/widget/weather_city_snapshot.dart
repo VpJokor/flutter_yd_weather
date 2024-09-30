@@ -10,6 +10,7 @@ import 'package:flutter_yd_weather/widget/weather_header_static_panel.dart';
 import 'package:flutter_yd_weather/widget/weather_hour_static_panel.dart';
 import 'package:flutter_yd_weather/widget/weather_life_index_static_panel.dart';
 import 'package:flutter_yd_weather/widget/weather_observe_static_panel.dart';
+import 'package:sp_util/sp_util.dart';
 
 import '../config/constants.dart';
 import '../model/weather_item_data.dart';
@@ -18,7 +19,7 @@ import '../res/gaps.dart';
 import '../utils/weather_data_utils.dart';
 
 class WeatherCitySnapshot extends StatelessWidget {
-  const WeatherCitySnapshot({
+  WeatherCitySnapshot({
     super.key,
     required this.cityData,
     required this.data,
@@ -30,6 +31,10 @@ class WeatherCitySnapshot extends StatelessWidget {
   final List<WeatherItemData>? data;
   final List<Color>? colors;
   final bool needMask;
+  final _currentDailyWeatherType = SpUtil.getString(
+          Constants.currentDailyWeatherType,
+          defValue: Constants.listDailyWeather) ??
+      Constants.listDailyWeather;
 
   @override
   Widget build(BuildContext context) {
@@ -105,6 +110,7 @@ class WeatherCitySnapshot extends StatelessWidget {
                   isDark: isDark,
                   panelOpacity: panelOpacity,
                   physics: const NeverScrollableScrollPhysics(),
+                  currentDailyWeatherType: _currentDailyWeatherType,
                 ),
               );
             } else if (itemType == Constants.itemTypeObserve) {
@@ -115,7 +121,8 @@ class WeatherCitySnapshot extends StatelessWidget {
                   data: item,
                   shrinkOffset: 0,
                   isDark: isDark,
-                  isWeatherHeaderDark: WeatherDataUtils.isWeatherHeaderDark(weatherBg),
+                  isWeatherHeaderDark:
+                      WeatherDataUtils.isWeatherHeaderDark(weatherBg),
                   panelOpacity: panelOpacity,
                 ),
               );

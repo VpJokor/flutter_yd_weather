@@ -135,6 +135,10 @@ class Colours {
   static const Color colorFC0B23 = Color(0xFFFC0B23);
   static const Color colorBB10DE = Color(0xFFBB10DE);
   static const Color color0DA8FF = Color(0xFF0DA8FF);
+  static const Color color55DFFC = Color(0xFF55DFFC);
+  static const Color colorEADE6F = Color(0xFFEADE6F);
+  static const Color colorFEBA4F = Color(0xFFFEBA4F);
+  static const Color colorFF6F55 = Color(0xFFFF6F55);
 }
 
 extension ColoursExtension on BuildContext {

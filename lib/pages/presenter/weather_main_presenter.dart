@@ -28,6 +28,7 @@ class WeatherMainPresenter extends BasePagePresenter<WeatherMainView> {
     bool isAdd = false,
     bool reObtainWeatherData = false,
   }) {
+    view.beforeObtainWeatherData();
     final mainP = view.getContext().read<MainProvider>();
     final isLocationCity = mainP.currentCityData!.isLocationCity ?? false;
     final currentCityId = mainP.currentCityData?.cityId ?? "";

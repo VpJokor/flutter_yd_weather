@@ -7,7 +7,6 @@ class WeatherBgUtils {
   static LinearGradient generateWeatherBg(String type, bool isNight) {
     final weatherBgMap = AppRuntimeData.instance.getWeatherBgMap();
     final find = weatherBgMap[_fixedWeatherType(type)].singleOrNull((e) => e.isSelected ?? false);
-    debugPrint("find = $find");
     if (find != null) {
       final colors = isNight ? (find.nightColors ?? find.colors) : find.colors;
       if (colors != null) {

@@ -75,6 +75,8 @@ class AppRuntimeData {
 
   final Map<String, List<WeatherBgModel>> _weatherBgMap = {};
 
+  bool isDailyWeatherExpand = false;
+
   Map<String, List<WeatherBgModel>> getWeatherBgMap() {
     if (_weatherBgMap.isEmpty) {
       final currentWeatherBgMap = SpUtil.getObj(

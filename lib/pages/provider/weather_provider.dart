@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_yd_weather/model/weather_data.dart';
 import 'package:flutter_yd_weather/model/weather_item_data.dart';
-import 'package:flutter_yd_weather/utils/color_utils.dart';
 import 'package:flutter_yd_weather/utils/commons_ext.dart';
 import 'package:flutter_yd_weather/utils/weather_data_utils.dart';
 

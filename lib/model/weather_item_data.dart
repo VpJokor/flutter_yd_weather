@@ -7,6 +7,7 @@ class WeatherItemData {
   List<int>? itemTypeObserves;
   double maxHeight;
   double minHeight;
+  double? animMaxHeight;
 
   WeatherItemData({
     this.itemType = Constants.itemTypeWeatherHeader,
@@ -14,6 +15,7 @@ class WeatherItemData {
     this.maxHeight = 0,
     this.minHeight = 0,
     this.itemTypeObserves,
+    this.animMaxHeight,
   });
 
   @override
