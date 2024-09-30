@@ -329,7 +329,7 @@ class WeatherDailyStaticPanel extends StatelessWidget {
                       Text(
                         weatherDateTime,
                         style: TextStyle(
-                          fontSize: 18.sp,
+                          fontSize: 17.sp,
                           color: Colours.white,
                           height: 1,
                           fontWeight: FontWeight.w600,
@@ -358,7 +358,7 @@ class WeatherDailyStaticPanel extends StatelessWidget {
                   ),
                   Gaps.generateGap(width: 38.w),
                   Container(
-                    width: 38.w,
+                    width: 42.w,
                     alignment: Alignment.centerLeft,
                     child: Text(
                       (item?.low ?? 0).getTemp(),
@@ -382,7 +382,7 @@ class WeatherDailyStaticPanel extends StatelessWidget {
                       minTemp: minTempData?.low ?? 0,
                     ),
                   ),
-                  Gaps.generateGap(width: 12.w),
+                  Gaps.generateGap(width: 16.w),
                   Text(
                     (item?.high ?? 0).getTemp(),
                     style: TextStyle(
