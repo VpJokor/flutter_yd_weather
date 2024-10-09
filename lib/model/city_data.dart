@@ -62,13 +62,17 @@ class CityData {
 
   @override
   bool operator ==(Object other) =>
-      other is CityData && cityId == other.cityId && name == other.name;
+      other is CityData &&
+      cityId == other.cityId &&
+      name == other.name &&
+      street == other.street;
 
   @override
   int get hashCode {
     var result = 17;
     result = 37 * result + cityId.hashCode;
     result = 37 * result + name.hashCode;
+    result = 37 * result + street.hashCode;
     return result;
   }
 

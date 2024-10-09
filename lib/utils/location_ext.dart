@@ -16,6 +16,8 @@ Future<Position?> startLocation() async {
     return Future.value(null);
   }
 
+  /// longitude: 120.920537,
+  /// latitude: 29.175187,
   try {
     final position = await Geolocator.getCurrentPosition(
         forceAndroidLocationManager: true,

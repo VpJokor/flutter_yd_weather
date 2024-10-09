@@ -4,22 +4,27 @@ import 'package:animated_visibility/animated_visibility.dart';
 import 'package:common_utils/common_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:flutter_yd_weather/model/weather_detail_data.dart';
 import 'package:flutter_yd_weather/model/weather_item_data.dart';
+import 'package:flutter_yd_weather/pages/provider/weather_provider.dart';
 import 'package:flutter_yd_weather/utils/commons_ext.dart';
 import 'package:flutter_yd_weather/widget/opacity_layout.dart';
+import 'package:flutter_yd_weather/widget/weather_daily_popup.dart';
 import 'package:flutter_yd_weather/widget/weather_daily_temp_panel.dart';
 import 'package:flutter_yd_weather/widget/weather_temp_line_bar.dart';
+import 'package:provider/provider.dart';
 
 import '../config/constants.dart';
 import '../res/colours.dart';
 import '../res/gaps.dart';
+import '../utils/commons.dart';
 import '../utils/weather_icon_utils.dart';
 import 'blurry_container.dart';
 import 'load_asset_image.dart';
 
 class WeatherDailyStaticPanel extends StatelessWidget {
-  const WeatherDailyStaticPanel({
+  WeatherDailyStaticPanel({
     super.key,
     required this.weatherItemData,
     required this.shrinkOffset,
@@ -31,6 +36,7 @@ class WeatherDailyStaticPanel extends StatelessWidget {
     this.changeListDailyWeather,
     this.lookMore,
     this.isExpand,
+    this.showHideWeatherContent,
   });
 
   final WeatherItemData weatherItemData;
@@ -43,6 +49,9 @@ class WeatherDailyStaticPanel extends StatelessWidget {
   final VoidCallback? changeListDailyWeather;
   final VoidCallback? lookMore;
   final bool? isExpand;
+  final void Function(bool show)? showHideWeatherContent;
+
+  final _weatherDailyPopupKey = GlobalKey<WeatherDailyPopupState>();
 
   @override
   Widget build(BuildContext context) {
@@ -135,12 +144,28 @@ class WeatherDailyStaticPanel extends StatelessWidget {
                                         : length,
                                 itemExtent: itemWidth,
                                 itemBuilder: (_, index) {
-                                  return _buildLineChartDailyWeatherItem(
-                                    index,
-                                    itemWidth,
-                                    maxTempData,
-                                    minTempData,
-                                  );
+                                  return showHideWeatherContent != null
+                                      ? OpacityLayout(
+                                          onPressed: () {
+                                            _showWeatherDailyPopup(
+                                              context,
+                                              index,
+                                            );
+                                          },
+                                          child:
+                                              _buildLineChartDailyWeatherItem(
+                                            index,
+                                            itemWidth,
+                                            maxTempData,
+                                            minTempData,
+                                          ),
+                                        )
+                                      : _buildLineChartDailyWeatherItem(
+                                          index,
+                                          itemWidth,
+                                          maxTempData,
+                                          minTempData,
+                                        );
                                 },
                               ),
                             ),
@@ -166,11 +191,26 @@ class WeatherDailyStaticPanel extends StatelessWidget {
                                         itemExtent:
                                             Constants.dailyWeatherItemHeight.w,
                                         itemBuilder: (_, index) {
-                                          return _buildListDailyWeatherItem(
-                                            index,
-                                            maxTempData,
-                                            minTempData,
-                                          );
+                                          return showHideWeatherContent != null
+                                              ? OpacityLayout(
+                                                  onPressed: () {
+                                                    _showWeatherDailyPopup(
+                                                      context,
+                                                      index,
+                                                    );
+                                                  },
+                                                  child:
+                                                      _buildListDailyWeatherItem(
+                                                    index,
+                                                    maxTempData,
+                                                    minTempData,
+                                                  ),
+                                                )
+                                              : _buildListDailyWeatherItem(
+                                                  index,
+                                                  maxTempData,
+                                                  minTempData,
+                                                );
                                         },
                                       ),
                                     ),
@@ -298,6 +338,39 @@ class WeatherDailyStaticPanel extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+
+  void _showWeatherDailyPopup(BuildContext context, int index) {
+    showHideWeatherContent?.call(false);
+    final weatherProvider = context.read<WeatherProvider>();
+    SmartDialog.show(
+      maskColor: Colours.transparent,
+      animationTime: const Duration(milliseconds: 400),
+      clickMaskDismiss: true,
+      onDismiss: () {
+        _weatherDailyPopupKey.currentState?.exit();
+        Commons.postDelayed(delayMilliseconds: 400, () {
+          showHideWeatherContent?.call(true);
+        });
+      },
+      animationBuilder: (
+        controller,
+        child,
+        animationParam,
+      ) {
+        return child;
+      },
+      builder: (_) {
+        return WeatherDailyPopup(
+          key: _weatherDailyPopupKey,
+          initialIndex: index,
+          forecast15: weatherItemData.weatherData?.forecast15,
+          weatherBg: weatherProvider.weatherBg,
+          isDark: weatherProvider.isDark,
+          panelOpacity: weatherProvider.panelOpacity,
+        );
+      },
     );
   }
 

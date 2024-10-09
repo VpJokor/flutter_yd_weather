@@ -103,18 +103,16 @@ class MainProvider extends ChangeNotifier {
     }
   }
 
-  void updateCity(CityData? cityData) {
+  Future<void> updateCity(CityData? cityData) async {
     if (cityData == null) {
       Toast.show("数据异常，请稍后再试");
-      return;
+      return Future.value();
     }
     final isLocationCity = cityData.isLocationCity ?? false;
-    cityDataBox
-        .put(isLocationCity ? Constants.locationCityId : cityData.cityId,
-            cityData)
-        .then((_) {
-      currentCityData = cityData;
-    });
+    await cityDataBox.put(
+        isLocationCity ? Constants.locationCityId : cityData.cityId, cityData);
+    currentCityData = cityData;
+    return Future.value();
   }
 
   void addCity(BuildContext context, bool hasAdded, CityData? cityData) {

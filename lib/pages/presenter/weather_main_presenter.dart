@@ -30,7 +30,7 @@ class WeatherMainPresenter extends BasePagePresenter<WeatherMainView> {
   }) {
     view.beforeObtainWeatherData();
     final mainP = view.getContext().read<MainProvider>();
-    final isLocationCity = mainP.currentCityData!.isLocationCity ?? false;
+    final isLocationCity = mainP.currentCityData?.isLocationCity ?? false;
     final currentCityId = mainP.currentCityData?.cityId ?? "";
     final key = isLocationCity ? Constants.locationCityId : currentCityId;
     final Map<String, String> params = <String, String>{};
@@ -102,7 +102,7 @@ class WeatherMainPresenter extends BasePagePresenter<WeatherMainView> {
               if (find != null) {
                 find.isLocationCity = true;
                 find.street = locationData.addressComponent?.street;
-                mainP.updateCity(find);
+                await mainP.updateCity(find);
                 return Future.value(true);
               }
             }

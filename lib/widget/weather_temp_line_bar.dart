@@ -43,6 +43,12 @@ class WeatherTempLineBar extends StatelessWidget {
           if (todayTempMarginLeft > constraints.maxWidth - height) {
             todayTempMarginLeft = constraints.maxWidth - height;
           }
+          if (todayTempMarginLeft < marginLeft) {
+            todayTempMarginLeft = marginLeft;
+          }
+          if (todayTempMarginLeft > marginLeft + tempBarWidth - height) {
+            todayTempMarginLeft = marginLeft + tempBarWidth - height;
+          }
         }
         final colors = <Color>[];
         final stops = <double>[];

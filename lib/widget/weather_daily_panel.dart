@@ -15,6 +15,7 @@ class WeatherDailyPanel extends StatelessWidget {
     this.showHideWeatherContent,
     this.lookMore,
     this.isExpand,
+    this.onDailyWeatherTap,
   });
 
   final WeatherItemData data;
@@ -25,6 +26,7 @@ class WeatherDailyPanel extends StatelessWidget {
   final void Function(bool show)? showHideWeatherContent;
   final VoidCallback? lookMore;
   final bool? isExpand;
+  final VoidCallback? onDailyWeatherTap;
 
   @override
   Widget build(BuildContext context) {
@@ -39,6 +41,7 @@ class WeatherDailyPanel extends StatelessWidget {
       changeListDailyWeather: changeListDailyWeather,
       lookMore: lookMore,
       isExpand: isExpand,
+      showHideWeatherContent: showHideWeatherContent,
     );
   }
 }
