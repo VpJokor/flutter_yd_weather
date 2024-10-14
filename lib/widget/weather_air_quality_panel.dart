@@ -9,7 +9,7 @@ import '../res/colours.dart';
 import '../utils/commons.dart';
 
 class WeatherAirQualityPanel extends StatelessWidget {
-  WeatherAirQualityPanel({
+  const WeatherAirQualityPanel({
     super.key,
     required this.data,
     required this.shrinkOffset,
@@ -19,31 +19,31 @@ class WeatherAirQualityPanel extends StatelessWidget {
   final WeatherItemData data;
   final double shrinkOffset;
   final void Function(bool show)? showHideWeatherContent;
-  final _key = GlobalKey();
-  final _airQualityDetailPopupKey = GlobalKey<AirQualityDetailPopupState>();
 
   @override
   Widget build(BuildContext context) {
     final mainP = context.read<WeatherProvider>();
     final isDark = mainP.isDark;
+    final key = GlobalKey();
     return WeatherAirQualityStaticPanel(
       weatherItemData: data,
       shrinkOffset: shrinkOffset,
       isDark: isDark,
       panelOpacity: mainP.panelOpacity,
-      stackKey: _key,
+      stackKey: key,
       onTap: () {
         showHideWeatherContent?.call(false);
         final contentPosition =
-            (_key.currentContext?.findRenderObject() as RenderBox?)
+            (key.currentContext?.findRenderObject() as RenderBox?)
                     ?.localToGlobal(Offset.zero) ??
                 Offset.zero;
+        final airQualityDetailPopupKey = GlobalKey<AirQualityDetailPopupState>();
         SmartDialog.show(
           maskColor: Colours.transparent,
           animationTime: const Duration(milliseconds: 400),
           clickMaskDismiss: true,
           onDismiss: () {
-            _airQualityDetailPopupKey.currentState?.exit();
+            airQualityDetailPopupKey.currentState?.exit();
             Commons.postDelayed(delayMilliseconds: 400, () {
               showHideWeatherContent?.call(true);
             });
@@ -57,7 +57,7 @@ class WeatherAirQualityPanel extends StatelessWidget {
           },
           builder: (_) {
             return AirQualityDetailPopup(
-              key: _airQualityDetailPopupKey,
+              key: airQualityDetailPopupKey,
               initPosition: contentPosition,
               isDark: isDark,
               panelOpacity: mainP.panelOpacity,

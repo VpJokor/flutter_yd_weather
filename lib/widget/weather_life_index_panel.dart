@@ -12,7 +12,7 @@ import '../pages/provider/weather_provider.dart';
 import '../res/colours.dart';
 
 class WeatherLifeIndexPanel extends StatelessWidget {
-  WeatherLifeIndexPanel({
+  const WeatherLifeIndexPanel({
     super.key,
     required this.data,
     required this.shrinkOffset,
@@ -21,29 +21,37 @@ class WeatherLifeIndexPanel extends StatelessWidget {
   final WeatherItemData data;
   final double shrinkOffset;
 
-  final _key = GlobalKey();
-  final _lifeIndexDialogKey = GlobalKey<LifeIndexDialogState>();
-
   @override
   Widget build(BuildContext context) {
     final mainP = context.read<WeatherProvider>();
+    final key = GlobalKey();
+    GlobalKey<LifeIndexDialogState>? lifeIndexDialogKey;
     return WeatherLifeIndexStaticPanel(
       weatherItemData: data,
       shrinkOffset: shrinkOffset,
       isDark: mainP.isDark,
       panelOpacity: mainP.panelOpacity,
-      gridViewKey: _key,
-      showLifeIndexDialog: _showLifeIndexDialog,
-      updateLifeIndexDialog: _updateLifeIndexDialog,
+      gridViewKey: key,
+      showLifeIndexDialog: (index, item, lightImpact) {
+        lifeIndexDialogKey = GlobalKey<LifeIndexDialogState>();
+        _showLifeIndexDialog(key, lifeIndexDialogKey, index, item, lightImpact);
+      },
+      updateLifeIndexDialog: (position) {
+        _updateLifeIndexDialog(key, lifeIndexDialogKey, position);
+      },
     );
   }
 
-  void _updateLifeIndexDialog(Offset position) {
+  void _updateLifeIndexDialog(
+    GlobalKey key,
+    GlobalKey<LifeIndexDialogState>? lifeIndexDialogKey,
+    Offset position,
+  ) {
     final contentPosition =
-        (_key.currentContext?.findRenderObject() as RenderBox?)
+        (key.currentContext?.findRenderObject() as RenderBox?)
                 ?.localToGlobal(Offset.zero) ??
             Offset.zero;
-    final contentWidth = _key.currentContext?.size?.width ?? 0;
+    final contentWidth = key.currentContext?.size?.width ?? 0;
     final size = contentWidth / 3;
     final length = data.weatherData?.indexes?.length ?? 0;
     int row = (position.dy - contentPosition.dy) ~/ size;
@@ -53,7 +61,7 @@ class WeatherLifeIndexPanel extends StatelessWidget {
     if (column < 0) column = 0;
     if (column > 2) column = 2;
     final index = row * 3 + column;
-    _lifeIndexDialogKey.currentState?.update(
+    lifeIndexDialogKey?.currentState?.update(
       data.weatherData?.indexes?.getOrNull(index),
       Offset(
           contentPosition.dx + size * column, contentPosition.dy + size * row),
@@ -62,12 +70,17 @@ class WeatherLifeIndexPanel extends StatelessWidget {
   }
 
   void _showLifeIndexDialog(
-      int index, WeatherIndexData? item, bool lightImpact) {
+    GlobalKey key,
+    GlobalKey<LifeIndexDialogState>? lifeIndexDialogKey,
+    int index,
+    WeatherIndexData? item,
+    bool lightImpact,
+  ) {
     final contentPosition =
-        (_key.currentContext?.findRenderObject() as RenderBox?)
+        (key.currentContext?.findRenderObject() as RenderBox?)
                 ?.localToGlobal(Offset.zero) ??
             Offset.zero;
-    final contentWidth = _key.currentContext?.size?.width ?? 0;
+    final contentWidth = key.currentContext?.size?.width ?? 0;
     final size = contentWidth / 3;
     final row = (index / 3).floor();
     final column = index % 3;
@@ -82,7 +95,7 @@ class WeatherLifeIndexPanel extends StatelessWidget {
       animationTime: const Duration(milliseconds: 200),
       clickMaskDismiss: true,
       onDismiss: () {
-        _lifeIndexDialogKey.currentState?.exit();
+        lifeIndexDialogKey?.currentState?.exit();
       },
       animationBuilder: (
         controller,
@@ -93,13 +106,15 @@ class WeatherLifeIndexPanel extends StatelessWidget {
       },
       builder: (_) {
         return LifeIndexDialog(
-          key: _lifeIndexDialogKey,
+          key: lifeIndexDialogKey,
           data: item,
           position: Offset(contentPosition.dx + size * column,
               contentPosition.dy + size * row),
           size: size,
           column: column,
-          update: _updateLifeIndexDialog,
+          update: (position) {
+            _updateLifeIndexDialog(key, lifeIndexDialogKey, position);
+          },
         );
       },
     );

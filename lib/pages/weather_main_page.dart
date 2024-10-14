@@ -456,6 +456,7 @@ class _WeatherMainPageState
     }
     SpUtil.putString(
         Constants.currentDailyWeatherType, Constants.lineChartDailyWeather);
+    AppRuntimeData.instance.currentDailyWeatherType = Constants.lineChartDailyWeather;
     final dailyWeatherItemData = provider.list
         .singleOrNull((e) => e.itemType == Constants.itemTypeDailyWeather);
     if (dailyWeatherItemData != null) {
@@ -499,6 +500,7 @@ class _WeatherMainPageState
     AppRuntimeData.instance.isDailyWeatherExpand = false;
     SpUtil.putString(
         Constants.currentDailyWeatherType, Constants.listDailyWeather);
+    AppRuntimeData.instance.currentDailyWeatherType = Constants.listDailyWeather;
     final dailyWeatherItemData = provider.list
         .singleOrNull((e) => e.itemType == Constants.itemTypeDailyWeather);
     if (dailyWeatherItemData != null) {

@@ -13,7 +13,7 @@ import '../utils/commons.dart';
 import 'blurry_container.dart';
 
 class WeatherObserveForecase40Panel extends StatelessWidget {
-  WeatherObserveForecase40Panel({
+  const WeatherObserveForecase40Panel({
     super.key,
     required this.data,
     required this.shrinkOffset,
@@ -26,9 +26,6 @@ class WeatherObserveForecase40Panel extends StatelessWidget {
   final WeatherItemData data;
   final double shrinkOffset;
   final void Function(bool show)? showHideWeatherContent;
-  final _key = GlobalKey();
-  final _forecase40DetailPageKey =
-      GlobalKey<WeatherForecase40DetailPageState>();
   final bool isDark;
   final bool isWeatherHeaderDark;
   final double panelOpacity;
@@ -44,6 +41,7 @@ class WeatherObserveForecase40Panel extends StatelessWidget {
     final rainDays = weatherItemData.weatherData?.forecast40Data?.rainDays ?? 0;
     final upDaysDesc = upDays > 0 ? "$upDays天升温" : "预计近期气温平稳";
     final rainDaysDesc = rainDays > 0 ? "$rainDays天有雨" : "预计近期无降雨";
+    final key = GlobalKey();
     return AnimatedOpacity(
       opacity: percent,
       duration: Duration.zero,
@@ -51,17 +49,19 @@ class WeatherObserveForecase40Panel extends StatelessWidget {
         onTap: () {
           showHideWeatherContent?.call(false);
           final contentPosition =
-              (_key.currentContext?.findRenderObject() as RenderBox?)
+              (key.currentContext?.findRenderObject() as RenderBox?)
                       ?.localToGlobal(Offset.zero) ??
                   Offset.zero;
-          final size = _key.currentContext?.size ?? Size.zero;
+          final size = key.currentContext?.size ?? Size.zero;
+          final forecase40DetailPageKey =
+              GlobalKey<WeatherForecase40DetailPageState>();
           SmartDialog.show(
             tag: "WeatherForecase40DetailPage",
             maskColor: Colours.transparent,
             animationTime: const Duration(milliseconds: 400),
             clickMaskDismiss: false,
             onDismiss: () {
-              _forecase40DetailPageKey.currentState?.exit();
+              forecase40DetailPageKey.currentState?.exit();
               Commons.postDelayed(delayMilliseconds: 400, () {
                 showHideWeatherContent?.call(true);
               });
@@ -75,7 +75,7 @@ class WeatherObserveForecase40Panel extends StatelessWidget {
             },
             builder: (_) {
               return WeatherForecase40DetailPage(
-                key: _forecase40DetailPageKey,
+                key: forecase40DetailPageKey,
                 initPosition: contentPosition,
                 size: size,
                 isDark: isDark,
@@ -89,7 +89,7 @@ class WeatherObserveForecase40Panel extends StatelessWidget {
           );
         },
         child: Stack(
-          key: _key,
+          key: key,
           children: [
             Positioned(
               left: 0,
@@ -100,8 +100,8 @@ class WeatherObserveForecase40Panel extends StatelessWidget {
                 width: double.infinity,
                 height: double.infinity,
                 blur: 5,
-                color:
-                    (isDark ? Colours.white : Colours.black).withOpacity(panelOpacity),
+                color: (isDark ? Colours.white : Colours.black)
+                    .withOpacity(panelOpacity),
                 borderRadius: BorderRadius.circular(12.w),
                 padding: EdgeInsets.only(
                   top: Constants.itemStickyHeight.w,

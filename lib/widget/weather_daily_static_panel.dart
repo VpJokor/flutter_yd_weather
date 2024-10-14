@@ -24,7 +24,7 @@ import 'blurry_container.dart';
 import 'load_asset_image.dart';
 
 class WeatherDailyStaticPanel extends StatelessWidget {
-  WeatherDailyStaticPanel({
+  const WeatherDailyStaticPanel({
     super.key,
     required this.weatherItemData,
     required this.shrinkOffset,
@@ -50,8 +50,6 @@ class WeatherDailyStaticPanel extends StatelessWidget {
   final VoidCallback? lookMore;
   final bool? isExpand;
   final void Function(bool show)? showHideWeatherContent;
-
-  final _weatherDailyPopupKey = GlobalKey<WeatherDailyPopupState>();
 
   @override
   Widget build(BuildContext context) {
@@ -344,12 +342,13 @@ class WeatherDailyStaticPanel extends StatelessWidget {
   void _showWeatherDailyPopup(BuildContext context, int index) {
     showHideWeatherContent?.call(false);
     final weatherProvider = context.read<WeatherProvider>();
+    final weatherDailyPopupKey = GlobalKey<WeatherDailyPopupState>();
     SmartDialog.show(
       maskColor: Colours.transparent,
       animationTime: const Duration(milliseconds: 400),
       clickMaskDismiss: true,
       onDismiss: () {
-        _weatherDailyPopupKey.currentState?.exit();
+        weatherDailyPopupKey.currentState?.exit();
         Commons.postDelayed(delayMilliseconds: 400, () {
           showHideWeatherContent?.call(true);
         });
@@ -363,7 +362,7 @@ class WeatherDailyStaticPanel extends StatelessWidget {
       },
       builder: (_) {
         return WeatherDailyPopup(
-          key: _weatherDailyPopupKey,
+          key: weatherDailyPopupKey,
           initialIndex: index,
           forecast15: weatherItemData.weatherData?.forecast15,
           weatherBg: weatherProvider.weatherBg,

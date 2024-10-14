@@ -77,6 +77,11 @@ class AppRuntimeData {
 
   bool isDailyWeatherExpand = false;
 
+  String currentDailyWeatherType = SpUtil.getString(
+          Constants.currentDailyWeatherType,
+          defValue: Constants.listDailyWeather) ??
+      Constants.listDailyWeather;
+
   Map<String, List<WeatherBgModel>> getWeatherBgMap() {
     if (_weatherBgMap.isEmpty) {
       final currentWeatherBgMap = SpUtil.getObj(
