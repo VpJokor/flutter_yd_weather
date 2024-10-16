@@ -421,8 +421,8 @@ class WeatherDailyStaticPanel extends StatelessWidget {
                   Gaps.generateGap(width: 38.w),
                   LoadAssetImage(
                     WeatherIconUtils.getWeatherIconByType(
-                      item?.night?.type ?? -1,
-                      item?.night?.weatherType ?? "",
+                      item?.day?.type ?? -1,
+                      item?.day?.weatherType ?? "",
                       false,
                     ),
                     width: 24.w,
