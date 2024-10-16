@@ -11,6 +11,9 @@ class Constants {
   static const String locale = 'locale';
   static const String appLoadingDialog = 'appLoadingDialog';
 
+
+  static const int maxCityListLength = 20;
+
   static const String cityDataBox = 'cityDataBox';
 
   static const String locationCityId = '-66208439';

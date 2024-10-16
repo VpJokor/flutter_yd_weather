@@ -123,6 +123,10 @@ class MainProvider extends ChangeNotifier {
     if (hasAdded) {
       Toast.show("该城市已经添加过了哦");
     } else {
+      if (cityDataBox.length > Constants.maxCityListLength) {
+        Toast.show("城市数量已达上限，如果想要添加新的城市，请先删除已有的城市。");
+        return;
+      }
       final isLocationCity = cityData.isLocationCity ?? false;
       cityDataBox
           .put(isLocationCity ? Constants.locationCityId : cityData.cityId,
