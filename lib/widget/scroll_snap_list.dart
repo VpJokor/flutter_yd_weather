@@ -1,7 +1,6 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:scrollview_observer/scrollview_observer.dart';
 
 ///Anchor location for selected item in the list
 enum SelectedItemAnchor { start, middle, end }
