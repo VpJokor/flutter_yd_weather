@@ -115,6 +115,7 @@ class InfiniteCardStackWidgetState extends State<InfiniteCardStackWidget>
   double _downX = 0;
   Duration _duration = Duration.zero;
   bool _isAnimating = false;
+  bool _exit = false;
 
   @override
   void initState() {
@@ -157,10 +158,10 @@ class InfiniteCardStackWidgetState extends State<InfiniteCardStackWidget>
       _offset = widget.showCount <= 1
           ? 0
           : (itemWidth -
-          widget.paddingLeft -
-          firstItemWidth -
-          widget.paddingRight) /
-          (widget.showCount - 1);
+                  widget.paddingLeft -
+                  firstItemWidth -
+                  widget.paddingRight) /
+              (widget.showCount - 1);
       _showingRect.clear();
       _showingTempRect.clear();
       _showingRect.addAll(
@@ -200,11 +201,11 @@ class InfiniteCardStackWidgetState extends State<InfiniteCardStackWidget>
       _outsideRect = _moveIndex <= 0
           ? null
           : Rect.fromLTRB(
-        -rect.width,
-        rect.top,
-        0,
-        rect.bottom,
-      );
+              -rect.width,
+              rect.top,
+              0,
+              rect.bottom,
+            );
       if (init && widget.enterAnim) {
         _enter();
       }
@@ -224,7 +225,7 @@ class InfiniteCardStackWidgetState extends State<InfiniteCardStackWidget>
     final children = _mapIndexed(showingIndexes, (showingIndex, index) {
       final rect = _getOrNull(_showingRect, index) ?? Rect.zero;
       final opacity =
-      widget.useOpacity ? (_getOrNull(_showingOpacity, index) ?? 0) : 1.0;
+          widget.useOpacity ? (_getOrNull(_showingOpacity, index) ?? 0) : 1.0;
       return _buildItem(context, rect, opacity, showingIndex,
           index == widget.showCount, opacity);
     });
@@ -235,26 +236,26 @@ class InfiniteCardStackWidgetState extends State<InfiniteCardStackWidget>
     }
     return Transform(
       transform:
-      Matrix4.rotationY(widget.direction == AxisDirection.right ? 0 : pi),
+          Matrix4.rotationY(widget.direction == AxisDirection.right ? 0 : pi),
       alignment: Alignment.center,
       child: SizedBox(
         width: double.infinity,
         height: _getHeight(),
-        child: widget.enableMove
+        child: widget.enableMove && !_exit
             ? GestureDetector(
-          onHorizontalDragDown: _onHorizontalDragDown,
-          onHorizontalDragUpdate: _onHorizontalDragUpdate,
-          onHorizontalDragEnd: _onHorizontalDragEnd,
-          child: Container(
-            color: Colors.transparent,
-            child: Stack(
-              children: children,
-            ),
-          ),
-        )
+                onHorizontalDragDown: _onHorizontalDragDown,
+                onHorizontalDragUpdate: _onHorizontalDragUpdate,
+                onHorizontalDragEnd: _onHorizontalDragEnd,
+                child: Container(
+                  color: Colors.transparent,
+                  child: Stack(
+                    children: children,
+                  ),
+                ),
+              )
             : Stack(
-          children: children,
-        ),
+                children: children,
+              ),
       ),
     );
   }
@@ -318,7 +319,7 @@ class InfiniteCardStackWidgetState extends State<InfiniteCardStackWidget>
           if (newRect.right <= nextRect.right || widget.showCount == 1) {
             _showingRect[i] = newRect;
             _showingOpacity[i] = _fixPercent((_showingTempOpacity[i] +
-                (nextOpacity - _showingTempOpacity[i]) * percent)
+                    (nextOpacity - _showingTempOpacity[i]) * percent)
                 .abs());
           }
         }
@@ -347,7 +348,7 @@ class InfiniteCardStackWidgetState extends State<InfiniteCardStackWidget>
             if (newRect.right <= _showingTempRect[i].right) {
               _showingRect[i] = newRect;
               _showingOpacity[i] = _fixPercent((_showingTempOpacity[i] +
-                  (_showingTempOpacity[i] - preOpacity) * percent)
+                      (_showingTempOpacity[i] - preOpacity) * percent)
                   .abs());
             }
           }
@@ -362,12 +363,12 @@ class InfiniteCardStackWidgetState extends State<InfiniteCardStackWidget>
     final tempRect = _showingTempRect[_showingTempRect.length - 1];
     final isSame = _outsideRect != null && offsetX > 0
         ? _outsideRect ==
-        Rect.fromLTRB(
-          -tempRect.width,
-          tempRect.top,
-          0,
-          tempRect.bottom,
-        )
+            Rect.fromLTRB(
+              -tempRect.width,
+              tempRect.top,
+              0,
+              tempRect.bottom,
+            )
         : _showingRect[_showingRect.length - 1] == tempRect;
     if (_isAnimating) {
       if (isSame) {
@@ -451,8 +452,8 @@ class InfiniteCardStackWidgetState extends State<InfiniteCardStackWidget>
   void _resetState(int index, int moveIndex, {VoidCallback? computation}) {
     _postDelayed(
         delayMilliseconds:
-        (widget.duration ?? const Duration(milliseconds: 400))
-            .inMilliseconds, () {
+            (widget.duration ?? const Duration(milliseconds: 400))
+                .inMilliseconds, () {
       final rect = _showingRect[_showingRect.length - 1];
       final isInScreen = rect.left > 0;
       debugPrint(
@@ -465,11 +466,11 @@ class InfiniteCardStackWidgetState extends State<InfiniteCardStackWidget>
           _outsideRect = moveIndex <= 0
               ? null
               : Rect.fromLTRB(
-            -tempRect.width,
-            tempRect.top,
-            0,
-            tempRect.bottom,
-          );
+                  -tempRect.width,
+                  tempRect.top,
+                  0,
+                  tempRect.bottom,
+                );
           _duration = Duration.zero;
           _showingRect.clear();
           _showingRect.addAll([..._showingTempRect]);
@@ -587,6 +588,7 @@ class InfiniteCardStackWidgetState extends State<InfiniteCardStackWidget>
         _postDelayed(
             delayMilliseconds: enterDelayDuration.inMilliseconds * index, () {
           setState(() {
+            _exit = true;
             final rect = _showingRect[index];
             _enterSlideOffsetX[showingIndex] =
                 (rect.width + (itemWidth - rect.right)) / rect.width;
@@ -604,13 +606,13 @@ class InfiniteCardStackWidgetState extends State<InfiniteCardStackWidget>
   }
 
   Widget _buildItem(
-      BuildContext context,
-      Rect rect,
-      double opacity,
-      int index,
-      bool showShadow,
-      double ratio,
-      ) {
+    BuildContext context,
+    Rect rect,
+    double opacity,
+    int index,
+    bool showShadow,
+    double ratio,
+  ) {
     final offsetX = _enterSlideOffsetX[index];
     return AnimatedPositioned.fromRect(
       rect: rect,
@@ -633,13 +635,13 @@ class InfiniteCardStackWidgetState extends State<InfiniteCardStackWidget>
                 borderRadius: widget.borderRadius,
                 boxShadow: showShadow
                     ? (widget.blurRadius > 0
-                    ? [
-                  BoxShadow(
-                    color: widget.shadowColor ?? Colors.transparent,
-                    blurRadius: widget.blurRadius,
-                  )
-                ]
-                    : null)
+                        ? [
+                            BoxShadow(
+                              color: widget.shadowColor ?? Colors.transparent,
+                              blurRadius: widget.blurRadius,
+                            )
+                          ]
+                        : null)
                     : null,
               ),
               clipBehavior: Clip.hardEdge,
