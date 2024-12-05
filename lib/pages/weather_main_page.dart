@@ -138,7 +138,7 @@ class _WeatherMainPageState
     return AnnotatedRegion(
       value: _systemUiOverlayStyle,
       child: PopScope(
-        onPopInvoked: _onPopInvoked,
+        onPopInvokedWithResult: _onPopInvoked,
         canPop: false,
         child: Stack(
           children: [
@@ -223,7 +223,7 @@ class _WeatherMainPageState
     );
   }
 
-  void _onPopInvoked(bool didPop) {
+  void _onPopInvoked(bool didPop, _) {
     if (didPop) return;
     if (_cityManagerPageKey.currentState?.isEditMode ?? false) {
       _cityManagerPageKey.currentState?.closeEditMode();
