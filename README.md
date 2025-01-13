@@ -10,6 +10,8 @@
 
 访问不了可以去码云：[『Flutter』易得天气](https://gitee.com/pangyu646182805/flutter_yd_weather)
 
+Android编译要在编译配置文件的 Build flavor 这一栏中加上 yd_weather
+
 Android打包命令：
 
 ```
