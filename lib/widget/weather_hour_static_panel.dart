@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_yd_weather/model/weather_item_data.dart';
 import 'package:flutter_yd_weather/utils/commons_ext.dart';
+import 'package:hive/hive.dart';
 
 import '../config/constants.dart';
 import '../res/colours.dart';
@@ -136,6 +137,16 @@ class WeatherHourStaticPanel extends StatelessWidget {
                                   height: 24.w,
                                 ),
                                 Gaps.generateGap(height: 12.w),
+                                (isSunrise || isSunrise) ? Container() :
+                                Text(
+                                  "${item?.wd}${item?.wp}",
+                                  style: TextStyle(
+                                    fontSize: 10.sp,
+                                    color: Colours.white,
+                                    height: 1,
+                                  ),
+                                ),
+                                Gaps.generateGap(height: 12.w),
                                 Text(
                                   isSunrise
                                       ? "日出"
@@ -143,7 +154,7 @@ class WeatherHourStaticPanel extends StatelessWidget {
                                           ? "日落"
                                           : item?.temp.getTemp() ?? "",
                                   style: TextStyle(
-                                    fontSize: 17.sp,
+                                    fontSize: (isSunrise || isSunset) ? 15.sp : 17.sp,
                                     color: Colours.white,
                                     height: 1,
                                   ),

@@ -66,6 +66,7 @@ class WeatherDataUtils {
     return weatherItems;
   }
 
+  /// 标记日出和日落
   static _generateWeatherHourFc(WeatherData? weatherData) {
     if (weatherData == null) return;
     final hourFc = weatherData.hourFc;
@@ -226,7 +227,7 @@ class WeatherDataUtils {
       int itemType, List<int>? itemTypeObserves, WeatherData? weatherData) {
     switch (itemType) {
       case Constants.itemTypeHourWeather:
-        return [132.w, 0];
+        return [162.w, 0];
       case Constants.itemTypeDailyWeather:
         final currentDailyWeatherType = SpUtil.getString(
                 Constants.currentDailyWeatherType,
@@ -241,7 +242,7 @@ class WeatherDataUtils {
             Constants.dailyWeatherBottomHeight.w;
         final find = weatherData?.forecast15?.singleOrNull(
             (element) => element.aqiLevelName.isNotNullOrEmpty());
-        final lineChartDailyWeatherMaxHeight = find != null ? 402.w : 382.w;
+        final lineChartDailyWeatherMaxHeight = find != null ? 412.w : 392.w;
         if (currentDailyWeatherType == Constants.listDailyWeather) {
           return [
             listDailyWeatherMaxHeight,

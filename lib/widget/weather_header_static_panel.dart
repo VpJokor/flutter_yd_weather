@@ -258,27 +258,50 @@ class WeatherHeaderStaticPanel extends StatelessWidget {
                               ],
                             ),
                           ),
-                          Gaps.generateGap(height: 5.w),
+                          Gaps.generateGap(height: 16.w),
                           AnimatedOpacity(
                             opacity: opacity1,
                             duration: Duration.zero,
-                            child: Text(
-                              weatherData?.observe?.wthr ??
-                                  currentWeatherDetailData?.wthr ??
-                                  "",
-                              style: TextStyle(
-                                fontSize: 20.sp,
-                                color: (isDark ? Colours.white : Colours.black),
-                                height: 1,
-                                fontFamily: "RobotoLight",
-                                shadows: const [
-                                  BoxShadow(
-                                    color: Colours.black_3,
-                                    offset: Offset(1, 1),
-                                    blurRadius: 2,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.end,
+                              children: [
+                                Text(
+                                  weatherData?.observe?.wthr ??
+                                      currentWeatherDetailData?.wthr ??
+                                      "",
+                                  style: TextStyle(
+                                    fontSize: 20.sp,
+                                    color: (isDark ? Colours.white : Colours.black),
+                                    height: 1,
+                                    fontFamily: "RobotoLight",
+                                    shadows: const [
+                                      BoxShadow(
+                                        color: Colours.black_3,
+                                        offset: Offset(1, 1),
+                                        blurRadius: 2,
+                                      ),
+                                    ],
                                   ),
-                                ],
-                              ),
+                                ),
+                                SizedBox(width: 10.w,),
+                                Text(
+                                  "${weatherData?.observe?.wd}${weatherData?.observe?.wp}",
+                                  style: TextStyle(
+                                    fontSize: 18.sp,
+                                    color: (isDark ? Colours.white : Colours.black),
+                                    height: 1,
+                                    fontFamily: "RobotoLight",
+                                    shadows: const [
+                                      BoxShadow(
+                                        color: Colours.black_3,
+                                        offset: Offset(1, 1),
+                                        blurRadius: 2,
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
                             ),
                           ),
                         ],
@@ -294,6 +317,22 @@ class WeatherHeaderStaticPanel extends StatelessWidget {
                               style: TextStyle(
                                 fontSize: 20.sp,
                                 color: (isDark ? Colours.white : Colours.black),
+                                height: 1,
+                                fontFamily: "RobotoLight",
+                                shadows: const [
+                                  BoxShadow(
+                                    color: Colours.black_3,
+                                    offset: Offset(1, 1),
+                                    blurRadius: 2,
+                                  ),
+                                ],
+                              ),
+                            ),
+                            Text(
+                              " | ${weatherData?.observe?.wd}${weatherData?.observe?.wp}",
+                              style: TextStyle(
+                                fontSize: 17.sp,
+                                color: (isDark ? Colours.white : Colours.black).withAlpha(160),
                                 height: 1,
                                 fontFamily: "RobotoLight",
                                 shadows: const [
