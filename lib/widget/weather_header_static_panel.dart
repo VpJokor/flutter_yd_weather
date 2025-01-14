@@ -120,7 +120,7 @@ class WeatherHeaderStaticPanel extends StatelessWidget {
                       maxWidth: ScreenUtil().screenWidth - 2 * 60.w,
                     ),
                   ),
-                  Gaps.generateGap(height: 5.w),
+                  Gaps.generateGap(height: 12.w),
                   Stack(
                     children: [
                       Column(
@@ -131,6 +131,25 @@ class WeatherHeaderStaticPanel extends StatelessWidget {
                             child: Row(
                               children: [
                                 Expanded(child: Gaps.generateGap()),
+                                Text(
+                                  weatherData?.observe?.wthr ??
+                                      currentWeatherDetailData?.wthr ??
+                                      "",
+                                  style: TextStyle(
+                                    fontSize: 62.sp,
+                                    color: (isDark ? Colours.white : Colours.black),
+                                    height: 1,
+                                    fontFamily: "RobotoThin",
+                                    shadows: const [
+                                      BoxShadow(
+                                        color: Colours.black_3,
+                                        offset: Offset(1, 1),
+                                        blurRadius: 2,
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                SizedBox(width: 10.w,),
                                 Text(
                                   weatherData?.observe?.temp?.toString() ?? "",
                                   style: TextStyle(
@@ -149,26 +168,25 @@ class WeatherHeaderStaticPanel extends StatelessWidget {
                                     ],
                                   ),
                                 ),
-                                Expanded(
-                                  child: Text(
-                                    "°",
-                                    style: TextStyle(
-                                      fontSize: 86.sp,
-                                      color: (isDark
-                                          ? Colours.white
-                                          : Colours.black),
-                                      height: 1,
-                                      fontFamily: "RobotoThin",
-                                      shadows: const [
-                                        BoxShadow(
-                                          color: Colours.black_3,
-                                          offset: Offset(1, 1),
-                                          blurRadius: 2,
-                                        ),
-                                      ],
-                                    ),
+                                Text(
+                                  "°",
+                                  style: TextStyle(
+                                    fontSize: 86.sp,
+                                    color: (isDark
+                                        ? Colours.white
+                                        : Colours.black),
+                                    height: 1,
+                                    fontFamily: "RobotoThin",
+                                    shadows: const [
+                                      BoxShadow(
+                                        color: Colours.black_3,
+                                        offset: Offset(1, 1),
+                                        blurRadius: 2,
+                                      ),
+                                    ],
                                   ),
                                 ),
+                                Expanded(child: Gaps.generateGap()),
                               ],
                             ),
                           ),
@@ -266,13 +284,12 @@ class WeatherHeaderStaticPanel extends StatelessWidget {
                               mainAxisAlignment: MainAxisAlignment.center,
                               crossAxisAlignment: CrossAxisAlignment.end,
                               children: [
+                                SizedBox(width: 10.w,),
                                 Text(
-                                  weatherData?.observe?.wthr ??
-                                      currentWeatherDetailData?.wthr ??
-                                      "",
+                                  "${weatherData?.observe?.wd}${weatherData?.observe?.wp}",
                                   style: TextStyle(
-                                    fontSize: 20.sp,
-                                    color: (isDark ? Colours.white : Colours.black),
+                                    fontSize: 18.sp,
+                                    color: (isDark ? Colours.white : Colours.black).withAlpha(160),
                                     height: 1,
                                     fontFamily: "RobotoLight",
                                     shadows: const [
@@ -286,10 +303,10 @@ class WeatherHeaderStaticPanel extends StatelessWidget {
                                 ),
                                 SizedBox(width: 10.w,),
                                 Text(
-                                  "${weatherData?.observe?.wd}${weatherData?.observe?.wp}",
+                                  "气压: ${weatherData?.observe?.pressure}",
                                   style: TextStyle(
                                     fontSize: 18.sp,
-                                    color: (isDark ? Colours.white : Colours.black),
+                                    color: (isDark ? Colours.white : Colours.black).withAlpha(160),
                                     height: 1,
                                     fontFamily: "RobotoLight",
                                     shadows: const [
@@ -329,7 +346,55 @@ class WeatherHeaderStaticPanel extends StatelessWidget {
                               ),
                             ),
                             Text(
-                              " | ${weatherData?.observe?.wd}${weatherData?.observe?.wp}",
+                              " | ",
+                              style: TextStyle(
+                                fontSize: 20.sp,
+                                color: (isDark ? Colours.white : Colours.black),
+                                height: 1,
+                                fontFamily: "RobotoLight",
+                                shadows: const [
+                                  BoxShadow(
+                                    color: Colours.black_3,
+                                    offset: Offset(1, 1),
+                                    blurRadius: 2,
+                                  ),
+                                ],
+                              ),
+                            ),
+                            Text(
+                              "${weatherData?.observe?.wd}${weatherData?.observe?.wp}",
+                              style: TextStyle(
+                                fontSize: 17.sp,
+                                color: (isDark ? Colours.white : Colours.black).withAlpha(160),
+                                height: 1,
+                                fontFamily: "RobotoLight",
+                                shadows: const [
+                                  BoxShadow(
+                                    color: Colours.black_3,
+                                    offset: Offset(1, 1),
+                                    blurRadius: 2,
+                                  ),
+                                ],
+                              ),
+                            ),
+                            Text(
+                              " | ",
+                              style: TextStyle(
+                                fontSize: 20.sp,
+                                color: (isDark ? Colours.white : Colours.black),
+                                height: 1,
+                                fontFamily: "RobotoLight",
+                                shadows: const [
+                                  BoxShadow(
+                                    color: Colours.black_3,
+                                    offset: Offset(1, 1),
+                                    blurRadius: 2,
+                                  ),
+                                ],
+                              ),
+                            ),
+                            Text(
+                              "气压:${weatherData?.observe?.pressure}",
                               style: TextStyle(
                                 fontSize: 17.sp,
                                 color: (isDark ? Colours.white : Colours.black).withAlpha(160),
