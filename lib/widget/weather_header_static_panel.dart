@@ -289,7 +289,7 @@ class WeatherHeaderStaticPanel extends StatelessWidget {
                                   "${weatherData?.observe?.wd}${weatherData?.observe?.wp}",
                                   style: TextStyle(
                                     fontSize: 18.sp,
-                                    color: (isDark ? Colours.white : Colours.black).withAlpha(180),
+                                    color: (isDark ? Colours.white : Colours.black).withAlpha(220),
                                     height: 1,
                                     fontFamily: "RobotoLight",
                                     shadows: const [
@@ -306,7 +306,7 @@ class WeatherHeaderStaticPanel extends StatelessWidget {
                                   "气压: ${weatherData?.observe?.pressure}",
                                   style: TextStyle(
                                     fontSize: 18.sp,
-                                    color: (isDark ? Colours.white : Colours.black).withAlpha(180),
+                                    color: (isDark ? Colours.white : Colours.black).withAlpha(220),
                                     height: 1,
                                     fontFamily: "RobotoLight",
                                     shadows: const [
