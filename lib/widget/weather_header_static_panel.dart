@@ -136,7 +136,7 @@ class WeatherHeaderStaticPanel extends StatelessWidget {
                                       currentWeatherDetailData?.wthr ??
                                       "",
                                   style: TextStyle(
-                                    fontSize: 62.sp,
+                                    fontSize: 52.sp,
                                     color: (isDark ? Colours.white : Colours.black),
                                     height: 1,
                                     fontFamily: "RobotoThin",
@@ -149,11 +149,11 @@ class WeatherHeaderStaticPanel extends StatelessWidget {
                                     ],
                                   ),
                                 ),
-                                SizedBox(width: 10.w,),
+                                SizedBox(width: 20.w,),
                                 Text(
                                   weatherData?.observe?.temp?.toString() ?? "",
                                   style: TextStyle(
-                                    fontSize: 92.sp,
+                                    fontSize: 72.sp,
                                     color: (isDark
                                         ? Colours.white
                                         : Colours.black),
@@ -171,7 +171,7 @@ class WeatherHeaderStaticPanel extends StatelessWidget {
                                 Text(
                                   "°",
                                   style: TextStyle(
-                                    fontSize: 86.sp,
+                                    fontSize: 62.sp,
                                     color: (isDark
                                         ? Colours.white
                                         : Colours.black),
@@ -190,7 +190,7 @@ class WeatherHeaderStaticPanel extends StatelessWidget {
                               ],
                             ),
                           ),
-                          Gaps.generateGap(height: 5.w),
+                          Gaps.generateGap(height: 10.w),
                           AnimatedOpacity(
                             opacity: opacity2,
                             duration: Duration.zero,
@@ -276,7 +276,7 @@ class WeatherHeaderStaticPanel extends StatelessWidget {
                               ],
                             ),
                           ),
-                          Gaps.generateGap(height: 16.w),
+                          Gaps.generateGap(height: 26.w),
                           AnimatedOpacity(
                             opacity: opacity1,
                             duration: Duration.zero,
@@ -289,7 +289,7 @@ class WeatherHeaderStaticPanel extends StatelessWidget {
                                   "${weatherData?.observe?.wd}${weatherData?.observe?.wp}",
                                   style: TextStyle(
                                     fontSize: 18.sp,
-                                    color: (isDark ? Colours.white : Colours.black).withAlpha(160),
+                                    color: (isDark ? Colours.white : Colours.black).withAlpha(180),
                                     height: 1,
                                     fontFamily: "RobotoLight",
                                     shadows: const [
@@ -306,7 +306,7 @@ class WeatherHeaderStaticPanel extends StatelessWidget {
                                   "气压: ${weatherData?.observe?.pressure}",
                                   style: TextStyle(
                                     fontSize: 18.sp,
-                                    color: (isDark ? Colours.white : Colours.black).withAlpha(160),
+                                    color: (isDark ? Colours.white : Colours.black).withAlpha(180),
                                     height: 1,
                                     fontFamily: "RobotoLight",
                                     shadows: const [
@@ -365,7 +365,7 @@ class WeatherHeaderStaticPanel extends StatelessWidget {
                               "${weatherData?.observe?.wd}${weatherData?.observe?.wp}",
                               style: TextStyle(
                                 fontSize: 17.sp,
-                                color: (isDark ? Colours.white : Colours.black).withAlpha(160),
+                                color: (isDark ? Colours.white : Colours.black),
                                 height: 1,
                                 fontFamily: "RobotoLight",
                                 shadows: const [
@@ -397,7 +397,7 @@ class WeatherHeaderStaticPanel extends StatelessWidget {
                               "气压:${weatherData?.observe?.pressure}",
                               style: TextStyle(
                                 fontSize: 17.sp,
-                                color: (isDark ? Colours.white : Colours.black).withAlpha(160),
+                                color: (isDark ? Colours.white : Colours.black),
                                 height: 1,
                                 fontFamily: "RobotoLight",
                                 shadows: const [

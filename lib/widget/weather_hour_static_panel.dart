@@ -137,7 +137,7 @@ class WeatherHourStaticPanel extends StatelessWidget {
                                   height: 24.w,
                                 ),
                                 Gaps.generateGap(height: 12.w),
-                                (isSunrise || isSunrise) ? Container() :
+                                (isSunrise || isSunset) ? Container() :
                                 Text(
                                   "${item?.wd}${item?.wp}",
                                   style: TextStyle(
